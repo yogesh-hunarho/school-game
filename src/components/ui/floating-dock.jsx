@@ -1,7 +1,6 @@
 /**
- * Note: Use position fixed according to your needs
- * Desktop navbar is better positioned at the bottom
- * Mobile navbar is better positioned at bottom right.
+ * Cyberpunk 2077 styled Floating Dock
+ * Desktop navbar positioned at the bottom with corner bracket accents
  **/
 
 import { cn } from "@/lib/utils";
@@ -45,24 +44,30 @@ const FloatingDockDesktop = ({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "mx-auto h-20 md:h-16 items-center md:items-end gap-4 rounded-2xl px-4 pb-6 md:pb-3 pt-1 flex md:gap-6", // Responsive gap
+        "mx-auto h-20 md:h-16 items-center md:items-end gap-4 px-4 pb-6 md:pb-3 pt-1 flex md:gap-5",
         className
       )}>
       {items.map((item) => (
         <IconContainer mouseX={mouseX} key={item.title} {...item} />
       ))}
-      <motion.div
+
+      {/* Theme Toggle */}
+      {/* <motion.div
         style={{ width: 40, height: 40 }}
-        className="aspect-square rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center relative"
+        className="relative aspect-square bg-slate-900/80 flex items-center justify-center cursor-pointer border border-cyan-400/30 hover:border-yellow-400 transition-colors group"
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       >
-        <motion.div
-          className="flex items-center justify-center"
-        >
-          {theme === "dark" ? <Sun className="h-full w-full text-neutral-500 dark:text-neutral-300" /> : <Moon className="h-full w-full text-neutral-500 dark:text-neutral-300" />}
-        </motion.div>
-      </motion.div>
+        <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400 group-hover:border-yellow-400 transition-colors" />
+        <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400 group-hover:border-yellow-400 transition-colors" />
 
+        <motion.div className="flex items-center justify-center">
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5 text-yellow-400" />
+          ) : (
+            <Moon className="h-5 w-5 text-cyan-400" />
+          )}
+        </motion.div>
+      </motion.div> */}
     </motion.div>
   );
 };
@@ -91,10 +96,10 @@ function IconContainer({
   });
 
   // Desktop transformations
-  let widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
-  let heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40]);
-  let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
-  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20]);
+  let widthTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
+  let heightTransform = useTransform(distance, [-150, 0, 150], [40, 70, 40]);
+  let widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 35, 20]);
+  let heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 35, 20]);
 
   let widthSpring = useSpring(widthTransform, { mass: 0.1, stiffness: 150, damping: 12 });
   let heightSpring = useSpring(heightTransform, { mass: 0.1, stiffness: 150, damping: 12 });
@@ -102,24 +107,29 @@ function IconContainer({
   let heightIconSpring = useSpring(heightTransformIcon, { mass: 0.1, stiffness: 150, damping: 12 });
 
   // Mobile static values - reduced size
-  let width = isMobile ? 50 : widthSpring;
-  let height = isMobile ? 50 : heightSpring;
-  let widthIcon = isMobile ? 24 : widthIconSpring;
-  let heightIcon = isMobile ? 24 : heightIconSpring;
+  let width = isMobile ? 44 : widthSpring;
+  let height = isMobile ? 44 : heightSpring;
+  let widthIcon = isMobile ? 22 : widthIconSpring;
+  let heightIcon = isMobile ? 22 : heightIconSpring;
 
   const [hovered, setHovered] = useState(false);
 
   return (
-    <a href={href} className={cn("relative flex items-center justify-center", isMobile && "flex-col")}>
+    <a href={href} className={cn("relative flex items-center justify-center group", isMobile && "flex-col")}>
       <motion.div
         ref={ref}
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800">
+        className="relative flex aspect-square items-center justify-center bg-slate-900/80 border border-cyan-400/30 hover:border-cyan-400 transition-colors">
+
+        {/* Corner accents */}
+        <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400/50 group-hover:border-cyan-400 transition-colors" />
+        <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400/50 group-hover:border-cyan-400 transition-colors" />
+
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="flex items-center justify-center">
+          className="flex items-center justify-center text-cyan-400 group-hover:text-yellow-400 transition-colors">
           {icon}
         </motion.div>
       </motion.div>
@@ -131,9 +141,12 @@ function IconContainer({
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 2, x: "-50%" }}
             className={cn(
-              "absolute left-1/2 w-fit rounded-md border border-gray-200 bg-gray-100 px-3 py-1 text-xs whitespace-pre text-neutral-700 dark:border-neutral-900 dark:bg-neutral-800 dark:text-white pointer-events-none z-50",
-              isMobile ? "top-[52px] text-[10px] px-1.5 py-0" : "-top-8"
+              "absolute left-1/2 w-fit px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest whitespace-pre pointer-events-none z-50 bg-slate-900/90 border border-cyan-400/50 text-cyan-400",
+              isMobile ? "top-[48px]" : "-top-8"
             )}>
+            {/* Mini corner accents on tooltip */}
+            <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-cyan-400" />
+            <div className="absolute bottom-0 right-0 w-1 h-1 border-b border-r border-cyan-400" />
             {title}
           </motion.div>
         )}

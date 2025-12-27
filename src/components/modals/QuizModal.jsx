@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, ArrowRight, ArrowLeft, Trophy } from "lucide-react";
+import { CheckCircle2, ArrowRight, ArrowLeft, Trophy, Zap, Check } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
@@ -119,136 +119,257 @@ export const QuizModal = ({ open, onOpenChange }) => {
 
     return (
         <Dialog open={open} onOpenChange={handleCloseModal}>
-            <DialogContent className="max-w-2xl p-0 overflow-hidden shadow-none ring-0">
-                <div className="bg-slate-950/80 p-6 md:p-8 min-h-[500px] flex flex-col relative">
-                    {/* Header */}
-                    <DialogHeader className="flex flex-row items-center justify-between mb-8 space-y-0">
-                        <div>
-                            <DialogTitle className="text-xl font-bold text-white mb-1">{selectedQuiz.title}</DialogTitle>
-                            <p className="text-sm text-white/50">Question {currentQuestionIdx + 1} of {totalQuestions}</p>
-                        </div>
-                    </DialogHeader>
+            <DialogContent className="min-w-6xl p-0 overflow-hidden shadow-none ring-0 border-none bg-transparent">
+                <div className="relative bg-slate-950/98">
+                    {/* Scanline overlay */}
+                    <div className="pointer-events-none absolute inset-0 z-30 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
 
-                    {/* Content */}
-                    <div className="flex-1">
-                        {!isSubmitted && !alreadyCompleted ? (
-                            <div className="space-y-6">
-                                {/* Question */}
-                                <div className="text-lg text-white font-medium leading-relaxed">
-                                    {currentQuestion.question}
-                                </div>
+                    {/* Main border */}
+                    <div className="absolute inset-0 border border-yellow-400/30" />
 
-                                {/* Options */}
-                                <div className="space-y-3">
-                                    {currentQuestion.options.map((option, idx) => (
-                                        <button
-                                            key={idx}
-                                            onClick={() => handleOptionSelect(idx)}
-                                            className={cn(
-                                                "w-full p-4 rounded-xl border text-left transition-all relative overflow-hidden group",
-                                                answers[currentQuestionIdx] === idx
-                                                    ? "bg-cyan-500/20 border-cyan-500 text-white shadow-[0_0_15px_rgba(34,211,238,0.3)]"
-                                                    : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
-                                            )}
-                                        >
-                                            <span className={cn(
-                                                "inline-flex w-6 h-6 rounded-full border text-xs items-center justify-center mr-3 transition-colors",
-                                                answers[currentQuestionIdx] === idx
-                                                    ? "bg-cyan-500 border-cyan-500 text-black font-bold"
-                                                    : "border-white/30 text-white/50"
-                                            )}>
-                                                {String.fromCharCode(65 + idx)}
-                                            </span>
-                                            {option}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="w-24 h-24 rounded-full bg-linear-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-[0_0_30px_rgba(251,191,36,0.4)]"
-                                >
-                                    <Trophy className="w-12 h-12 text-white" />
-                                </motion.div>
+                    {/* Corner brackets */}
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-yellow-400" />
+                    <div className="absolute top-0 left-6 w-4 h-[2px] bg-yellow-400" />
+                    <div className="absolute top-6 left-0 w-[2px] h-4 bg-yellow-400" />
 
-                                <div>
-                                    <h2 className="text-2xl font-bold text-white mb-2">
-                                        {alreadyCompleted ? "Quiz Completed!" : "Quiz Submitted!"}
-                                    </h2>
-                                    <p className="text-white/60">
-                                        You scored <span className="text-cyan-400 font-bold text-xl">{alreadyCompleted ? "100" : score}%</span>
+                    <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-yellow-400" />
+                    <div className="absolute top-0 right-6 w-4 h-[2px] bg-yellow-400" />
+                    <div className="absolute top-6 right-0 w-[2px] h-4 bg-yellow-400" />
+
+                    <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-yellow-400" />
+                    <div className="absolute bottom-0 left-6 w-4 h-[2px] bg-yellow-400" />
+                    <div className="absolute bottom-6 left-0 w-[2px] h-4 bg-yellow-400" />
+
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-yellow-400" />
+                    <div className="absolute bottom-0 right-6 w-4 h-[2px] bg-yellow-400" />
+                    <div className="absolute bottom-6 right-0 w-[2px] h-4 bg-yellow-400" />
+
+                    <div className="relative z-10 p-6 md:p-8 min-h-[500px] flex flex-col">
+                        {/* Header */}
+                        <DialogHeader className="flex flex-row items-center justify-between mb-6 space-y-0">
+                            <div>
+                                <DialogTitle className="text-lg font-bold text-yellow-400 mb-1 uppercase tracking-wide">
+                                    {selectedQuiz.title}
+                                </DialogTitle>
+                                {!isSubmitted && !alreadyCompleted && (
+                                    <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">
+                                        QUERY {currentQuestionIdx + 1} OF {totalQuestions}
                                     </p>
-                                </div>
-
-                                <div className="p-4 rounded-xl bg-white/5 border border-white/10 max-w-sm w-full">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm text-white/60">XP Earned</span>
-                                        <span className="text-yellow-400 font-bold">+{selectedQuiz.xp} XP</span>
-                                    </div>
-                                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-yellow-400 w-full" />
-                                    </div>
-                                </div>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </DialogHeader>
 
-                    {/* Footer / Navigation */}
-                    <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center">
-                        <button
-                            onClick={handlePrev}
-                            disabled={currentQuestionIdx === 0 || isSubmitted || alreadyCompleted}
-                            className={cn(
-                                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                                currentQuestionIdx === 0 || isSubmitted || alreadyCompleted
-                                    ? "text-white/20 cursor-not-allowed"
-                                    : "text-white/70 hover:text-white hover:bg-white/10"
+                        {/* Content Grid */}
+                        <div className="flex-1 overflow-hidden">
+                            {!isSubmitted && !alreadyCompleted ? (
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full">
+                                    {/* Left Column: Question & Options */}
+                                    <div className="md:col-span-3 space-y-6">
+                                        {/* Question */}
+                                        <div className="relative p-5 border border-cyan-400/30 bg-slate-900/50">
+                                            <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400" />
+                                            <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400" />
+                                            <p className="text-base text-cyan-50 font-medium leading-relaxed">
+                                                {currentQuestion.question}
+                                            </p>
+                                        </div>
+
+                                        {/* Options */}
+                                        <div className="space-y-3">
+                                            {currentQuestion.options.map((option, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => handleOptionSelect(idx)}
+                                                    className={cn(
+                                                        "relative w-full p-4 text-left transition-all group",
+                                                        answers[currentQuestionIdx] === idx
+                                                            ? "bg-yellow-400/10 border border-yellow-400 text-yellow-400"
+                                                            : "bg-slate-900/60 border border-cyan-400/20 text-slate-300 hover:border-cyan-400/50"
+                                                    )}
+                                                >
+                                                    {/* Corner accents */}
+                                                    <div className={cn(
+                                                        "absolute top-0 left-0 w-2 h-2 border-t border-l transition-colors",
+                                                        answers[currentQuestionIdx] === idx ? "border-yellow-400" : "border-cyan-400/30 group-hover:border-cyan-400"
+                                                    )} />
+                                                    <div className={cn(
+                                                        "absolute bottom-0 right-0 w-2 h-2 border-b border-r transition-colors",
+                                                        answers[currentQuestionIdx] === idx ? "border-yellow-400" : "border-cyan-400/30 group-hover:border-cyan-400"
+                                                    )} />
+
+                                                    <div className="flex items-center gap-3">
+                                                        <span className={cn(
+                                                            "inline-flex w-7 h-7 text-[12px] font-bold items-center justify-center transition-colors",
+                                                            answers[currentQuestionIdx] === idx
+                                                                ? "bg-yellow-400 text-slate-900"
+                                                                : "bg-cyan-400/20 text-cyan-400"
+                                                        )}>
+                                                            {String.fromCharCode(64 + (idx + 1))}
+                                                        </span>
+                                                        <span className="text-sm uppercase tracking-wide">{option}</span>
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Right Column: Question Grid Navigation */}
+                                    <div className="md:col-span-1 border-l border-cyan-400/10 pl-6 hidden md:block">
+                                        <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Question Matrix</h3>
+                                        <div className="grid grid-cols-4 gap-2">
+                                            {questions.map((_, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => {
+                                                        playClick();
+                                                        setCurrentQuestionIdx(i);
+                                                    }}
+                                                    className={cn(
+                                                        "relative aspect-square flex items-center justify-center text-[10px] font-bold transition-all",
+                                                        currentQuestionIdx === i
+                                                            ? "bg-yellow-400 text-slate-900 shadow-[0_0_10px_rgba(250,204,21,0.3)]"
+                                                            : answers[i] !== undefined
+                                                                ? "bg-cyan-400/20 border border-cyan-400/40 text-cyan-400"
+                                                                : "bg-slate-900/60 border border-slate-700/50 text-slate-500 hover:border-slate-500"
+                                                    )}
+                                                >
+                                                    {answers[i] !== undefined && currentQuestionIdx !== i ? (
+                                                        <Check className="w-3 h-3" />
+                                                    ) : (
+                                                        i + 1
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {/* Status Messages */}
+                                        <div className="mt-8 space-y-4">
+                                            {totalQuestions - Object.keys(answers).length <= 3 && totalQuestions - Object.keys(answers).length > 0 && (
+                                                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-mono animate-pulse">
+                                                    <p className="mb-1">SYSTEM WARNING:</p>
+                                                    <p>CRITICAL - {totalQuestions - Object.keys(answers).length} NODES REMAINING</p>
+                                                </div>
+                                            )}
+
+                                            <div className="text-[10px] text-slate-500 font-mono space-y-1">
+                                                <div className="flex justify-between">
+                                                    <span>STATUS:</span>
+                                                    <span className="text-cyan-400">{Object.keys(answers).length === totalQuestions ? "READY" : "INCOMPLETE"}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span>PROGRESS:</span>
+                                                    <span className="text-cyan-400">{Math.round((Object.keys(answers).length / totalQuestions) * 100)}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-center space-y-6 py-8">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        className="relative w-20 h-20 bg-yellow-400 flex items-center justify-center shadow-[0_0_30px_rgba(250,204,21,0.4)]"
+                                    >
+                                        <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-yellow-400" />
+                                        <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-yellow-400" />
+                                        <Trophy className="w-10 h-10 text-slate-900" />
+                                    </motion.div>
+
+                                    <div>
+                                        <h2 className="text-xl font-bold text-yellow-400 mb-2 uppercase tracking-wide">
+                                            {alreadyCompleted ? "PROTOCOL COMPLETE" : "DATA SUBMITTED"}
+                                        </h2>
+                                        <p className="text-slate-400 text-sm">
+                                            ACCURACY RATING: <span className="text-cyan-400 font-bold text-lg">{alreadyCompleted ? "100" : score}%</span>
+                                        </p>
+                                    </div>
+
+                                    <div className="relative p-4 border border-yellow-400/30 bg-slate-900/50 max-w-sm w-full">
+                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-yellow-400" />
+                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-yellow-400" />
+
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="text-[10px] text-slate-500 uppercase tracking-widest">XP ACQUIRED</span>
+                                            <span className="text-yellow-400 font-bold flex items-center gap-1">
+                                                <Zap className="w-3.5 h-3.5" />
+                                                +{selectedQuiz.xp} XP
+                                            </span>
+                                        </div>
+                                        <div className="relative h-1.5 bg-slate-800 overflow-hidden">
+                                            <motion.div
+                                                className="h-full bg-yellow-400"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: "100%" }}
+                                                transition={{ duration: 1, ease: "easeOut" }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             )}
-                        >
-                            <ArrowLeft className="w-4 h-4" />
-                            Previous
-                        </button>
+                        </div>
 
-                        {isSubmitted || alreadyCompleted ? (
+                        {/* Footer / Navigation */}
+                        <div className="mt-6 pt-4 border-t border-cyan-400/20 flex justify-between items-center">
                             <button
-                                onClick={closeQuizModal}
-                                className="px-6 py-2 rounded-lg bg-cyan-500 text-black font-bold hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/20"
+                                onClick={handlePrev}
+                                disabled={currentQuestionIdx === 0 || isSubmitted || alreadyCompleted}
+                                className={cn(
+                                    "flex items-center gap-2 px-4 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors",
+                                    currentQuestionIdx === 0 || isSubmitted || alreadyCompleted
+                                        ? "text-slate-600 cursor-not-allowed"
+                                        : "text-slate-400 hover:text-cyan-400"
+                                )}
                             >
-                                Close
+                                <ArrowLeft className="w-3.5 h-3.5" />
+                                PREV
                             </button>
-                        ) : (
-                            currentQuestionIdx === totalQuestions - 1 ? (
+
+                            {isSubmitted || alreadyCompleted ? (
                                 <button
-                                    onClick={handleSubmit}
-                                    disabled={Object.keys(answers).length < totalQuestions}
-                                    className={cn(
-                                        "px-6 py-2 rounded-lg font-bold transition-all shadow-lg flex items-center gap-2",
-                                        Object.keys(answers).length < totalQuestions
-                                            ? "bg-slate-700 text-white/30 cursor-not-allowed"
-                                            : "bg-green-500 text-white hover:bg-green-400 shadow-green-500/20"
-                                    )}
+                                    onClick={closeQuizModal}
+                                    className="relative px-6 py-2.5 bg-cyan-400 text-slate-900 font-bold text-xs uppercase tracking-widest hover:bg-cyan-300 transition-colors shadow-[0_0_15px_rgba(34,211,238,0.3)]"
                                 >
-                                    Submit <CheckCircle2 className="w-4 h-4" />
+                                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-slate-900" />
+                                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-slate-900" />
+                                    CLOSE
                                 </button>
                             ) : (
-                                <button
-                                    onClick={handleNext}
-                                    disabled={answers[currentQuestionIdx] === undefined}
-                                    className={cn(
-                                        "flex items-center gap-2 px-6 py-2 rounded-lg font-medium transition-all",
-                                        answers[currentQuestionIdx] === undefined
-                                            ? "bg-slate-800 text-white/30 cursor-not-allowed"
-                                            : "bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/50"
-                                    )}
-                                >
-                                    Next <ArrowRight className="w-4 h-4" />
-                                </button>
-                            )
-                        )}
+                                currentQuestionIdx === totalQuestions - 1 ? (
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={Object.keys(answers).length < totalQuestions}
+                                        className={cn(
+                                            "relative flex items-center gap-2 px-6 py-2.5 font-bold text-xs uppercase tracking-widest transition-all",
+                                            Object.keys(answers).length < totalQuestions
+                                                ? "bg-slate-800 text-slate-500 cursor-not-allowed"
+                                                : "bg-emerald-400 text-slate-900 hover:bg-emerald-300 shadow-[0_0_15px_rgba(52,211,153,0.3)]"
+                                        )}
+                                    >
+                                        <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-slate-900" />
+                                        <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-slate-900" />
+                                        SUBMIT <CheckCircle2 className="w-3.5 h-3.5" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleNext}
+                                        disabled={answers[currentQuestionIdx] === undefined}
+                                        className={cn(
+                                            "relative flex items-center gap-2 px-6 py-2.5 font-bold text-xs uppercase tracking-widest transition-all",
+                                            answers[currentQuestionIdx] === undefined
+                                                ? "bg-slate-800 text-slate-500 cursor-not-allowed"
+                                                : "bg-cyan-400/10 border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20"
+                                        )}
+                                    >
+                                        NEXT <ArrowRight className="w-3.5 h-3.5" />
+                                    </button>
+                                )
+                            )}
+                        </div>
                     </div>
+
+                    {/* Bottom accent */}
+                    <div className="absolute bottom-0 left-8 right-8 h-0.5 bg-yellow-400/30" />
                 </div>
             </DialogContent>
         </Dialog>

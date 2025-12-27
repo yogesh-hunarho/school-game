@@ -7,8 +7,10 @@ import { ShootingStars } from "@/components/ui/shooting-stars";
 import { StarsBackground } from "@/components/ui/stars-background";
 import GlassSurface from "@/components/GlassSurface";
 import ConfettiEffect from "@/components/ConfettiEffect";
+import ModuleUnlockAnimation from "@/components/ModuleUnlockAnimation";
 import { Home, User, Trophy, BookOpen } from "lucide-react";
 import ClickSpark from "@/components/ClickSpark";
+import { Meteors } from "@/components/ui/meteors";
 
 const navLinks = [
     {
@@ -19,7 +21,7 @@ const navLinks = [
     {
         title: "Courses",
         icon: <BookOpen className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
-        href: "/",
+        href: "/courses",
     },
     {
         title: "Achievements",
@@ -43,7 +45,7 @@ export default function ProtectedLayout() {
     }
 
     // Dynamic width based on hover state - expands when dock icons scale up
-    const dockWidth = isDockHovered ? 380 : 320;
+    const dockWidth = isDockHovered ? 320 : 250;
 
     return (
         <ClickSpark
@@ -53,7 +55,7 @@ export default function ProtectedLayout() {
             sparkCount={8}
             duration={400}
         >
-            <div className="relative w-full min-h-screen flex flex-col bg-slate-950 overflow-hidden">
+            <div className="relative w-full min-h-screen flex flex-col bg-slate-950">
                 <ShootingStars className="pointer-events-none z-0" />
                 <StarsBackground className="pointer-events-none z-0" />
 
@@ -61,7 +63,7 @@ export default function ProtectedLayout() {
 
                 <Header />
 
-                <main className="relative flex-1 pt-16 pb-24 z-10 overflow-auto">
+                <main className="relative flex-1 z-10 pt-12">
                     <Outlet />
                 </main>
 
@@ -71,13 +73,13 @@ export default function ProtectedLayout() {
                     </div>
                 )}
 
-                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+                {/* <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
                     <GlassSurface
                         width={dockWidth}
                         borderRadius={20}
                         height={64}
                         backgroundOpacity={0.48}
-                        displace={3.0}
+                        displace={5.0}
                         borderWidth={1}
                         style={{
                             transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)'
@@ -88,9 +90,10 @@ export default function ProtectedLayout() {
                             onHoverChange={setIsDockHovered}
                         />
                     </GlassSurface>
-                </div>
+                </div> */}
 
                 <ConfettiEffect />
+                <ModuleUnlockAnimation />
             </div>
         </ClickSpark>
     );

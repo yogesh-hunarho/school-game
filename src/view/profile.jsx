@@ -11,10 +11,10 @@ import {
     Video,
     Award,
     Target,
-    Flame,
     ChevronLeft,
     CheckCircle2,
     Lock,
+    User,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -55,60 +55,96 @@ export default function ProfilePage() {
     const earnedBadges = badgeDefinitions.filter((b) => b.requirement(player));
 
     return (
-        <div className="min-h-full p-4 md:p-6 lg:p-8">
-            <div className="max-w-5xl mx-auto space-y-6">
+        <div className="min-h-full p-4 md:p-6 lg:p-8 relative">
+            {/* Background scanlines */}
+            <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.015] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
+
+            <div className="max-w-5xl mx-auto space-y-6 relative z-10">
                 {/* Back Button */}
                 <Link
                     to="/"
                     onClick={playClick}
-                    className="inline-flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors group"
+                    className="inline-flex items-center gap-2 text-[11px] text-cyan-400 hover:text-yellow-400 transition-colors group uppercase tracking-widest font-bold"
                 >
                     <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    Back to Dashboard
+                    RETURN TO DASHBOARD
                 </Link>
 
                 {/* Profile Header Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative rounded-2xl overflow-hidden"
+                    className="relative bg-slate-950/95"
                 >
-                    <div className="absolute inset-0 bg-linear-to-r from-cyan-500 via-purple-500 to-pink-500 opacity-50" />
-                    <div className="relative m-px bg-slate-950/95 rounded-2xl p-6 md:p-8">
+                    {/* Main border */}
+                    <div className="absolute inset-0 border border-cyan-400/30" />
+
+                    {/* Corner brackets */}
+                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400" />
+                    <div className="absolute top-0 left-6 w-4 h-[2px] bg-cyan-400" />
+                    <div className="absolute top-6 left-0 w-[2px] h-4 bg-cyan-400" />
+
+                    <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400" />
+                    <div className="absolute top-0 right-6 w-4 h-[2px] bg-cyan-400" />
+                    <div className="absolute top-6 right-0 w-[2px] h-4 bg-cyan-400" />
+
+                    <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400" />
+                    <div className="absolute bottom-0 left-6 w-4 h-[2px] bg-cyan-400" />
+                    <div className="absolute bottom-6 left-0 w-[2px] h-4 bg-cyan-400" />
+
+                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400" />
+                    <div className="absolute bottom-0 right-6 w-4 h-[2px] bg-cyan-400" />
+                    <div className="absolute bottom-6 right-0 w-[2px] h-4 bg-cyan-400" />
+
+                    <div className="relative z-10 p-6 md:p-8">
                         <div className="flex flex-col md:flex-row items-center gap-6">
                             {/* Avatar */}
                             <div className="relative">
-                                <div className="absolute -inset-2 bg-linear-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full opacity-70" />
-                                <div className="relative w-28 h-28 rounded-full bg-slate-900 border-4 border-cyan-500/50 flex items-center justify-center text-5xl">
-                                    👤
+                                <div className="relative w-24 h-24 bg-slate-900 border border-cyan-400/50 flex items-center justify-center">
+                                    <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
+                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-400" />
+                                    <User className="w-12 h-12 text-cyan-400/50" />
                                 </div>
                                 {/* Level badge */}
-                                <div className="absolute -bottom-1 -right-1 px-3 py-1 rounded-full bg-purple-500 text-white text-sm font-bold border-2 border-slate-950">
+                                <div className="absolute -bottom-2 -right-2 px-3 py-1 bg-yellow-400 text-slate-900 text-xs font-bold uppercase tracking-wider">
                                     LVL {level}
                                 </div>
                             </div>
 
                             {/* Info */}
                             <div className="flex-1 text-center md:text-left">
-                                <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                <h1 className="text-2xl md:text-3xl font-bold text-cyan-50 mb-1 uppercase tracking-wide">
                                     {player.name}
                                 </h1>
-                                <p className="text-slate-400 mb-4">Cyber Learner • Active Student</p>
+                                <p className="text-[11px] text-slate-500 mb-4 uppercase tracking-widest font-mono">
+                                    CYBER LEARNER • ACTIVE OPERATIVE
+                                </p>
 
                                 {/* XP Progress */}
                                 <div className="max-w-md">
-                                    <div className="flex justify-between text-sm mb-2">
+                                    <div className="flex justify-between text-[11px] mb-2 font-mono uppercase tracking-wider">
                                         <span className="text-yellow-400 font-bold flex items-center gap-1">
-                                            <Star className="w-4 h-4 fill-yellow-400" />
+                                            <Star className="w-3.5 h-3.5 fill-yellow-400" />
                                             {player.totalXP.toLocaleString()} XP
                                         </span>
                                         <span className="text-slate-500">
-                                            {Math.round(xpProgress.required - xpProgress.current)} XP to Level {level + 1}
+                                            {Math.round(xpProgress.required - xpProgress.current)} XP TO LVL {level + 1}
                                         </span>
                                     </div>
-                                    <div className="h-3 bg-slate-800 rounded-full overflow-hidden">
+                                    <div className="relative h-2 bg-slate-800 overflow-hidden">
+                                        <div className="absolute inset-0 flex gap-px">
+                                            {Array.from({ length: 20 }).map((_, i) => (
+                                                <div key={i} className="flex-1 bg-slate-700/30" />
+                                            ))}
+                                        </div>
                                         <motion.div
-                                            className="h-full bg-linear-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-full"
+                                            className="absolute top-0 left-0 h-full bg-yellow-400"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
+                                            transition={{ duration: 1, ease: "easeOut" }}
+                                        />
+                                        <motion.div
+                                            className="absolute top-0 left-0 h-full bg-yellow-400/50 blur-sm"
                                             initial={{ width: 0 }}
                                             animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
                                             transition={{ duration: 1, ease: "easeOut" }}
@@ -118,38 +154,48 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Bottom accent */}
+                    <div className="absolute bottom-0 left-8 right-8 h-0.5 bg-cyan-400/30" />
                 </motion.div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {[
-                        { icon: Star, label: "Total XP", value: player.totalXP, color: "yellow" },
-                        { icon: Zap, label: "Level", value: level, color: "purple" },
-                        { icon: Video, label: "Videos", value: totalVideosWatched, color: "cyan" },
-                        { icon: BookOpen, label: "Quizzes", value: totalQuizzesCompleted, color: "green" },
+                        { icon: Star, label: "TOTAL XP", value: player.totalXP, color: "yellow" },
+                        { icon: Zap, label: "LEVEL", value: level, color: "cyan" },
+                        { icon: Video, label: "STREAMS", value: totalVideosWatched, color: "cyan" },
+                        { icon: BookOpen, label: "TESTS", value: totalQuizzesCompleted, color: "emerald" },
                     ].map((stat, i) => (
                         <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className={cn(
-                                "p-4 rounded-xl border bg-slate-900/50 backdrop-blur-sm",
-                                stat.color === "yellow" && "border-yellow-500/30",
-                                stat.color === "purple" && "border-purple-500/30",
-                                stat.color === "cyan" && "border-cyan-500/30",
-                                stat.color === "green" && "border-green-500/30"
-                            )}
+                            className="relative p-4 bg-slate-950/95 border border-cyan-400/20"
                         >
-                            <stat.icon className={cn(
-                                "w-6 h-6 mb-2",
-                                stat.color === "yellow" && "text-yellow-400",
-                                stat.color === "purple" && "text-purple-400",
-                                stat.color === "cyan" && "text-cyan-400",
-                                stat.color === "green" && "text-green-400"
+                            {/* Corner accents */}
+                            <div className={cn(
+                                "absolute top-0 left-0 w-2 h-2 border-t border-l",
+                                stat.color === "yellow" && "border-yellow-400",
+                                stat.color === "cyan" && "border-cyan-400",
+                                stat.color === "emerald" && "border-emerald-400"
                             )} />
-                            <div className="text-2xl font-bold text-white">{stat.value}</div>
-                            <div className="text-sm text-slate-400">{stat.label}</div>
+                            <div className={cn(
+                                "absolute bottom-0 right-0 w-2 h-2 border-b border-r",
+                                stat.color === "yellow" && "border-yellow-400",
+                                stat.color === "cyan" && "border-cyan-400",
+                                stat.color === "emerald" && "border-emerald-400"
+                            )} />
+
+                            <stat.icon className={cn(
+                                "w-5 h-5 mb-2",
+                                stat.color === "yellow" && "text-yellow-400",
+                                stat.color === "cyan" && "text-cyan-400",
+                                stat.color === "emerald" && "text-emerald-400"
+                            )} />
+                            <div className="text-2xl font-bold text-cyan-50">{stat.value}</div>
+                            <div className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">{stat.label}</div>
                         </motion.div>
                     ))}
                 </div>
@@ -159,74 +205,101 @@ export default function ProfilePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="rounded-2xl border border-cyan-500/20 bg-slate-900/50 backdrop-blur-sm p-6"
+                    className="relative bg-slate-950/95 border border-cyan-400/20"
                 >
-                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <Target className="w-5 h-5 text-cyan-400" />
-                        Course Progress
-                    </h2>
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="text-4xl font-bold text-cyan-400">
-                            {completedModules}/{modules.length}
-                        </div>
-                        <div className="text-slate-400">
-                            Modules<br />Completed
-                        </div>
-                        <div className="flex-1 h-4 bg-slate-800 rounded-full overflow-hidden">
-                            <motion.div
-                                className="h-full bg-linear-to-r from-cyan-500 to-purple-500 rounded-full"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${(completedModules / modules.length) * 100}%` }}
-                                transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-                            />
-                        </div>
-                    </div>
+                    {/* Corner brackets */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
 
-                    {/* Module List */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {modules.map((module) => {
-                            const status = player.moduleStatus[module.id] || "locked";
-                            const progress = getModuleProgress(module.id);
-                            const isCompleted = status === "completed";
-                            const isLocked = status === "locked";
-
-                            return (
-                                <div
-                                    key={module.id}
-                                    className={cn(
-                                        "p-3 rounded-lg border flex items-center gap-3",
-                                        isCompleted && "border-green-500/30 bg-green-500/5",
-                                        isLocked && "border-slate-700 bg-slate-800/30 opacity-50",
-                                        !isCompleted && !isLocked && "border-cyan-500/30 bg-cyan-500/5"
-                                    )}
-                                >
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-lg flex items-center justify-center text-xl",
-                                        isCompleted && "bg-green-500/20",
-                                        isLocked && "bg-slate-700",
-                                        !isCompleted && !isLocked && "bg-cyan-500/20"
-                                    )}>
-                                        {isLocked ? <Lock className="w-4 h-4 text-slate-500" /> : module.icon}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="text-sm font-medium text-white truncate">{module.name}</div>
-                                        <div className="flex items-center gap-2">
-                                            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                                                <div
-                                                    className={cn(
-                                                        "h-full rounded-full",
-                                                        isCompleted ? "bg-green-500" : "bg-cyan-500"
-                                                    )}
-                                                    style={{ width: `${progress}%` }}
-                                                />
-                                            </div>
-                                            <span className="text-xs text-slate-400">{progress}%</span>
-                                        </div>
-                                    </div>
-                                    {isCompleted && <CheckCircle2 className="w-5 h-5 text-green-400" />}
+                    <div className="p-6">
+                        <h2 className="text-sm font-bold text-cyan-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                            <Target className="w-4 h-4" />
+                            MODULE PROGRESS
+                        </h2>
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="relative">
+                                <div className="text-4xl font-bold text-yellow-400">
+                                    {completedModules}
                                 </div>
-                            );
-                        })}
+                                <div className="text-[10px] text-slate-500 font-mono">/{modules.length}</div>
+                            </div>
+                            <div className="flex-1">
+                                <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-1 font-mono">
+                                    COMPLETION RATE
+                                </div>
+                                <div className="relative h-3 bg-slate-800 overflow-hidden">
+                                    <div className="absolute inset-0 flex gap-px">
+                                        {Array.from({ length: modules.length }).map((_, i) => (
+                                            <div key={i} className="flex-1 bg-slate-700/30" />
+                                        ))}
+                                    </div>
+                                    <motion.div
+                                        className="absolute top-0 left-0 h-full bg-cyan-400"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${(completedModules / modules.length) * 100}%` }}
+                                        transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Module List */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                            {modules.map((module) => {
+                                const status = player.moduleStatus[module.id] || "locked";
+                                const progress = getModuleProgress(module.id);
+                                const isCompleted = status === "completed";
+                                const isLocked = status === "locked";
+
+                                return (
+                                    <div
+                                        key={module.id}
+                                        className={cn(
+                                            "relative p-3 flex items-center gap-3 transition-colors",
+                                            isCompleted && "bg-emerald-400/5 border border-emerald-400/30",
+                                            isLocked && "bg-slate-900/50 border border-slate-700 opacity-50",
+                                            !isCompleted && !isLocked && "bg-cyan-400/5 border border-cyan-400/30"
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "absolute top-0 left-0 w-1.5 h-1.5 border-t border-l",
+                                            isCompleted ? "border-emerald-400" : isLocked ? "border-slate-600" : "border-cyan-400"
+                                        )} />
+                                        <div className={cn(
+                                            "absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r",
+                                            isCompleted ? "border-emerald-400" : isLocked ? "border-slate-600" : "border-cyan-400"
+                                        )} />
+
+                                        <div className={cn(
+                                            "w-8 h-8 flex items-center justify-center text-lg",
+                                            isCompleted && "bg-emerald-400/20",
+                                            isLocked && "bg-slate-800",
+                                            !isCompleted && !isLocked && "bg-cyan-400/20"
+                                        )}>
+                                            {isLocked ? <Lock className="w-3.5 h-3.5 text-slate-500" /> : module.icon}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-xs font-medium text-cyan-50 truncate uppercase tracking-wide">{module.name}</div>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <div className="flex-1 h-1 bg-slate-700 overflow-hidden">
+                                                    <div
+                                                        className={cn(
+                                                            "h-full",
+                                                            isCompleted ? "bg-emerald-400" : "bg-cyan-400"
+                                                        )}
+                                                        style={{ width: `${progress}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-[10px] text-slate-500 font-mono">{progress}%</span>
+                                            </div>
+                                        </div>
+                                        {isCompleted && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </motion.div>
 
@@ -235,41 +308,58 @@ export default function ProfilePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="rounded-2xl border border-purple-500/20 bg-slate-900/50 backdrop-blur-sm p-6"
+                    className="relative bg-slate-950/95 border border-yellow-400/20"
                 >
-                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-purple-400" />
-                        Earned Badges
-                        <span className="text-sm font-normal text-slate-400">
-                            ({earnedBadges.length}/{badgeDefinitions.length})
-                        </span>
-                    </h2>
+                    {/* Corner brackets */}
+                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-yellow-400" />
+                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-yellow-400" />
+                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-yellow-400" />
+                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-400" />
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {badgeDefinitions.map((badge) => {
-                            const isEarned = earnedBadges.includes(badge);
-                            return (
-                                <motion.div
-                                    key={badge.id}
-                                    whileHover={{ scale: isEarned ? 1.05 : 1 }}
-                                    className={cn(
-                                        "p-4 rounded-xl border text-center transition-all",
-                                        isEarned
-                                            ? "border-purple-500/50 bg-purple-500/10"
-                                            : "border-slate-700 bg-slate-800/30 opacity-40 grayscale"
-                                    )}
-                                >
-                                    <div className="text-4xl mb-2">{badge.icon}</div>
-                                    <div className={cn(
-                                        "text-sm font-medium mb-1",
-                                        isEarned ? "text-white" : "text-slate-500"
-                                    )}>
-                                        {badge.name}
-                                    </div>
-                                    <div className="text-xs text-slate-500">{badge.description}</div>
-                                </motion.div>
-                            );
-                        })}
+                    <div className="p-6">
+                        <h2 className="text-sm font-bold text-yellow-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
+                            <Award className="w-4 h-4" />
+                            ACHIEVEMENTS
+                            <span className="text-[10px] font-normal text-slate-500 font-mono">
+                                ({earnedBadges.length}/{badgeDefinitions.length})
+                            </span>
+                        </h2>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {badgeDefinitions.map((badge) => {
+                                const isEarned = earnedBadges.includes(badge);
+                                return (
+                                    <motion.div
+                                        key={badge.id}
+                                        whileHover={{ scale: isEarned ? 1.02 : 1 }}
+                                        className={cn(
+                                            "relative p-4 text-center transition-all",
+                                            isEarned
+                                                ? "bg-yellow-400/5 border border-yellow-400/30"
+                                                : "bg-slate-900/50 border border-slate-700 opacity-40 grayscale"
+                                        )}
+                                    >
+                                        <div className={cn(
+                                            "absolute top-0 left-0 w-1.5 h-1.5 border-t border-l",
+                                            isEarned ? "border-yellow-400" : "border-slate-600"
+                                        )} />
+                                        <div className={cn(
+                                            "absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r",
+                                            isEarned ? "border-yellow-400" : "border-slate-600"
+                                        )} />
+
+                                        <div className="text-3xl mb-2">{badge.icon}</div>
+                                        <div className={cn(
+                                            "text-[11px] font-bold mb-1 uppercase tracking-wide",
+                                            isEarned ? "text-cyan-50" : "text-slate-500"
+                                        )}>
+                                            {badge.name}
+                                        </div>
+                                        <div className="text-[10px] text-slate-500 font-mono">{badge.description}</div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </motion.div>
             </div>

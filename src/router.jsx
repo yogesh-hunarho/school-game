@@ -7,6 +7,7 @@ import NotFound from "./view/not-found";
 import Signup from "./view/sign-up";
 import MainLayout from "./layouts/main";
 import ProfilePage from "./view/profile";
+import CoursesLayout from "./layouts/courses";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <MainLayout />
+            },
+            {
+                path: '/courses',
+                element: <CoursesLayout />
             },
             {
                 path: '/profile',

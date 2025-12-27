@@ -348,7 +348,7 @@ export const useLMSStore = create(
 
             // Animation Actions
             triggerConfetti: (moduleId) => set({ showConfetti: true, lastCompletedModuleId: moduleId }),
-            hideConfetti: () => set({ showConfetti: false }),
+            hideConfetti: () => set({ showConfetti: false, lastCompletedModuleId: null }),
             triggerStarAnimation: (fromPosition, xpAmount) => set({
                 animatingStarFrom: fromPosition,
                 pendingXPGain: xpAmount,

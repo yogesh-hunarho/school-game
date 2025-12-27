@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Lock, Star, Zap, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
@@ -16,7 +14,6 @@ interface Module {
 
 interface CyberpunkCardProps {
     module: Module;
-    status: string;
     isLocked: boolean;
     isCurrent: boolean;
     isCompleted: boolean;
@@ -34,137 +31,205 @@ export function CyberpunkCard({
     progress,
     handleModuleSelect
 }: CyberpunkCardProps) {
-    // Determine status indicator
-    const getStatusConfig = () => {
-        if (isCompleted) return { text: "COMPLETE", color: "text-chart-4", bgColor: "bg-chart-4", dotColor: "bg-chart-4 shadow-[0_0_8px_rgba(0,255,128,0.8)]" };
-        if (isActive) return { text: "ACTIVE", color: "text-primary", bgColor: "bg-primary", dotColor: "bg-primary shadow-[0_0_8px_rgba(0,217,255,0.8)]" };
-        if (isCurrent) return { text: "READY", color: "text-primary", bgColor: "bg-primary", dotColor: "bg-primary shadow-[0_0_8px_rgba(0,217,255,0.8)] animate-pulse" };
-        if (isLocked) return { text: "LOCKED", color: "text-muted-foreground", bgColor: "bg-muted", dotColor: "bg-muted-foreground" };
-        return { text: "AVAILABLE", color: "text-muted-foreground", bgColor: "bg-muted", dotColor: "bg-muted-foreground" };
+    // Color scheme based on state
+    const getColors = () => {
+        if (isCompleted) return {
+            border: "border-emerald-400",
+            text: "text-emerald-400",
+            bg: "bg-emerald-400",
+            glow: "shadow-[0_0_5px_rgba(52,211,153,0.3)]"
+        };
+        if (isActive) return {
+            border: "border-yellow-400",
+            text: "text-yellow-400",
+            bg: "bg-yellow-400",
+            glow: "shadow-[0_0_5px_rgba(250,204,21,0.4)]"
+        };
+        if (isCurrent) return {
+            border: "border-cyan-400",
+            text: "text-cyan-400",
+            bg: "bg-cyan-400",
+            glow: "shadow-[0_0_5px_rgba(34,211,238,0.3)]"
+        };
+        return {
+            border: "border-cyan-400/40",
+            text: "text-cyan-400/70",
+            bg: "bg-cyan-400/40",
+            glow: ""
+        };
     };
 
-    const statusConfig = getStatusConfig();
+    const colors = getColors();
+
+    const getStatusText = () => {
+        if (isCompleted) return "COMPLETE";
+        if (isActive) return "ACTIVE";
+        if (isCurrent) return "READY";
+        if (isLocked) return "LOCKED";
+        return "STANDBY";
+    };
 
     return (
         <motion.div
-            whileTap={!isLocked ? { scale: 0.98 } : {}}
-            onClick={() => !isLocked && handleModuleSelect(module.id)}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => handleModuleSelect(module.id)}
             className={cn(
-                "cursor-pointer transition-all duration-300 cursor-target",
-                isLocked && "opacity-60 grayscale cursor-not-allowed"
+                "cursor-pointer transition-all duration-300 group",
+                isLocked && "opacity-80"
             )}
         >
-            <Card
-                className={cn(
-                    "relative w-full overflow-hidden border-primary/50 transition-all duration-500",
-                    isActive && "border-primary shadow-[0_0_10px_rgba(0,217,255,0.3)]",
-                    isCompleted && "border-chart-4/50 shadow-[0_0_4px_rgba(0,255,128,0.2)]"
-                )}
-            >
-                <CardHeader className="relative z-10 border-b border-primary/30 pb-4">
-                    <div className="flex items-center justify-between">
+            {/* Main Card Container */}
+            <div className={cn(
+                "relative bg-slate-950/95 transition-all duration-300",
+                colors.glow
+            )}>
+                <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
+
+                <div className={cn("absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 transition-colors", colors.border)} />
+                <div className={cn("absolute top-0 left-4 w-3 h-[2px] transition-colors", colors.bg)} />
+                <div className={cn("absolute top-4 left-0 w-[2px] h-3 transition-colors", colors.bg)} />
+
+                <div className={cn("absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 transition-colors", colors.border)} />
+                <div className={cn("absolute top-0 right-4 w-3 h-[2px] transition-colors", colors.bg)} />
+                <div className={cn("absolute top-4 right-0 w-[2px] h-3 transition-colors", colors.bg)} />
+
+                <div className={cn("absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 transition-colors", colors.border)} />
+                <div className={cn("absolute bottom-0 left-4 w-3 h-[2px] transition-colors", colors.bg)} />
+                <div className={cn("absolute bottom-4 left-0 w-[2px] h-3 transition-colors", colors.bg)} />
+
+                <div className={cn("absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 transition-colors", colors.border)} />
+                <div className={cn("absolute bottom-0 right-4 w-3 h-[2px] transition-colors", colors.bg)} />
+                <div className={cn("absolute bottom-4 right-0 w-[2px] h-3 transition-colors", colors.bg)} />
+
+                <div className={cn(
+                    "absolute inset-0 border transition-colors",
+                    isActive ? "border-yellow-400/60" : isCompleted ? "border-emerald-400/60" : "border-cyan-400/20"
+                )} />
+
+                <div className="relative z-10 p-4">
+                    <div className="flex items-start justify-between mb-3">
+                        <div className="relative">
+                            <div className={cn(
+                                "w-12 h-12 flex items-center justify-center text-2xl bg-slate-900/80 transition-colors",
+                                isActive ? "border border-yellow-400/50" : isCompleted ? "border border-emerald-400/50" : "border border-cyan-400/30"
+                            )}>
+                                {isLocked ? <Lock className="w-5 h-5 text-slate-500" /> : module.icon}
+                            </div>
+                            <div className={cn("absolute -top-0.5 -left-0.5 w-2 h-2 border-t border-l", colors.border)} />
+                            <div className={cn("absolute -bottom-0.5 -right-0.5 w-2 h-2 border-b border-r", colors.border)} />
+                        </div>
                         <div className={cn(
-                            "w-12 h-12 rounded-lg flex items-center justify-center text-2xl border transition-all",
-                            isCompleted ? "bg-chart-4/20 border-chart-4/50" :
-                                isActive ? "bg-primary/20 border-primary/50" :
-                                    "bg-muted border-border"
+                            "px-2 py-1 text-[10px] font-bold tracking-widest uppercase border",
+                            isActive ? "border-yellow-400 text-yellow-400 bg-yellow-400/10" :
+                                isCompleted ? "border-emerald-400 text-emerald-400 bg-emerald-400/10" :
+                                    isCurrent ? "border-cyan-400 text-cyan-400 bg-cyan-400/10" :
+                                        "border-slate-600 text-slate-500 bg-slate-800/50"
                         )}>
-                            {isLocked ? <Lock className="w-5 h-5 text-muted-foreground" /> : module.icon}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <div className={cn("h-2 w-2 rounded-full", statusConfig.dotColor)} />
-                            <span className={cn("font-mono text-xs", statusConfig.color)}>{statusConfig.text}</span>
+                            {getStatusText()}
                         </div>
                     </div>
-                    <CardTitle className="font-sans text-lg font-bold tracking-wide text-foreground mt-3 line-clamp-2">
+
+                    <h3 className={cn(
+                        "font-bold text-base uppercase tracking-wide mb-1 line-clamp-2 transition-colors",
+                        isActive ? "text-yellow-400" : isCompleted ? "text-emerald-400" : "text-cyan-50"
+                    )}>
                         {module.name}
-                    </CardTitle>
-                </CardHeader>
+                    </h3>
 
-                <CardContent className="relative z-10 space-y-4 pt-4">
-                    {/* Stats Row */}
-                    <div className="grid grid-cols-1 gap-3">
-                        <div className="group relative rounded-lg border border-primary/30 bg-muted/50 p-3 backdrop-blur-sm transition-all hover:border-primary hover:bg-muted/70">
-                            <div className="absolute inset-0 rounded-lg bg-primary/5 opacity-0 transition-opacity group-hover:opacity-100" />
-                            <div className="relative flex items-center gap-2">
-                                <div className="rounded-full bg-primary/20 p-1.5">
-                                    <Star className="h-4 w-4 text-primary" />
-                                </div>
+                    <p className="font-mono text-[10px] text-slate-500 mb-4 tracking-wider">
+                        ID: {module.id.toUpperCase().replace(/-/g, '_')}
+                    </p>
+                    <div className="relative h-px mb-4">
+                        <div className={cn("absolute inset-0 transition-colors", isActive ? "bg-yellow-400/30" : "bg-cyan-400/20")} />
+                        <div className={cn("absolute left-0 top-0 w-8 h-full transition-colors", colors.bg, "opacity-60")} />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                        <div className="relative p-2 bg-slate-900/60 border border-cyan-400/20">
+                            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400/50" />
+                            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400/50" />
+                            <div className="flex items-center gap-2">
+                                <Star className="w-3.5 h-3.5 text-yellow-400" />
                                 <div>
-                                    <p className="font-mono text-[10px] text-muted-foreground">XP REWARD</p>
-                                    <p className="font-sans text-sm font-bold text-foreground">{module.totalStars}00</p>
+                                    <p className="font-bold text-[9px] text-slate-500 uppercase">XP</p>
+                                    <p className="font-bold text-sm text-cyan-50">{module.totalStars}00</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="group relative rounded-lg border border-secondary/30 bg-muted/50 p-3 backdrop-blur-sm transition-all hover:border-secondary hover:bg-muted/70">
-                            <div className="absolute inset-0 rounded-lg bg-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
-                            <div className="relative flex items-center gap-2">
-                                <div className="rounded-full bg-secondary/20 p-1.5">
-                                    <Zap className="h-4 w-4 text-secondary" />
-                                </div>
+                        <div className="relative p-2 bg-slate-900/60 border border-cyan-400/20">
+                            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400/50" />
+                            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400/50" />
+                            <div className="flex items-center gap-2">
+                                <Zap className="w-3.5 h-3.5 text-cyan-400" />
                                 <div>
-                                    <p className="font-mono text-[10px] text-muted-foreground">SEQUENCES</p>
-                                    <p className="font-sans text-sm font-bold text-foreground">{module.videos + module.quizzes}</p>
+                                    <p className="font-bold text-[9px] text-slate-500 uppercase">SEQ</p>
+                                    <p className="font-bold text-sm text-cyan-50">{module.videos + module.quizzes}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="space-y-2 rounded-lg border border-primary/30 bg-muted/30 p-3 backdrop-blur-sm">
-                        <div className="flex items-center justify-between">
-                            <span className="font-mono text-xs text-muted-foreground">SYNC PROGRESS</span>
+                    <div className="mb-4">
+                        <div className="flex items-center justify-between mb-1.5">
+                            <span className="font-mono text-[10px] text-slate-500 uppercase tracking-wider">DATA SYNC</span>
                             <span className={cn(
-                                "font-mono text-xs",
-                                progress === 100 ? "text-chart-4" : "text-primary"
+                                "font-mono text-xs font-bold",
+                                progress === 100 ? "text-emerald-400" : isActive ? "text-yellow-400" : "text-cyan-400"
                             )}>{progress}%</span>
                         </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-input">
+                        <div className="relative h-1.5 bg-slate-800 overflow-hidden">
+                            <div className="absolute inset-0 flex gap-px">
+                                {Array.from({ length: 20 }).map((_, i) => (
+                                    <div key={i} className="flex-1 bg-slate-700/50" />
+                                ))}
+                            </div>
                             <div
                                 className={cn(
-                                    "h-full rounded-full transition-all duration-1000",
-                                    progress === 100
-                                        ? "bg-linear-to-r from-chart-4 via-chart-4 to-chart-4 shadow-[0_0_10px_rgba(0,255,128,0.5)]"
-                                        : "bg-linear-to-r from-primary via-secondary to-primary shadow-[0_0_10px_rgba(0,217,255,0.5)]"
+                                    "absolute top-0 left-0 h-full transition-all duration-500",
+                                    progress === 100 ? "bg-emerald-400" : isActive ? "bg-yellow-400" : "bg-cyan-400"
+                                )}
+                                style={{ width: `${progress}%` }}
+                            />
+                            <div
+                                className={cn(
+                                    "absolute top-0 left-0 h-full blur-sm transition-all duration-500",
+                                    progress === 100 ? "bg-emerald-400/50" : isActive ? "bg-yellow-400/50" : "bg-cyan-400/50"
                                 )}
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
                     </div>
 
-                    {/* Action Button */}
                     {isLocked ? (
-                        <Button
-                            variant="outline"
-                            className="w-full font-sans font-bold tracking-wider bg-muted/50 border-border text-muted-foreground cursor-not-allowed"
+                        <button
                             disabled
+                            className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-slate-800/80 border border-slate-700 text-slate-500 cursor-not-allowed"
                         >
-                            <Lock className="w-4 h-4 mr-2" />
+                            <Lock className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" />
                             ENCRYPTED
-                        </Button>
+                        </button>
                     ) : isCompleted ? (
-                        <Button
-                            variant="outline"
-                            className="w-full font-sans font-bold tracking-wider border-chart-4 text-chart-4 shadow-[0_0_4px_rgba(0,255,128,0.2)] transition-all hover:bg-chart-4/10 hover:shadow-[0_0_10px_rgba(0,255,128,0.4)] bg-transparent"
-                        >
-                            <CheckCircle2 className="w-4 h-4 mr-2" />
-                            REVIEW LOGS
-                        </Button>
+                        <button className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-emerald-400/10 border border-emerald-400 text-emerald-400 hover:bg-emerald-400/20 transition-colors">
+                            <CheckCircle2 className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" />
+                            REVIEW
+                        </button>
                     ) : isActive ? (
-                        <Button className="w-full font-sans font-bold tracking-wider shadow-[0_0_20px_rgba(0,217,255,0.3)] transition-all hover:shadow-[0_0_30px_rgba(0,217,255,0.5)]">
+                        <button className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-yellow-400 text-slate-900 hover:bg-yellow-300 transition-colors shadow-[0_0_20px_rgba(250,204,21,0.3)]">
                             INITIALIZE
-                        </Button>
+                        </button>
                     ) : (
-                        <Button
-                            variant="outline"
-                            className="w-full font-sans font-bold tracking-wider border-primary text-primary shadow-[0_0_20px_rgba(0,217,255,0.2)] transition-all hover:bg-primary/10 hover:shadow-[0_0_30px_rgba(0,217,255,0.4)] bg-transparent"
-                        >
+                        <button className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-cyan-400/10 border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20 hover:border-cyan-400 transition-colors">
                             ACCESS
-                        </Button>
+                        </button>
                     )}
-                </CardContent>
-            </Card>
+                </div>
+
+                <div className={cn(
+                    "absolute bottom-0 left-4 right-4 h-0.5 transition-colors",
+                    isActive ? "bg-yellow-400" : isCompleted ? "bg-emerald-400" : "bg-cyan-400/30"
+                )} />
+            </div>
         </motion.div>
     )
 }
