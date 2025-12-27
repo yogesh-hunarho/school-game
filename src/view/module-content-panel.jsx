@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils";
-import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle } from "lucide-react";
+import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
 import useSound from "@/hook/useSound";
 
+import { useState } from "react";
+
 export const ModuleContentPanel = () => {
+    const [shakingId, setShakingId] = useState(null);
     const {
         player,
         getCurrentModuleContent,
@@ -15,7 +18,7 @@ export const ModuleContentPanel = () => {
         closeContentPanel,
         getModuleProgress,
     } = useLMSStore();
-    const { playClick } = useSound();
+    const { playSound, playClick } = useSound();
 
     const content = getCurrentModuleContent();
     const moduleId = player.currentModuleId;
@@ -43,6 +46,18 @@ export const ModuleContentPanel = () => {
 
     const currentModule = moduleNames[moduleId] || { name: "Module", icon: "📚", description: "Learn something new" };
 
+    const handleItemClick = (e, id, locked, action) => {
+        e.stopPropagation();
+        if (locked) {
+            setShakingId(id);
+            playSound("disabled");
+            setTimeout(() => setShakingId(null), 500);
+            return;
+        }
+        playClick();
+        action();
+    };
+
     return (
         <div className="relative bg-slate-950/95 shadow-xl border">
             <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
@@ -68,7 +83,7 @@ export const ModuleContentPanel = () => {
                         <div className="flex items-center gap-2">
                             <h2 className="font-bold text-cyan-50 uppercase tracking-wide">{currentModule.name}</h2>
                             {isLocked && (
-                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border border-yellow-500 text-yellow-400 bg-yellow-500/10">
+                                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border border-yellow-500 text-yellow-400 ">
                                     <Lock className="h-2.5 w-2.5 inline mr-1" />
                                     LOCKED
                                 </span>
@@ -158,10 +173,10 @@ export const ModuleContentPanel = () => {
                                     return (
                                         <button
                                             key={video.id}
-                                            onClick={() => !isLocked && openVideoModal(video)}
-                                            disabled={isLocked}
+                                            onClick={(e) => handleItemClick(e, video.id, isLocked, () => openVideoModal(video))}
                                             className={cn(
-                                                "relative w-full flex items-center gap-3 p-3 text-left transition-all cursor-target group",
+                                                "relative w-full flex items-center gap-3 p-3 text-left transition-all cursor-target group overflow-hidden",
+                                                shakingId === video.id && "animate-shake",
                                                 isLocked
                                                     ? "bg-slate-900/40 border border-slate-800 opacity-60 hover:border-cyan-400/30 cursor-not-allowed"
                                                     : isWatched
@@ -181,12 +196,13 @@ export const ModuleContentPanel = () => {
 
                                             {/* Number/Status */}
                                             <div className={cn(
-                                                "flex h-8 w-8 items-center justify-center text-sm font-bold",
+                                                "relative z-10 flex h-8 w-8 items-center justify-center text-sm font-bold transition-all duration-500",
+                                                !isLocked && "group-hover:scale-150 group-hover:-translate-y-6 group-hover:-translate-x-2.5",
                                                 isLocked
-                                                    ? "bg-slate-800 text-slate-500"
+                                                    ? "text-slate-500"
                                                     : isWatched
-                                                        ? "bg-emerald-500 text-slate-900"
-                                                        : "bg-cyan-400/20 text-cyan-400"
+                                                        ? "text-emerald-500"
+                                                        : "text-cyan-400"
                                             )}>
                                                 {isLocked ? (
                                                     <Lock className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" />
@@ -246,47 +262,58 @@ export const ModuleContentPanel = () => {
                                     return (
                                         <button
                                             key={quiz.id}
-                                            onClick={() => !isLocked && openQuizModal(quiz)}
-                                            disabled={isLocked}
-                                            className={cn(
-                                                "relative w-full flex items-center gap-3 p-3 text-left transition-all cursor-target group",
-                                                isLocked
-                                                    ? "bg-slate-900/40 border border-slate-800 opacity-60 hover:border-yellow-400/30"
-                                                    : isCompleted
-                                                        ? "bg-yellow-500/10 border border-yellow-400/30 hover:border-yellow-400/50"
-                                                        : "bg-slate-900/60 border border-cyan-400/20 hover:border-yellow-400/50"
+                                            onClick={(e) => handleItemClick(e, quiz.id, isLocked, () => openQuizModal(quiz))}
+                                            className={cn("relative w-full cursor-pointer border border-yellow-400/20 hover:border-yellow-400/50 overflow-hidden flex items-center gap-3 p-3 text-left transition-all duration-500 cursor-target group",
+                                                shakingId === quiz.id && "animate-shake",
+                                                isLocked && "cursor-not-allowed opacity-60"
+
                                             )}
                                         >
+                                            {!isLocked && (
+                                                <div
+                                                    className={cn(
+                                                        "absolute top-0 left-0 w-full h-2 transition-all duration-500",
+                                                        isCompleted
+                                                            ? "bg-linear-gradient-to-r from-yellow-400 to-orange-500"
+                                                            : "bg-linear-gradient-to-r from-cyan-400 to-yellow-400",
+                                                        "group-hover:h-16 group-hover:rounded-b-xl"
+                                                    )}
+                                                />
+                                            )}
+
                                             {/* Corner accents */}
                                             <div className={cn(
                                                 "absolute top-0 left-0 w-2 h-2 border-t border-l transition-colors",
-                                                isCompleted ? "border-yellow-400" : "border-cyan-400/50 group-hover:border-yellow-400"
+                                                isCompleted ? "border-yellow-400" : "border-yellow-400/50 group-hover:border-yellow-400"
                                             )} />
                                             <div className={cn(
                                                 "absolute bottom-0 right-0 w-2 h-2 border-b border-r transition-colors",
-                                                isCompleted ? "border-yellow-400" : "border-cyan-400/50 group-hover:border-yellow-400"
+                                                isCompleted ? "border-yellow-400" : "border-yellow-400/50 group-hover:border-yellow-400"
                                             )} />
 
                                             {/* Icon */}
-                                            <div className={cn(
-                                                "flex h-8 w-8 items-center justify-center text-lg",
-                                                isLocked
-                                                    ? "bg-slate-800"
-                                                    : isCompleted
-                                                        ? "bg-yellow-500 text-slate-900"
-                                                        : "bg-yellow-400/20"
-                                            )}>
+                                            <div
+                                                className={cn(
+                                                    "relative z-10 flex h-8 w-8 items-center justify-center bg-yellow-500 group-hover:bg-transparent text-black group-hover:text-yellow-500 text-lg rounded-full transition-all duration-500",
+                                                    !isLocked && "group-hover:scale-150 group-hover:-translate-y-6 group-hover:-translate-x-3",
+                                                    isLocked
+                                                        ? "bg-yellow-800"
+                                                        : isCompleted
+                                                            ? "text-black group-hover:text-white "
+                                                            : "text-black"
+                                                )}
+                                            >
                                                 {isLocked ? (
                                                     <Lock className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" />
                                                 ) : isCompleted ? (
                                                     <CheckCircle2 className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" />
                                                 ) : (
-                                                    "📝"
+                                                    <BookCheck className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" />
                                                 )}
                                             </div>
 
                                             {/* Info */}
-                                            <div className="flex-1">
+                                            <div className="relative z-10 flex-1 transition-all duration-500 group-hover:-translate-y-2">
                                                 <p className={cn(
                                                     "text-sm font-medium uppercase tracking-wide",
                                                     isLocked ? "text-slate-500" : isCompleted ? "text-yellow-400" : "text-cyan-50"
@@ -307,10 +334,13 @@ export const ModuleContentPanel = () => {
                                             {isLocked ? (
                                                 <Lock className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" />
                                             ) : (
-                                                <ChevronRight className={cn(
-                                                    "h-8 w-8 border border-cyan-400/20 p-2 rounded-full transition-colors",
-                                                    isCompleted ? "text-yellow-400" : "text-slate-500 group-hover:text-yellow-400"
-                                                )} />
+                                                <ChevronRight
+                                                    className={cn(
+                                                        "h-8 w-8 border border-cyan-400/20 p-2 rounded-full transition-all duration-500",
+                                                        !isLocked && "group-hover:translate-x-1 group-hover:text-yellow-400",
+                                                        isCompleted ? "text-yellow-400" : "text-slate-500"
+                                                    )}
+                                                />
                                             )}
                                         </button>
                                     );
@@ -330,9 +360,10 @@ export const ModuleContentPanel = () => {
                             {content.assessments.map((assessment) => (
                                 <button
                                     key={assessment.id}
-                                    disabled={isLocked}
+                                    onClick={(e) => handleItemClick(e, assessment.id, isLocked, () => { })}
                                     className={cn(
-                                        "relative w-full flex items-center gap-3 p-3 text-left transition-all cursor-target group",
+                                        "relative w-full flex items-center gap-3 p-3 text-left transition-all cursor-target group overflow-hidden",
+                                        shakingId === assessment.id && "animate-shake",
                                         isLocked
                                             ? "cursor-not-allowed opacity-50 border border-cyan-400/20"
                                             : "bg-slate-900/60 border border-cyan-400/20 hover:border-emerald-400/50"
@@ -342,7 +373,8 @@ export const ModuleContentPanel = () => {
                                     <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400/50 group-hover:border-emerald-400" />
 
                                     <div className={cn(
-                                        "flex h-8 w-8 items-center justify-center text-lg",
+                                        "relative z-10 flex h-8 w-8 items-center justify-center text-lg transition-all duration-500",
+                                        !isLocked && "group-hover:scale-150 group-hover:-translate-y-6 group-hover:-translate-x-4",
                                         isLocked ? "bg-slate-800" : "bg-emerald-400/20"
                                     )}>
                                         {isLocked ? <Lock className="h-8 w-8 border border-cyan-400/20 p-2 rounded-full" /> : "🏆"}

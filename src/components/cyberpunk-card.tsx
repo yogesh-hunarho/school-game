@@ -106,14 +106,14 @@ export function CyberpunkCard({
                     isActive ? "border-yellow-400/60" : isCompleted ? "border-emerald-400/60" : "border-cyan-400/20"
                 )} />
 
-                <div className="relative z-10 p-4">
+                <div className="relative z-10 p-4 group overflow-hidden">
                     <div className="flex items-start justify-between mb-3">
-                        <div className="relative">
+                        <div className="relative group-hover:scale-150 group-hover:-translate-y-4 group-hover:-translate-x-3 duration-500">
                             <div className={cn(
                                 "w-12 h-12 flex items-center justify-center text-2xl bg-slate-900/80 transition-colors",
                                 isActive ? "border border-yellow-400/50" : isCompleted ? "border border-emerald-400/50" : "border border-cyan-400/30"
                             )}>
-                                {isLocked ? <Lock className="w-5 h-5 text-slate-500" /> : module.icon}
+                                {isLocked ? <Lock className="w-5 h-5 text-slate-500 " /> : module.icon}
                             </div>
                             <div className={cn("absolute -top-0.5 -left-0.5 w-2 h-2 border-t border-l", colors.border)} />
                             <div className={cn("absolute -bottom-0.5 -right-0.5 w-2 h-2 border-b border-r", colors.border)} />
@@ -150,7 +150,7 @@ export function CyberpunkCard({
                             <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400/50" />
                             <div className="flex items-center gap-2">
                                 <Star className="w-3.5 h-3.5 text-yellow-400" />
-                                <div>
+                                <div className="font-mono">
                                     <p className="font-bold text-[9px] text-slate-500 uppercase">XP</p>
                                     <p className="font-bold text-sm text-cyan-50">{module.totalStars}00</p>
                                 </div>
@@ -162,7 +162,7 @@ export function CyberpunkCard({
                             <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400/50" />
                             <div className="flex items-center gap-2">
                                 <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                                <div>
+                                <div className="font-mono">
                                     <p className="font-bold text-[9px] text-slate-500 uppercase">SEQ</p>
                                     <p className="font-bold text-sm text-cyan-50">{module.videos + module.quizzes}</p>
                                 </div>

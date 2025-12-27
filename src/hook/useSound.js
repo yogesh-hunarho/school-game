@@ -1,47 +1,51 @@
 import { useCallback, useRef, useEffect } from "react";
+import { useLMSStore } from "@/store/lms-store";
 
-// Audio paths
-const CLICK_SOUND = "/audio/click.wav";
-const CLOSE_SOUND = "/audio/close.wav";
+// Audio paths configuration
+const SOUNDS = {
+    click: "/audio/click.wav",
+    close: "/audio/close.wav",
+    disabled: "/audio/disabled.mp3",
+    success: "/audio/click.wav",
+};
 
 /**
  * Custom hook for playing UI sounds
- * @returns {{ playClick: () => void, playClose: () => void }}
+ * Respects the global soundEnabled setting from the store
+ * @returns {{ playSound: (type: keyof typeof SOUNDS) => void, playClick: () => void, playClose: () => void }}
  */
 export function useSound() {
-    const clickAudioRef = useRef(null);
-    const closeAudioRef = useRef(null);
+    const soundEnabled = useLMSStore((state) => state.soundEnabled);
+    const audioRefs = useRef({});
 
     useEffect(() => {
         // Preload audio files
-        clickAudioRef.current = new Audio(CLICK_SOUND);
-        closeAudioRef.current = new Audio(CLOSE_SOUND);
-
-        // Set volume
-        clickAudioRef.current.volume = 0.3;
-        closeAudioRef.current.volume = 0.3;
+        Object.keys(SOUNDS).forEach((key) => {
+            const audio = new Audio(SOUNDS[key]);
+            audio.volume = 0.3;
+            audioRefs.current[key] = audio;
+        });
 
         return () => {
-            clickAudioRef.current = null;
-            closeAudioRef.current = null;
+            audioRefs.current = {};
         };
     }, []);
 
-    const playClick = useCallback(() => {
-        if (clickAudioRef.current) {
-            clickAudioRef.current.currentTime = 0;
-            clickAudioRef.current.play().catch(() => { });
-        }
-    }, []);
+    const playSound = useCallback((type) => {
+        if (!soundEnabled) return;
 
-    const playClose = useCallback(() => {
-        if (closeAudioRef.current) {
-            closeAudioRef.current.currentTime = 0;
-            closeAudioRef.current.play().catch(() => { });
+        const audio = audioRefs.current[type];
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play().catch(() => { });
         }
-    }, []);
+    }, [soundEnabled]);
 
-    return { playClick, playClose };
+    // Convenience wrappers for backward compatibility
+    const playClick = useCallback(() => playSound('click'), [playSound]);
+    const playClose = useCallback(() => playSound('close'), [playSound]);
+
+    return { playSound, playClick, playClose };
 }
 
 export default useSound;

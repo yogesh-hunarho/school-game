@@ -63,7 +63,7 @@ export default function ProtectedLayout() {
 
                 <Header />
 
-                <main className="relative flex-1 z-10 pt-12">
+                <main className="relative flex-1 z-10 pt-12 mb-16">
                     <Outlet />
                 </main>
 
@@ -73,7 +73,7 @@ export default function ProtectedLayout() {
                     </div>
                 )}
 
-                {/* <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
                     <GlassSurface
                         width={dockWidth}
                         borderRadius={20}
@@ -90,7 +90,7 @@ export default function ProtectedLayout() {
                             onHoverChange={setIsDockHovered}
                         />
                     </GlassSurface>
-                </div> */}
+                </div>
 
                 <ConfettiEffect />
                 <ModuleUnlockAnimation />

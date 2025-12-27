@@ -131,6 +131,10 @@
   html {
     @apply font-sans;
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @keyframes pathPulse {
@@ -288,6 +292,26 @@
   100% {
     background-position: 250% 0;
   }
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-shake {
+  animation: shake 0.2s ease-in-out 0s 2;
 }
 
 @layer utilities {

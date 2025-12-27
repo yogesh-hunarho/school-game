@@ -215,6 +215,10 @@ export const useLMSStore = create(
             pendingXPGain: 0,
             lastCompletedModuleId: null,
 
+            // Settings
+            soundEnabled: true,
+            toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+
             // Get module content
             getModuleContent: (moduleId) => moduleContent[moduleId] || { videos: [], quizzes: [] },
 
