@@ -1,0 +1,179 @@
+{
+    "bottom": {
+        "thumbnail": "bottom.jpg",
+        "files": [
+            "Bottom.001.glb",
+            "Bottom.002.glb",
+            "Bottom.003.glb"
+        ]
+    },
+    "bow": {
+        "thumbnail": null,
+        "files": [
+            "Bow.001.glb",
+            "Bow.002.glb"
+        ]
+    },
+    "earring": {
+        "thumbnail": null,
+        "files": [
+            "Earring.001.glb",
+            "Earring.002.glb",
+            "Earring.003.glb",
+            "Earring.004.glb",
+            "Earring.005.glb",
+            "Earring.006.glb"
+        ]
+    },
+    "eyebrow": {
+        "thumbnail": "eyebrows.jpg",
+        "files": [
+            "EyeBrow.001.glb",
+            "EyeBrow.002.glb",
+            "EyeBrow.003.glb",
+            "EyeBrow.004.glb",
+            "EyeBrow.005.glb",
+            "EyeBrow.006.glb",
+            "EyeBrow.007.glb",
+            "EyeBrow.008.glb",
+            "EyeBrow.009.glb",
+            "EyeBrow.010.glb"
+        ]
+    },
+    "eyes": {
+        "thumbnail": "eyes.jpg",
+        "files": [
+            "Eyes.001.glb",
+            "Eyes.002.glb",
+            "Eyes.003.glb",
+            "Eyes.004.glb",
+            "Eyes.005.glb",
+            "Eyes.006.glb",
+            "Eyes.007.glb",
+            "Eyes.008.glb",
+            "Eyes.009.glb",
+            "Eyes.010.glb",
+            "Eyes.011.glb",
+            "Eyes.012.glb"
+        ]
+    },
+    "face": {
+        "thumbnail": null,
+        "files": [
+            "Face.001.glb",
+            "Face.002.glb",
+            "Face.003.glb",
+            "Face.004.glb",
+            "Face.005.glb",
+            "Face.006.glb",
+            "Face.007.glb"
+        ]
+    },
+    "facialHair": {
+        "thumbnail": null,
+        "files": [
+            "FacialHair.001.glb",
+            "FacialHair.002.glb",
+            "FacialHair.003.glb",
+            "FacialHair.004.glb",
+            "FacialHair.005.glb",
+            "FacialHair.006.glb",
+            "FacialHair.007.glb"
+        ]
+    },
+    "glasses": {
+        "thumbnail": null,
+        "files": [
+            "Glasses.001.glb",
+            "Glasses.002.glb",
+            "Glasses.003.glb",
+            "Glasses.004.glb"
+        ]
+    },
+    "hair": {
+        "thumbnail": "hair.jpg",
+        "files": [
+            "Hair.001.glb",
+            "Hair.002.glb",
+            "Hair.003.glb",
+            "Hair.004.glb",
+            "Hair.005.glb",
+            "Hair.006.glb",
+            "Hair.007.glb",
+            "Hair.008.glb",
+            "Hair.009.glb",
+            "Hair.010.glb",
+            "Hair.011.glb"
+        ]
+    },
+    "hat": {
+        "thumbnail": null,
+        "files": [
+            "Hat.001.glb",
+            "Hat.002.glb",
+            "Hat.003.glb",
+            "Hat.004.glb",
+            "Hat.005.glb",
+            "Hat.006.glb",
+            "Hat.007.glb"
+        ]
+    },
+    "head": {
+        "thumbnail": "head.jpg",
+        "files": [
+            "Head.001.glb",
+            "Head.002.glb",
+            "Head.003.glb",
+            "Head.004.glb"
+        ]
+    },
+    "nose": {
+        "thumbnail": "nose.jpg",
+        "files": [
+            "Nose.001.glb",
+            "Nose.002.glb",
+            "Nose.003.glb",
+            "Nose.004.glb"
+        ]
+    },
+    "outfit": {
+        "thumbnail": null,
+        "files": [
+            "Outfit.001.glb",
+            "Outfit.002.glb",
+            "Outfit.003.glb",
+            "Outfit.004.glb"
+        ]
+    },
+    "shoes": {
+        "thumbnail": "shoes.jpg",
+        "files": [
+            "Shoes.001.glb",
+            "Shoes.002.glb",
+            "Shoes.003.glb"
+        ]
+    },
+    "top": {
+        "thumbnail": "top.jpg",
+        "files": [
+            "Top.001.glb",
+            "Top.002.glb",
+            "Top.003.glb"
+        ]
+    },
+    "special": {
+        "thumbnail": null,
+        "files": [
+            "PumpkinHead.glb",
+            "WawaDress.glb",
+            "NakedFullBody.glb"
+        ]
+    },
+    "animations": {
+        "thumbnail": null,
+        "files": [
+            "Idle.fbx",
+            "FullBody.fbx"
+        ]
+    }
+}
