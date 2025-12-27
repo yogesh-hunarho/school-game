@@ -2,6 +2,7 @@ import { Lock, Star, Zap, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { type ReactNode } from "react"
+import useSound from "@/hook/useSound";
 
 interface Module {
     id: string;
@@ -31,6 +32,7 @@ export function CyberpunkCard({
     progress,
     handleModuleSelect
 }: CyberpunkCardProps) {
+    const { playSound } = useSound()
     // Color scheme based on state
     const getColors = () => {
         if (isCompleted) return {
@@ -69,10 +71,19 @@ export function CyberpunkCard({
         return "STANDBY";
     };
 
+    const playaudioForModuleSelect = (id: string) => {
+        if (isLocked) {
+            playSound("disabled");
+        } else {
+            playSound("click");
+        }
+        handleModuleSelect(id)
+    }
+
     return (
         <motion.div
             whileTap={{ scale: 0.98 }}
-            onClick={() => handleModuleSelect(module.id)}
+            onClick={() => playaudioForModuleSelect(module.id)}
             className={cn(
                 "cursor-pointer transition-all duration-300 group",
                 isLocked && "opacity-80"

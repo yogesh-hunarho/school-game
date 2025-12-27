@@ -8,14 +8,12 @@ import GlassSurface from "@/components/GlassSurface";
 import { VideoModal } from "@/components/modals/VideoModal";
 import { QuizModal } from "@/components/modals/QuizModal";
 import { motion } from "framer-motion";
-import { useSound } from "@/hook/useSound";
 import { CyberpunkCard } from "@/components/cyberpunk-card";
 import { CyberpunkCourseCard } from "@/components/cyberpunk-course-card";
 import { useIsMobile } from "@/hook/use-mobile";
 
 export const CyberpunkDashboard = () => {
     const { player, getModuleProgress, openContentPanel } = useLMSStore();
-    const { playClick } = useSound();
     const isMobile = useIsMobile()
     console.log(isMobile)
 
@@ -23,7 +21,6 @@ export const CyberpunkDashboard = () => {
     const completedCount = Object.values(player.moduleStatus).filter((s) => s === "completed").length;
 
     const handleModuleSelect = (moduleId) => {
-        playClick();
         useLMSStore.setState((state) => ({
             player: {
                 ...state.player,
