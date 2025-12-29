@@ -74,9 +74,9 @@ export function CyberpunkCard({
     const playaudioForModuleSelect = (id: string) => {
         if (isLocked) {
             playSound("disabled");
-        } else {
-            playSound("click");
+            return;
         }
+        playSound("click");
         handleModuleSelect(id)
     }
 
@@ -213,13 +213,16 @@ export function CyberpunkCard({
                     </div>
 
                     {isLocked ? (
-                        <button
-                            disabled
-                            className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-slate-800/80 border border-slate-700 text-slate-500 cursor-not-allowed"
-                        >
-                            <Lock className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" />
-                            ENCRYPTED
-                        </button>
+                        <div className="relative group/lock">
+                            <button
+                                disabled
+                                className="w-full py-4 font-bold text-sm uppercase tracking-widest bg-red-950/30 border border-red-900/50 text-red-700 cursor-not-allowed flex items-center justify-center gap-2 transition-all duration-300 group-hover/lock:bg-red-950/50 group-hover/lock:text-red-500 group-hover/lock:border-red-500/50"
+                            >
+                                <Lock className="w-5 h-5" />
+                                ACCESS DENIED
+                            </button>
+                            <div className="absolute inset-0 bg-red-500/10 opacity-0 group-hover/lock:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                        </div>
                     ) : isCompleted ? (
                         <button className="w-full py-2.5 font-bold text-xs uppercase tracking-widest bg-emerald-400/10 border border-emerald-400 text-emerald-400 hover:bg-emerald-400/20 transition-colors">
                             <CheckCircle2 className="w-3.5 h-3.5 inline-block mr-2 -mt-0.5" />

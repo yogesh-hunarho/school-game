@@ -8,6 +8,7 @@ import Signup from "./view/sign-up";
 import MainLayout from "./layouts/main";
 import ProfilePage from "./view/profile";
 import CoursesLayout from "./layouts/courses";
+import ModuleDetailsPage from "./view/ModuleDetailsPage";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
             {
                 path: '/profile',
                 element: <ProfilePage />
+            },
+            {
+                path: '/module/:moduleId',
+                element: <ModuleDetailsPage />
             },
         ]
     },

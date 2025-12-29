@@ -23,9 +23,13 @@ export const ModuleUnlockAnimation = () => {
             // Phase 3: Show next module after 2.5s
             const timer2 = setTimeout(() => setPhase(3), 2500);
 
-            // Auto-close after 5 seconds
+            // Auto-close after 5 seconds and open mission transition
             const timer3 = setTimeout(() => {
+                console.log("ANIMATION: Timer3 finished. Opening transition...");
                 setPhase(0);
+                // Open new modal FIRST
+                useLMSStore.getState().openMissionTransition();
+                // Then hide confetti
                 hideConfetti();
             }, 5000);
 
@@ -44,7 +48,7 @@ export const ModuleUnlockAnimation = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none"
+                    className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none"
                 >
                     {/* Backdrop */}
                     <div className="absolute inset-0 bg-slate-950/95" />

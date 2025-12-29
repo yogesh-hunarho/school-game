@@ -55,7 +55,7 @@ export default function ProtectedLayout() {
             sparkCount={8}
             duration={400}
         >
-            <div className="relative w-full min-h-screen flex flex-col bg-slate-950">
+            <div className="relative w-full min-h-screen flex flex-col bg-blue-500/10">
                 <ShootingStars className="pointer-events-none z-0" />
                 <StarsBackground className="pointer-events-none z-0" />
 

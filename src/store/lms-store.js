@@ -4,57 +4,35 @@ import { persist } from "zustand/middleware";
 const moduleContent = {
     "innovators-mind": {
         videos: [
-            {
-                id: "v1",
-                title: "Introduction to Design Thinking",
-                duration: "5:30",
-                xp: 10,
-                thumbnail: "🎬",
-            },
-            {
-                id: "v2",
-                title: "The 5 Stages of Design Thinking",
-                duration: "8:45",
-                xp: 15,
-                thumbnail: "🎬",
-            },
+            { id: "v1", title: "Introduction to Design Thinking", duration: "5:30", xp: 10, thumbnail: "🎬" },
+            { id: "v2", title: "The 5 Stages of Design Thinking", duration: "8:45", xp: 15, thumbnail: "🎬" },
         ],
         quizzes: [
-            {
-                id: "q1",
-                title: "Design Thinking Basics Quiz",
-                questions: 5,
-                xp: 25,
-                icon: "📝",
-            },
+            { id: "q1", title: "Design Thinking Basics Quiz", questions: 5, xp: 25, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "trebuchet",
+            title: "Trebuchet",
+            icon: "�",
+            description: "Master the physics of medieval siege engines.",
+            xp: 55,
+        },
     },
     "trebuchet": {
         videos: [
-            {
-                id: "v1",
-                title: "History of the Trebuchet",
-                duration: "6:20",
-                xp: 10,
-                thumbnail: "🎬",
-            },
-            {
-                id: "v2",
-                title: "Building Your Trebuchet",
-                duration: "12:00",
-                xp: 20,
-                thumbnail: "🎬",
-            },
+            { id: "v1", title: "History of the Trebuchet", duration: "6:20", xp: 10, thumbnail: "🎬" },
+            { id: "v2", title: "Building Your Trebuchet", duration: "12:00", xp: 20, thumbnail: "🎬" },
         ],
         quizzes: [
-            {
-                id: "q1",
-                title: "Trebuchet Mechanics Quiz",
-                questions: 5,
-                xp: 25,
-                icon: "📝",
-            },
+            { id: "q1", title: "Trebuchet Mechanics Quiz", questions: 5, xp: 25, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "motor-robot",
+            title: "Motor Robot",
+            icon: "🤖",
+            description: "Build and program your first autonomous rover.",
+            xp: 95,
+        },
     },
     "motor-robot": {
         videos: [
@@ -69,6 +47,13 @@ const moduleContent = {
         quizzes: [
             { id: "q1", title: "Motor Robot Assessment", questions: 10, xp: 50, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "tetris",
+            title: "Tetris Game",
+            icon: "🎮",
+            description: "Code a classic arcade game from scratch.",
+            xp: 134,
+        },
     },
     "tetris": {
         videos: [
@@ -86,6 +71,13 @@ const moduleContent = {
             { id: "q2", title: "Game Design Quiz", questions: 5, xp: 25, icon: "📝" },
             { id: "q3", title: "Financial Literacy Quiz", questions: 5, xp: 25, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "aqua-bridge",
+            title: "Aqua Bridge",
+            icon: "🌉",
+            description: "Engineering robust structures over water.",
+            xp: 96,
+        },
     },
     "aqua-bridge": {
         videos: [
@@ -101,6 +93,13 @@ const moduleContent = {
             { id: "q2", title: "Design Principles Quiz", questions: 5, xp: 25, icon: "📝" },
             { id: "q3", title: "Construction Quiz", questions: 5, xp: 25, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "drawing-bot",
+            title: "Drawing Bot",
+            icon: "🖊️",
+            description: "Merge art and engineering with a plot-bot.",
+            xp: 112,
+        },
     },
     "drawing-bot": {
         videos: [
@@ -114,6 +113,13 @@ const moduleContent = {
         quizzes: [
             { id: "q1", title: "Drawing Bot Assessment", questions: 8, xp: 40, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "soil-monitoring",
+            title: "Soil Monitor",
+            icon: "🌱",
+            description: "Smart agriculture using IoT sensors.",
+            xp: 123,
+        },
     },
     "soil-monitoring": {
         videos: [
@@ -129,6 +135,13 @@ const moduleContent = {
             { id: "q1", title: "Soil Science Quiz", questions: 5, xp: 25, icon: "📝" },
             { id: "q2", title: "Financial Planning Quiz", questions: 5, xp: 25, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "homopolar-motor",
+            title: "Homopolar Motor",
+            icon: "⚡",
+            description: "Explore electromagnetism with simple materials.",
+            xp: 50,
+        },
     },
     "homopolar-motor": {
         videos: [
@@ -137,6 +150,13 @@ const moduleContent = {
         quizzes: [
             { id: "q1", title: "Motor Physics Quiz", questions: 5, xp: 30, icon: "📝" },
         ],
+        nextModule: {
+            moduleId: "final-assessment",
+            title: "Final Exam",
+            icon: "🎓",
+            description: "The ultimate test of your engineering skills.",
+            xp: 300,
+        },
     },
     "final-assessment": {
         videos: [],
@@ -146,6 +166,7 @@ const moduleContent = {
             { id: "a2", title: "Financial Literacy Final Exam", questions: 20, xp: 100, icon: "🏆" },
             { id: "a3", title: "AI & Robotics Final Exam", questions: 20, xp: 100, icon: "🏆" },
         ],
+        nextModule: null, // End of course
     },
 };
 
@@ -214,10 +235,21 @@ export const useLMSStore = create(
             animatingStarFrom: null, // { x, y } coordinates
             pendingXPGain: 0,
             lastCompletedModuleId: null,
+            showMissionTransition: false, // New state for modal transition
 
             // Settings
             soundEnabled: true,
             toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+
+            // Mission Transition Actions
+            openMissionTransition: () => {
+                console.log("STORE: openMissionTransition CALLED");
+                set({ showMissionTransition: true });
+            },
+            closeMissionTransition: () => {
+                console.log("STORE: closeMissionTransition CALLED");
+                set({ showMissionTransition: false });
+            },
 
             // Get module content
             getModuleContent: (moduleId) => moduleContent[moduleId] || { videos: [], quizzes: [] },
@@ -331,10 +363,17 @@ export const useLMSStore = create(
                                 [moduleId]: "completed",
                                 ...(nextModuleId ? { [nextModuleId]: "current" } : {}),
                             },
-                            currentModuleId: nextModuleId || moduleId,
+                            // DO NOT auto-update currentModuleId here. 
+                            // It will be updated when the user enters the new route.
+                            // currentModuleId: nextModuleId || moduleId, 
                         },
                         showConfetti: true,
                         lastCompletedModuleId: moduleId,
+                        // Close any open modals so animation can be seen
+                        isVideoModalOpen: false,
+                        isQuizModalOpen: false,
+                        selectedVideo: null,
+                        selectedQuiz: null,
                     }));
                 }
             },
@@ -364,6 +403,10 @@ export const useLMSStore = create(
         }),
         {
             name: "hunarho-lms-storage",
+            partial: (state) => ({
+                player: state.player,
+                soundEnabled: state.soundEnabled,
+            }),
         }
     )
 );

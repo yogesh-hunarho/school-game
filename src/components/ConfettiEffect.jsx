@@ -47,11 +47,16 @@ export default function ConfettiEffect() {
             frame();
 
             // Clear after animation
+            // Clear after animation
+            // DO NOT hideConfetti here! It closes too early for the unlock animation.
+            // Let ModuleUnlockAnimation handle the cleanup.
+            /* 
             const timeout = setTimeout(() => {
                 hideConfetti();
             }, duration + 500);
 
-            return () => clearTimeout(timeout);
+            return () => clearTimeout(timeout); 
+            */
         }
     }, [showConfetti, hideConfetti]);
 
