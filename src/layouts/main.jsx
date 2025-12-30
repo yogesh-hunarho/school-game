@@ -1,11 +1,12 @@
 
 import { Button } from "@/components/ui/button"
+import CyberpunkButton from "@/components/ui/cyber-button"
 import { Terminal, Shield, Zap, Target } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export default function MainLayout() {
     return (
-        <main className="relative w-full flex items-center justify-center overflow-hidden mt-10">
+        <main className="relative w-full flex items-center justify-center overflow-hidden mt-10 p-4 md:p-2 mb-5">
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div className="relative flex justify-center items-end min-h-[320px] sm:min-h-[380px] md:min-h-[420px]">
                     {/* here 3d */}
@@ -64,18 +65,9 @@ export default function MainLayout() {
                             </div>
                         </div>
                     </div>
-
-
-                    <Link
-                        to="/courses"
-                        className="inline-flex items-center justify-center px-6 py-3 rounded-xl 
-             border-2 border-magenta-500 text-magenta-400 font-bold
-             hover:bg-magenta-500 hover:text-white
-             hover:shadow-lg hover:shadow-magenta-500/40
-             transition-all duration-200"
-                    >
-                        &gt; Initialize Mission
-                    </Link>
+                    <CyberpunkButton variant="secondary" className="w-full max-w-sm">
+                        <Link to="/courses">Initialize Mission</Link>
+                    </CyberpunkButton>
                 </div>
             </div>
         </main>

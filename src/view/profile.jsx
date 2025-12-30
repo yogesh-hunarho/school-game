@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 
 // Badge definitions
 const badgeDefinitions = [
@@ -121,36 +122,20 @@ export default function ProfilePage() {
                                 </p>
 
                                 {/* XP Progress */}
-                                <div className="max-w-md">
-                                    <div className="flex justify-between text-[11px] mb-2 font-mono uppercase tracking-wider">
-                                        <span className="text-yellow-400 font-bold flex items-center gap-1">
-                                            <Star className="w-3.5 h-3.5 fill-yellow-400" />
-                                            {player.totalXP.toLocaleString()} XP
-                                        </span>
-                                        <span className="text-slate-500">
-                                            {Math.round(xpProgress.required - xpProgress.current)} XP TO LVL {level + 1}
-                                        </span>
-                                    </div>
-                                    <div className="relative h-2 bg-slate-800 overflow-hidden">
-                                        <div className="absolute inset-0 flex gap-px">
-                                            {Array.from({ length: 20 }).map((_, i) => (
-                                                <div key={i} className="flex-1 bg-slate-700/30" />
-                                            ))}
-                                        </div>
-                                        <motion.div
-                                            className="absolute top-0 left-0 h-full bg-yellow-400"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
-                                            transition={{ duration: 1, ease: "easeOut" }}
-                                        />
-                                        <motion.div
-                                            className="absolute top-0 left-0 h-full bg-yellow-400/50 blur-sm"
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
-                                            transition={{ duration: 1, ease: "easeOut" }}
-                                        />
-                                    </div>
+                                <div className="flex justify-between text-[11px] font-mono uppercase tracking-wider">
+                                    <span className="text-yellow-400 font-bold flex items-center gap-1">
+                                        <Star className="w-3.5 h-3.5 fill-yellow-400" />
+                                        {player.totalXP.toLocaleString()} XP
+                                    </span>
+                                    <span className="text-slate-500">
+                                        {Math.round(xpProgress.required - xpProgress.current)} XP TO LVL {level + 1}
+                                    </span>
                                 </div>
+                                <CyberpunkProgressBar
+                                    progress={xpProgress.percentage}
+                                    color={Math.min(xpProgress.percentage, 100) === 100 ? "green" : xpProgress.percentage > 0 ? "cyan" : "orange"}
+                                    hideLabel={true}
+                                />
                             </div>
                         </div>
                     </div>
@@ -214,91 +199,147 @@ export default function ProfilePage() {
                     <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
 
                     <div className="p-6">
-                        <h2 className="text-sm font-bold text-cyan-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
-                            <Target className="w-4 h-4" />
-                            MODULE PROGRESS
-                        </h2>
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="relative">
-                                <div className="text-4xl font-bold text-yellow-400">
-                                    {completedModules}
-                                </div>
-                                <div className="text-[10px] text-slate-500 font-mono">/{modules.length}</div>
-                            </div>
-                            <div className="flex-1">
-                                <div className="text-[10px] text-slate-500 uppercase tracking-widest mb-1 font-mono">
-                                    COMPLETION RATE
-                                </div>
-                                <div className="relative h-3 bg-slate-800 overflow-hidden">
-                                    <div className="absolute inset-0 flex gap-px">
-                                        {Array.from({ length: modules.length }).map((_, i) => (
-                                            <div key={i} className="flex-1 bg-slate-700/30" />
-                                        ))}
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                            <div>
+                                <h2 className="text-sm font-bold text-cyan-400 mb-6 flex items-center gap-2 uppercase tracking-widest">
+                                    <Target className="w-4 h-4 animate-pulse" />
+                                    MODULE PROGRESSION STATUS
+                                </h2>
+                                <div className="flex items-center gap-6">
+                                    <div className="relative group">
+                                        <div className="absolute -inset-2 bg-yellow-400/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <div className="relative text-5xl font-black text-yellow-400 leading-none">
+                                            {completedModules}
+                                            <span className="text-xs text-slate-500 font-sans absolute -top-1 -right-4">/{modules.length}</span>
+                                        </div>
                                     </div>
-                                    <motion.div
-                                        className="absolute top-0 left-0 h-full bg-cyan-400"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${(completedModules / modules.length) * 100}%` }}
-                                        transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
-                                    />
+                                    <div className="h-10 w-px bg-slate-800 hidden md:block" />
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 uppercase tracking-[0.2em] mb-1 font-mono">
+                                            SYNERGY_COEFFICIENT
+                                        </div>
+                                        <div className="text-xl font-mono text-cyan-400">
+                                            {Math.round((completedModules / modules.length) * 100)}%
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
+
+                            <div className="flex-1 max-w-md">
+                                <div className="flex justify-between items-end mb-2">
+                                    <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono">SYSTEM_COMPLETION</span>
+                                    <span className="text-[10px] text-slate-500 font-mono">PHASE_0{completedModules + 1}</span>
+                                </div>
+                                <CyberpunkProgressBar
+                                    progress={(completedModules / modules.length) * 100}
+                                    color={Math.min((completedModules / modules.length) * 100, 100) === 100 ? "green" : (completedModules / modules.length) * 100 > 0 ? "cyan" : "orange"}
+                                    hideLabel={true}
+                                />
                             </div>
                         </div>
 
-                        {/* Module List */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                            {modules.map((module) => {
-                                const status = player.moduleStatus[module.id] || "locked";
-                                const progress = getModuleProgress(module.id);
-                                const isCompleted = status === "completed";
-                                const isLocked = status === "locked";
+                        {/* Module List Container */}
+                        <div className="relative">
+                            <motion.div
+                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                    visible: {
+                                        transition: {
+                                            staggerChildren: 0.05
+                                        }
+                                    }
+                                }}
+                            >
+                                {modules.map((module) => {
+                                    const status = player.moduleStatus[module.id] || "locked";
+                                    const progress = getModuleProgress(module.id);
+                                    const isCompleted = status === "completed";
+                                    const isLocked = status === "locked";
 
-                                return (
-                                    <div
-                                        key={module.id}
-                                        className={cn(
-                                            "relative p-3 flex items-center gap-3 transition-colors",
-                                            isCompleted && "bg-emerald-400/5 border border-emerald-400/30",
-                                            isLocked && "bg-slate-900/50 border border-slate-700 opacity-50",
-                                            !isCompleted && !isLocked && "bg-cyan-400/5 border border-cyan-400/30"
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "absolute top-0 left-0 w-1.5 h-1.5 border-t border-l",
-                                            isCompleted ? "border-emerald-400" : isLocked ? "border-slate-600" : "border-cyan-400"
-                                        )} />
-                                        <div className={cn(
-                                            "absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r",
-                                            isCompleted ? "border-emerald-400" : isLocked ? "border-slate-600" : "border-cyan-400"
-                                        )} />
+                                    return (
+                                        <motion.div
+                                            key={module.id}
+                                            variants={{
+                                                hidden: { opacity: 0, x: -10 },
+                                                visible: { opacity: 1, x: 0 }
+                                            }}
+                                            whileHover={{ scale: isLocked ? 1 : 1.02, x: isLocked ? 0 : 4 }}
+                                            onClick={() => !isLocked && playClick()}
+                                            className={cn(
+                                                "group relative p-4 flex items-center gap-4 transition-all duration-300",
+                                                isCompleted && "bg-emerald-400/5 border border-emerald-400/30",
+                                                isLocked && "bg-slate-900/40 border border-slate-800 opacity-60",
+                                                !isCompleted && !isLocked && "bg-cyan-400/5 border border-cyan-400/30 hover:bg-cyan-400/10"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 opacity-0 group-hover:opacity-100 transition-opacity",
+                                                isCompleted ? "border-emerald-400" : "border-cyan-400"
+                                            )} />
+                                            <div className={cn(
+                                                "absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 transition-opacity",
+                                                isCompleted ? "border-emerald-400" : "border-cyan-400"
+                                            )} />
 
-                                        <div className={cn(
-                                            "w-8 h-8 flex items-center justify-center text-lg",
-                                            isCompleted && "bg-emerald-400/20",
-                                            isLocked && "bg-slate-800",
-                                            !isCompleted && !isLocked && "bg-cyan-400/20"
-                                        )}>
-                                            {isLocked ? <Lock className="w-3.5 h-3.5 text-slate-500" /> : module.icon}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="text-xs font-medium text-cyan-50 truncate uppercase tracking-wide">{module.name}</div>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <div className="flex-1 h-1 bg-slate-700 overflow-hidden">
-                                                    <div
-                                                        className={cn(
-                                                            "h-full",
-                                                            isCompleted ? "bg-emerald-400" : "bg-cyan-400"
-                                                        )}
-                                                        style={{ width: `${progress}%` }}
-                                                    />
-                                                </div>
-                                                <span className="text-[10px] text-slate-500 font-mono">{progress}%</span>
+                                            <div className={cn(
+                                                "relative w-10 h-10 flex items-center justify-center text-xl transition-all duration-300",
+                                                isCompleted && "bg-emerald-400/20 text-emerald-400",
+                                                isLocked && "bg-slate-800 text-slate-600",
+                                                !isCompleted && !isLocked && "bg-cyan-400/20 text-cyan-400 group-hover:scale-110"
+                                            )}>
+                                                {isLocked ? <Lock className="w-4 h-4" /> : module.icon}
+                                                {!isLocked && !isCompleted && (
+                                                    <div className="absolute -inset-1 border border-cyan-400/30 animate-pulse" />
+                                                )}
                                             </div>
-                                        </div>
-                                        {isCompleted && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
-                                    </div>
-                                );
-                            })}
+
+                                            <div className="flex-1 min-w-0">
+                                                <div className={cn(
+                                                    "text-[11px] font-bold truncate uppercase tracking-wider mb-1",
+                                                    isLocked ? "text-slate-500" : "text-cyan-50"
+                                                )}>
+                                                    {module.name}
+                                                </div>
+
+                                                <div className="space-y-1">
+                                                    <div className="h-1 bg-slate-800/50 rounded-full overflow-hidden">
+                                                        <motion.div
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${progress}%` }}
+                                                            className={cn(
+                                                                "h-full relative",
+                                                                isCompleted ? "bg-emerald-400" : "bg-cyan-400"
+                                                            )}
+                                                        >
+                                                            {!isLocked && !isCompleted && (
+                                                                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-[scan_2s_linear_infinite] w-8" />
+                                                            )}
+                                                        </motion.div>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span className="text-[9px] text-slate-500 font-mono uppercase tracking-tighter">
+                                                            {isLocked ? "ACCESS_RESTRICTED" : isCompleted ? "VERIFIED" : "IN_PROGRESS"}
+                                                        </span>
+                                                        <span className="text-[9px] text-slate-400 font-mono">{progress}%</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {isCompleted && (
+                                                <motion.div
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    className="bg-emerald-400/20 p-1 rounded-full"
+                                                >
+                                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                                </motion.div>
+                                            )}
+                                        </motion.div>
+                                    );
+                                })}
+                            </motion.div>
                         </div>
                     </div>
                 </motion.div>
@@ -317,50 +358,126 @@ export default function ProfilePage() {
                     <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-yellow-400" />
 
                     <div className="p-6">
-                        <h2 className="text-sm font-bold text-yellow-400 mb-4 flex items-center gap-2 uppercase tracking-widest">
-                            <Award className="w-4 h-4" />
-                            ACHIEVEMENTS
-                            <span className="text-[10px] font-normal text-slate-500 font-mono">
-                                ({earnedBadges.length}/{badgeDefinitions.length})
-                            </span>
-                        </h2>
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-sm font-bold text-yellow-400 flex items-center gap-2 uppercase tracking-widest">
+                                    <Award className="w-4 h-4 animate-bounce" />
+                                    OPERATIVE ACHIEVEMENTS
+                                </h2>
+                                <div className="text-[10px] text-slate-500 font-mono mt-1 tracking-wider">
+                                    LEVEL_UNLOCKED: {earnedBadges.length} OF {badgeDefinitions.length}
+                                </div>
+                            </div>
+                            <div className="text-right hidden sm:block">
+                                <div className="text-[10px] text-yellow-400/60 uppercase tracking-widest font-mono">STATUS</div>
+                                <div className="text-sm font-bold text-cyan-400 font-mono">AUTHORIZED</div>
+                            </div>
+                        </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <motion.div
+                            className="grid grid-cols-2 md:grid-cols-4 gap-4"
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                                visible: {
+                                    transition: {
+                                        staggerChildren: 0.1
+                                    }
+                                }
+                            }}
+                        >
                             {badgeDefinitions.map((badge) => {
                                 const isEarned = earnedBadges.includes(badge);
                                 return (
                                     <motion.div
                                         key={badge.id}
-                                        whileHover={{ scale: isEarned ? 1.02 : 1 }}
+                                        variants={{
+                                            hidden: { opacity: 0, scale: 0.9, y: 10 },
+                                            visible: { opacity: 1, scale: 1, y: 0 }
+                                        }}
+                                        whileHover={{ y: -5 }}
                                         className={cn(
-                                            "relative p-4 text-center transition-all",
+                                            "group relative p-5 h-32 flex items-center justify-center transition-all duration-300 overflow-hidden",
                                             isEarned
-                                                ? "bg-yellow-400/5 border border-yellow-400/30"
-                                                : "bg-slate-900/50 border border-slate-700 opacity-40 grayscale"
+                                                ? "bg-yellow-400/5 border border-yellow-400/30 shadow-[0_0_15px_rgba(250,204,21,0.05)]"
+                                                : "bg-slate-900/40 border border-slate-800 opacity-40 grayscale"
                                         )}
                                     >
+                                        {/* Earned Glow Effect */}
+                                        {isEarned && (
+                                            <div className="absolute inset-0 bg-yellow-400/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                                        )}
+
+                                        {/* Corner Accents */}
                                         <div className={cn(
-                                            "absolute top-0 left-0 w-1.5 h-1.5 border-t border-l",
-                                            isEarned ? "border-yellow-400" : "border-slate-600"
+                                            "absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 transition-colors",
+                                            isEarned ? "border-yellow-400" : "border-slate-700"
                                         )} />
                                         <div className={cn(
-                                            "absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r",
-                                            isEarned ? "border-yellow-400" : "border-slate-600"
+                                            "absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 transition-colors",
+                                            isEarned ? "border-yellow-400" : "border-slate-700"
                                         )} />
 
-                                        <div className="text-3xl mb-2">{badge.icon}</div>
-                                        <div className={cn(
-                                            "text-[11px] font-bold mb-1 uppercase tracking-wide",
-                                            isEarned ? "text-cyan-50" : "text-slate-500"
-                                        )}>
-                                            {badge.name}
+                                        {/* Animated Content Wrapper */}
+                                        <div className="relative flex items-center gap-4 w-full h-full">
+                                            {/* Icon with Background */}
+                                            <div className={cn(
+                                                "w-16 h-16 flex items-center justify-center rounded-xl transition-all duration-500 ease-out z-10 shadow-lg",
+                                                "absolute left-1/2 -translate-x-1/2 group-hover:left-0 group-hover:translate-x-0 group-hover:scale-110",
+                                                isEarned
+                                                    ? "bg-linear-to-br from-yellow-400/20 to-yellow-600/5 border border-yellow-400/30"
+                                                    : "bg-slate-800/50 border border-slate-700/50",
+                                                !isEarned && "opacity-50"
+                                            )}>
+                                                <div className="text-3xl filter drop-shadow-[0_0_8px_rgba(250,204,21,0.3)]">
+                                                    {badge.icon}
+                                                </div>
+
+                                                <div className="absolute -top-1 -left-1 w-2 h-2 border-t border-l border-yellow-400/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b border-r border-yellow-400/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            </div>
+
+                                            {/* Text Content */}
+                                            <div className="flex-1 opacity-0 group-hover:opacity-100 translate-x-12 group-hover:translate-x-20 transition-all duration-500 ease-out">
+                                                <div className={cn(
+                                                    "text-[12px] font-black uppercase tracking-wider text-nowrap mb-1",
+                                                    isEarned ? "text-yellow-400" : "text-slate-500"
+                                                )}>
+                                                    {badge.name}
+                                                </div>
+                                                <div className="text-[10px] text-slate-400 font-mono leading-tight max-w-[140px]">
+                                                    {badge.description}
+                                                </div>
+                                            </div>
+
+                                            {/* Initial Title (Centered, fades out on hover) */}
+                                            <div className={cn(
+                                                "absolute inset-x-0 -bottom-2 flex flex-col items-center transition-all duration-300 group-hover:opacity-0 group-hover:translate-y-[-10px]",
+                                                isEarned ? "text-yellow-400" : "text-slate-500"
+                                            )}>
+                                                <div className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">
+                                                    {badge.name}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="text-[10px] text-slate-500 font-mono">{badge.description}</div>
+
+                                        {!isEarned && (
+                                            <div className="absolute top-2 right-2">
+                                                <Lock className="w-3 h-3 text-slate-700" />
+                                            </div>
+                                        )}
+
+                                        {isEarned && (
+                                            <div className="absolute top-2 right-2">
+                                                <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse shadow-[0_0_5px_rgba(250,204,21,1)]" />
+                                            </div>
+                                        )}
                                     </motion.div>
                                 );
                             })}
-                        </div>
+                        </motion.div>
                     </div>
+
                 </motion.div>
             </div>
         </div>

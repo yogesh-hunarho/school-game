@@ -1,11 +1,11 @@
 import { useRef, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { Link } from "react-router-dom"
 import { useAuthStore } from "@/store/auth.store"
+import CyberpunkButton from "@/components/ui/cyber-button"
+import CyberpunkInput from "@/components/ui/cyber-component/cyber-punk-input"
+import { Terminal } from "lucide-react"
 
 export default function CyberpunkLogin() {
     const emailRef = useRef();
@@ -77,7 +77,7 @@ export default function CyberpunkLogin() {
                         <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-magenta-400 rounded-bl-sm" />
                         <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-cyan-400 rounded-br-sm" />
 
-                        <div className="relative z-10 space-y-6">
+                        <div className="space-y-6">
                             <motion.div variants={itemVariants} className="space-y-2 text-center">
                                 <h1 className="text-4xl font-bold bg-linear-to-r from-cyan-400 via-blue-400 to-magenta-400 bg-clip-text text-transparent uppercase tracking-wider">
                                     [ACCESS GRANTED]
@@ -86,67 +86,51 @@ export default function CyberpunkLogin() {
                             </motion.div>
 
                             {errors && (
-                                <motion.div
-                                    variants={itemVariants}
+                                <div
                                     className="bg-red-950/60 border border-red-500/50 text-red-200 p-3 rounded-sm text-sm font-mono space-y-1"
                                 >
                                     {Object.keys(errors).map((key) => (
                                         <p key={key}>❌ {errors[key][0]}</p>
                                     ))}
-                                </motion.div>
+                                </div>
                             )}
 
                             <form onSubmit={onSubmit} className="space-y-4">
                                 <motion.div variants={itemVariants} className="space-y-2">
-                                    <Label htmlFor="email" className="text-cyan-300 text-xs font-mono uppercase tracking-widest">
-                                        [EMAIL]
-                                    </Label>
-                                    <div className="group/input">
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="user@network.sys"
+                                    <div className="group/input pt-4">
+                                        <CyberpunkInput
+                                            label="USERNAME"
+                                            placeholder="ENTER_ID"
                                             ref={emailRef}
-                                            onFocus={() => setFocusedField("email")}
-                                            onBlur={() => setFocusedField(null)}
-                                            required
-                                            className="bg-slate-900/50 text-cyan-100 font-mono text-sm transition-all duration-200"
+                                            type="email"
                                         />
                                     </div>
                                 </motion.div>
 
                                 <motion.div variants={itemVariants} className="space-y-2">
-                                    <Label htmlFor="password" className="text-magenta-300 text-xs font-mono uppercase tracking-widest">
-                                        [PASSWORD]
-                                    </Label>
-                                    <div className="group/input">
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            placeholder="••••••••"
+                                    <div className="group/input pt-4">
+                                        <CyberpunkInput
+                                            label="PASSWORD"
+                                            placeholder="ENTER_PASSWORD"
                                             ref={passwordRef}
-                                            onFocus={() => setFocusedField("password")}
-                                            onBlur={() => setFocusedField(null)}
-                                            required
-                                            className="bg-slate-900/50 border-magenta-500/30 text-magenta-100 placeholder-magenta-700/50 focus:border-magenta-400 focus:ring-0 focus:shadow-lg focus:shadow-magenta-500/50 font-mono text-sm transition-all duration-200"
+                                            type="password"
                                         />
                                     </div>
                                 </motion.div>
 
                                 <motion.div variants={itemVariants} className="pt-2">
-                                    <Button type="submit" disabled={loading} className="w-full relative group/btn overflow-hidden">
-                                        <div className="absolute inset-0 bg-linear-to-r from-cyan-500 via-magenta-500 to-cyan-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                                        <span className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
+                                    <CyberpunkButton type="submit" disabled={loading} variant="secondary" className={"w-full text-center relative group/btn overflow-hidden"}>
+                                        <p className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
                                             {loading ? (
                                                 <>
-                                                    <span className="inline-block w-4 h-4 border-2 border-cyan-300 border-t-magenta-300 animate-spin" />
+                                                    <span className="inline-block w-4 h-4 border-2 animate-spin" />
                                                     PROCESSING...
                                                 </>
                                             ) : (
                                                 <>▶ INITIATE ACCESS</>
                                             )}
-                                        </span>
-                                    </Button>
+                                        </p>
+                                    </CyberpunkButton>
                                 </motion.div>
                             </form>
 

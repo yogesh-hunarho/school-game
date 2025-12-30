@@ -58,7 +58,6 @@ export default function ProtectedLayout() {
             <div className="relative w-full min-h-screen flex flex-col bg-blue-500/10">
                 <ShootingStars className="pointer-events-none z-0" />
                 <StarsBackground className="pointer-events-none z-0" />
-
                 <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
 
                 <Header />

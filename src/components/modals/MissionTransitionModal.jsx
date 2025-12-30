@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useLMSStore, moduleOrder, moduleContent } from "@/store/lms-store";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle2, ArrowRight, Terminal } from "lucide-react";
+import CyberpunkButton from "../ui/cyber-button";
 
 export const MissionTransitionModal = () => {
     const {
@@ -64,7 +65,7 @@ export const MissionTransitionModal = () => {
 
     if (!nextModuleData) {
         return (
-            <div className="fixed inset-0 z-[210] flex items-center justify-center bg-black/90 text-red-500 font-mono p-10">
+            <div className="fixed inset-0 z-210 flex items-center justify-center bg-black/90 text-red-500 font-mono p-10">
                 <div className="border border-red-500 p-6 bg-red-900/20">
                     <h2 className="text-xl font-bold mb-4">SYSTEM ERROR: NAVIGATION DATA CORRUPTED</h2>
                     <p>Current Module ID: {currentModuleId || "NULL"}</p>
@@ -90,18 +91,12 @@ export const MissionTransitionModal = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[210] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+                className="fixed inset-0 z-210 flex items-center justify-center bg-transparent/10 backdrop-blur-xl p-4"
             >
                 <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-
-                    {/* Left Side: Visual Transition */}
-                    <div className="relative h-64 md:h-96 bg-slate-900/50 rounded-lg border border-cyan-500/30 p-8 flex flex-col justify-between overflow-hidden">
-                        {/* Background Grid */}
+                    <div className="relative h-64 md:h-96 bg-slate-900/50 border border-cyan-500/30 p-8 flex flex-col justify-between overflow-hidden">
                         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-size-[24px_24px]" />
-
-                        {/* Mission Nodes */}
                         <div className="relative z-10 flex items-center justify-between h-full">
-                            {/* Previous Mission */}
                             <motion.div
                                 initial={{ opacity: 0, x: -50 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -113,8 +108,6 @@ export const MissionTransitionModal = () => {
                                 </div>
                                 <span className="text-xs font-mono text-emerald-500 uppercase">Mission {currentModuleIndex + 1}</span>
                             </motion.div>
-
-                            {/* Connecting Line */}
                             <div className="flex-1 h-0.5 bg-slate-700 mx-4 relative overflow-hidden">
                                 <motion.div
                                     className="absolute inset-0 bg-cyan-400"
@@ -123,8 +116,6 @@ export const MissionTransitionModal = () => {
                                     transition={{ duration: 1.5, delay: 1, repeat: Infinity, ease: "linear" }}
                                 />
                             </div>
-
-                            {/* Next Mission */}
                             <motion.div
                                 initial={{ opacity: 0, x: 50 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -141,7 +132,7 @@ export const MissionTransitionModal = () => {
 
                     {/* Right Side: Terminal Output */}
                     <div className="flex flex-col gap-6">
-                        <div className="bg-black/80 border border-green-500/30 p-6 rounded-lg font-mono text-green-500 h-64 overflow-y-auto shadow-lg relative">
+                        <div className="bg-black/80 border border-green-500/30 p-6 font-mono text-green-500 h-auto overflow-y-auto relative">
                             {/* Terminal Header */}
                             <div className="absolute top-0 left-0 right-0 h-6 bg-green-500/10 border-b border-green-500/20 flex items-center px-2 gap-2">
                                 <Terminal className="w-3 h-3" />
@@ -162,18 +153,25 @@ export const MissionTransitionModal = () => {
                         {/* Action Button */}
                         <AnimatePresence>
                             {isTypingComplete && (
-                                <motion.button
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                <CyberpunkButton
                                     onClick={handleAccessNext}
-                                    className="group relative w-full py-4 bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 rounded-lg overflow-hidden"
+                                    className="w-full"
+                                    variant="secondary"
                                 >
-                                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                                    <span className="relative z-10 flex items-center justify-center gap-2 font-bold text-black uppercase tracking-widest">
-                                        Access Next Mission
-                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                    </span>
-                                </motion.button>
+                                    Access Next Mission
+                                </CyberpunkButton>
+                                // <motion.button
+                                //     initial={{ opacity: 0, y: 20 }}
+                                //     animate={{ opacity: 1, y: 0 }}
+                                //     onClick={handleAccessNext}
+                                //     className="group relative w-full py-4 bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 rounded-lg overflow-hidden"
+                                // >
+                                //     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                                //     <span className="relative z-10 flex items-center justify-center gap-2 font-bold text-black uppercase tracking-widest">
+                                //         Access Next Mission
+                                //         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                //     </span>
+                                // </motion.button>
                             )}
                         </AnimatePresence>
                     </div>
