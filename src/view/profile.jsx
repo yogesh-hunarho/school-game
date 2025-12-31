@@ -15,10 +15,13 @@ import {
     CheckCircle2,
     Lock,
     User,
+    Gamepad2,
+    ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
+import PuzzleGame from "@/components/PuzzleGame";
 
 // Badge definitions
 const badgeDefinitions = [
@@ -478,6 +481,63 @@ export default function ProfilePage() {
                         </motion.div>
                     </div>
 
+                </motion.div>
+
+                {/* Image Puzzle Mini-Game CTA */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="relative"
+                >
+                    <div className="flex items-center gap-2 mb-4 px-2">
+                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
+                        <h2 className="text-sm font-bold text-cyan-400 uppercase tracking-[0.3em]">
+                            NEURAL_RECONSTRUCTION_TASK
+                        </h2>
+                    </div>
+
+                    <Link to="/puzzle" onClick={playClick} className="block group">
+                        <div className="relative bg-slate-900/60 border border-cyan-400/20 rounded-3xl p-8 overflow-hidden transition-all duration-500 hover:border-cyan-400/40 hover:bg-slate-900/80 group-hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+                            {/* Decorative background elements */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-cyan-400/10 transition-colors" />
+                            <div className="absolute -bottom-8 -left-8 w-32 h-32 border border-cyan-400/10 rounded-full group-hover:scale-150 transition-transform duration-700" />
+
+                            <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                                <div className="relative">
+                                    <div className="w-24 h-24 bg-slate-950 border border-cyan-400/30 flex items-center justify-center rounded-2xl overflow-hidden group-hover:border-cyan-400/60 transition-colors shadow-2xl">
+                                        <img src="/assets/puzzle/cyberpunk-student.png" alt="Puzzle Preview" className="w-full h-full object-cover opacity-40 group-hover:opacity-100 transition-all duration-500 group-hover:scale-110" />
+                                        <div className="absolute inset-0 bg-cyan-500/10 group-hover:bg-transparent transition-colors" />
+                                        <Gamepad2 className="absolute w-8 h-8 text-white drop-shadow-lg group-hover:scale-0 transition-transform" />
+                                    </div>
+                                    <div className="absolute -top-2 -right-2 bg-yellow-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-lg">
+                                        <Zap className="w-3 h-3 fill-slate-950" />
+                                        +50 XP
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 text-center md:text-left space-y-2">
+                                    <h3 className="text-2xl font-black text-white uppercase tracking-tight group-hover:text-cyan-400 transition-colors">
+                                        Neural Link <span className="text-cyan-400 group-hover:text-white transition-colors">Reconstruction</span>
+                                    </h3>
+                                    <p className="text-slate-400 text-sm font-mono max-w-lg leading-relaxed">
+                                        Reassemble encrypted visual data shards to earn points and level up. Training protocol PX-303 is now authorized.
+                                    </p>
+                                </div>
+
+                                <div className="w-full md:w-auto">
+                                    <div className="inline-flex items-center gap-3 px-8 py-3 bg-cyan-500 text-slate-950 font-black rounded-2xl group-hover:bg-white transition-all transform active:scale-95 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                                        <span className="tracking-widest uppercase text-sm">Initialize Task</span>
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Corner bracket decorative elements */}
+                            <div className="absolute top-4 left-4 w-4 h-4 border-t-2 border-l-2 border-cyan-400/30 group-hover:border-cyan-400 transition-colors" />
+                            <div className="absolute bottom-4 right-4 w-4 h-4 border-b-2 border-r-2 border-cyan-400/30 group-hover:border-cyan-400 transition-colors" />
+                        </div>
+                    </Link>
                 </motion.div>
             </div>
         </div>

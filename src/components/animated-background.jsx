@@ -22,7 +22,6 @@ const AnimatedBackground = ({
         resize();
         window.addEventListener('resize', resize);
 
-        // Utility: HEX to RGBA
         const hexToRgba = (hex, alpha = 1) => {
             let c;
             if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
@@ -79,16 +78,11 @@ const AnimatedBackground = ({
             };
         };
 
-
-
-        // --- SELECTOR ---
         const renderers = {
             network: initNetwork
         };
 
         const renderFn = (renderers[variant] || initNetwork)();
-
-        // Clear canvas before starting new animation to prevent mixing
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const animate = () => {

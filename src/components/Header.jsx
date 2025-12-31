@@ -66,7 +66,7 @@ const LevelNode = ({ node, Icon, onClick }) => (
 
             {node.isCompleted && (
                 <div className="absolute -top-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-2 border-slate-950 shadow-lg z-20">
-                    <Check className="w-3 h-3 text-white stroke-[4]" />
+                    <Check className="w-3 h-3 text-white stroke-4" />
                 </div>
             )}
 
@@ -218,126 +218,116 @@ export default function Header() {
                 <div className="flex items-center gap-4 group">
                     {/* XP and Level Stats */}
                     <div className="flex items-center gap-4">
-                        {/* Level Badge */}
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => {
-                                playClick();
-                                setIsLevelModalOpen(true);
-                            }}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors"
-                        >
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <div className="flex items-center gap-2">
+                        <Popover open={isLevelModalOpen} onOpenChange={setIsLevelModalOpen}>
+                            <PopoverTrigger asChild>
+                                <div className="flex items-center gap-2">
+                                    <p className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors">
                                         <Zap className="w-4 h-4 text-purple-400" />
-                                        <span className="text-sm font-bold text-purple-400">LVL {level}</span>
-                                    </div>
-                                </PopoverTrigger>
+                                        LVL {level}</p>
+                                </div>
+                            </PopoverTrigger>
 
-                                <PopoverContent
-                                    side="bottom"
-                                    align="center"
-                                    sideOffset={10}
-                                    className="w-[95vw] md:w-[600px] h-[85vh] p-0 border border-cyan-500/20 bg-slate-950/95 backdrop-blur-2xl z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
-                                >
-                                    <AnimatedBackground
-                                        variant="warp"
-                                        colors={{ name: 'Matrix Green', primary: '#22c55e', secondary: '#15803d' }}
-                                        intensity={"high"}
-                                        speed={1}
-                                    />
-                                    <div className="relative h-full flex flex-col">
-                                        {/* Header Info */}
-                                        <div className="p-6 border-b border-white/5 bg-white/5 backdrop-blur-md flex items-center justify-between shrink-0">
-                                            <div>
-                                                <h2 className="text-xl font-bold text-cyan-300 tracking-tight flex items-center gap-2">
-                                                    Mission Timeline
-                                                </h2>
-                                                <p className="text-xs text-emerald-300 mt-1">
-                                                    {nodes.filter(n => n.isCompleted).length} of {nodes.length} Missions Complete
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <div className="text-xs font-mono text-emerald-300 mb-1">Total Progress</div>
-                                                <div className="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                                    <motion.div
-                                                        className="h-full bg-emerald-500 shadow-[0_0_10px_#06b6d4]"
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: `${(nodes.filter(n => n.isCompleted).length / nodes.length) * 100}%` }}
-                                                    />
-                                                </div>
+                            <PopoverContent
+                                side="bottom"
+                                align="center"
+                                sideOffset={10}
+                                className="relative overflow-hidden w-[99vw] md:w-[600px] h-[90vh] p-0 border border-cyan-500/20 bg-slate-950/95 backdrop-blur-2xl z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                            >
+                                <AnimatedBackground
+                                    variant="warp"
+                                    colors={{ name: 'Matrix Green', primary: '#22c55e', secondary: '#15803d' }}
+                                    intensity={"high"}
+                                    speed={1}
+                                />
+                                <div className="relative h-full flex flex-col">
+                                    {/* Header Info */}
+                                    <div className="hidden p-6 border-b border-white/5 bg-white/5 backdrop-blur-md md:flex items-center justify-between shrink-0">
+                                        <div>
+                                            <h2 className="text-xl font-bold text-cyan-300 tracking-tight flex items-center gap-2">
+                                                Mission Timeline
+                                            </h2>
+                                            <p className="text-xs text-emerald-300 mt-1">
+                                                {nodes.filter(n => n.isCompleted).length} of {nodes.length} Missions Complete
+                                            </p>
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <div className="text-xs font-mono text-emerald-300 mb-1">Total Progress</div>
+                                            <div className="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    className="h-full bg-emerald-500 shadow-[0_0_10px_#06b6d4]"
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${(nodes.filter(n => n.isCompleted).length / nodes.length) * 100}%` }}
+                                                />
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div
-                                            ref={scrollContainerRef}
-                                            className="flex-1 overflow-y-auto md:px-5 custom-scrollbar relative"
-                                        >
-                                            <div className="max-w-xl mx-auto relative py-12">
-                                                {/* Strategic Background Glow */}
-                                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-full bg-cyan-500/5 blur-[100px] pointer-events-none" />
+                                    <div
+                                        ref={scrollContainerRef}
+                                        className="flex-1 overflow-y-auto md:px-5 custom-scrollbar relative"
+                                    >
+                                        <div className="max-w-xl mx-auto relative py-12">
+                                            {/* Strategic Background Glow */}
+                                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-full bg-cyan-500/5 blur-[100px] pointer-events-none" />
 
-                                                {/* Enhanced Central Timeline Path */}
-                                                <div className="absolute left-1/2 top-0 bottom-0 w-[4px] -translate-x-1/2 overflow-hidden">
-                                                    <div className="h-full w-full bg-slate-800/50 rounded-full" />
-                                                    <motion.div
-                                                        className="absolute top-0 left-0 right-0 bg-linear-to-b from-cyan-400 via-purple-500 to-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]"
-                                                        style={{
-                                                            height: `${Math.max(0, (nodes.findIndex(n => n.isCurrent) + 0.5) / nodes.length * 100)}%`
-                                                        }}
-                                                    />
-                                                </div>
+                                            {/* Enhanced Central Timeline Path */}
+                                            <div className="absolute left-1/2 top-0 bottom-0 w-[4px] -translate-x-1/2 overflow-hidden">
+                                                <div className="h-full w-full bg-slate-800/50 rounded-full" />
+                                                <motion.div
+                                                    className="absolute top-0 left-0 right-0 bg-linear-to-b from-cyan-400 via-purple-500 to-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+                                                    style={{
+                                                        height: `${Math.max(0, (nodes.findIndex(n => n.isCurrent) + 0.5) / nodes.length * 100)}%`
+                                                    }}
+                                                />
+                                            </div>
 
-                                                <div className="space-y-20 relative">
-                                                    {nodes.map((node, i) => {
-                                                        const Icon = ICON_MAP[node.id] || Brain;
-                                                        const content = moduleContent[node.id];
-                                                        const isEven = i % 2 === 0;
+                                            <div className="space-y-20 relative">
+                                                {nodes.map((node, i) => {
+                                                    const Icon = ICON_MAP[node.id] || Brain;
+                                                    const content = moduleContent[node.id];
+                                                    const isEven = i % 2 === 0;
 
-                                                        return (
-                                                            <div key={node.id} data-node-index={i} className="relative">
-                                                                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
-                                                                    {/* Left Column */}
-                                                                    <div className="flex justify-end">
-                                                                        {isEven && (
-                                                                            <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="right" />
-                                                                        )}
-                                                                    </div>
+                                                    return (
+                                                        <div key={node.id} data-node-index={i} className="relative">
+                                                            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
+                                                                {/* Left Column */}
+                                                                <div className="flex justify-end">
+                                                                    {isEven && (
+                                                                        <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="right" />
+                                                                    )}
+                                                                </div>
 
-                                                                    {/* Timeline Connector/Icon */}
-                                                                    <div className="relative z-20">
-                                                                        <motion.div
-                                                                            initial={{ scale: 0.8, opacity: 0 }}
-                                                                            animate={{ scale: 1, opacity: 1 }}
-                                                                            transition={{ delay: i * 0.05 }}
-                                                                        >
-                                                                            <LevelNode
-                                                                                node={node}
-                                                                                Icon={Icon}
-                                                                                onClick={() => handleNodeClick(node)}
-                                                                            />
-                                                                        </motion.div>
-                                                                    </div>
+                                                                {/* Timeline Connector/Icon */}
+                                                                <div className="relative z-20">
+                                                                    <motion.div
+                                                                        initial={{ scale: 0.8, opacity: 0 }}
+                                                                        animate={{ scale: 1, opacity: 1 }}
+                                                                        transition={{ delay: i * 0.05 }}
+                                                                    >
+                                                                        <LevelNode
+                                                                            node={node}
+                                                                            Icon={Icon}
+                                                                            onClick={() => handleNodeClick(node)}
+                                                                        />
+                                                                    </motion.div>
+                                                                </div>
 
-                                                                    {/* Right Column */}
-                                                                    <div className="flex justify-start">
-                                                                        {!isEven && (
-                                                                            <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="left" />
-                                                                        )}
-                                                                    </div>
+                                                                {/* Right Column */}
+                                                                <div className="flex justify-start">
+                                                                    {!isEven && (
+                                                                        <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="left" />
+                                                                    )}
                                                                 </div>
                                                             </div>
-                                                        );
-                                                    })}
-                                                </div>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     </div>
-                                </PopoverContent>
-                            </Popover>
-                        </motion.div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
 
                         <Link
                             to="/profile"

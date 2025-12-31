@@ -9,6 +9,7 @@ import MainLayout from "./layouts/main";
 import ProfilePage from "./view/profile";
 import CoursesLayout from "./layouts/courses";
 import ModuleDetailsPage from "./view/ModuleDetailsPage";
+import PuzzlePage from "./view/PuzzlePage";
 
 const router = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
             {
                 path: '/module/:moduleId',
                 element: <ModuleDetailsPage />
+            },
+            {
+                path: '/puzzle',
+                element: <PuzzlePage />
             },
         ]
     },

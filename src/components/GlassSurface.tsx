@@ -30,7 +30,11 @@ const GlassSurface: React.FC<GlassSurfaceProps> = ({
     >
       {/* Scanline overlay */}
       <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
+      {/* Outer glow */}
+      <div className="absolute inset-0 rounded-[inherit] shadow-[0_0_20px_rgba(34,211,238,0.15),0_0_40px_rgba(34,211,238,0.05)]" />
 
+      {/* Inner glow */}
+      <div className="absolute inset-px rounded-[inherit] shadow-[inset_0_0_12px_rgba(34,211,238,0.15)]" />
       {/* Main border */}
       <div className="absolute inset-0 border border-cyan-400/30" />
 

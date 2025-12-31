@@ -1,12 +1,6 @@
-/**
- * Cyberpunk 2077 styled Floating Dock
- * Desktop navbar positioned at the bottom with corner bracket accents
- **/
-
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/provider/theme-provider";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Moon, Sun } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
 export const FloatingDock = ({
@@ -50,24 +44,6 @@ const FloatingDockDesktop = ({
       {items.map((item) => (
         <IconContainer mouseX={mouseX} key={item.title} {...item} />
       ))}
-
-      {/* Theme Toggle */}
-      {/* <motion.div
-        style={{ width: 40, height: 40 }}
-        className="relative aspect-square bg-slate-900/80 flex items-center justify-center cursor-pointer border border-cyan-400/30 hover:border-yellow-400 transition-colors group"
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      >
-        <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400 group-hover:border-yellow-400 transition-colors" />
-        <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400 group-hover:border-yellow-400 transition-colors" />
-
-        <motion.div className="flex items-center justify-center">
-          {theme === "dark" ? (
-            <Sun className="h-5 w-5 text-yellow-400" />
-          ) : (
-            <Moon className="h-5 w-5 text-cyan-400" />
-          )}
-        </motion.div>
-      </motion.div> */}
     </motion.div>
   );
 };
