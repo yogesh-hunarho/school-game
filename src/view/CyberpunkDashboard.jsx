@@ -4,6 +4,8 @@ import { modules } from "@/store/level-canvas-config";
 import { CyberpunkCard } from "@/components/cyberpunk-card";
 import { useIsMobile } from "@/hook/use-mobile";
 import { motion } from "framer-motion";
+import { CyberpunkLock } from "@/components/ui/cyber-component/cyber-punk.cardlock";
+import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 
 export const CyberpunkDashboard = () => {
     const { player, getModuleProgress } = useLMSStore();
@@ -65,11 +67,11 @@ export const CyberpunkDashboard = () => {
                             <div className="flex flex-col items-end px-4">
                                 <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Overall_Progress</span>
                                 <div className="flex items-center gap-3 mt-1">
-                                    <div className="w-32 h-2 bg-slate-800 rounded-full overflow-hidden border border-white/5 p-0.5">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${(completedCount / 9) * 100}%` }}
-                                            className="h-full bg-linear-to-r from-cyan-500 to-purple-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                                    <div className="w-60">
+                                        <CyberpunkProgressBar
+                                            progress={(completedCount / 9) * 100}
+                                            color={Math.min((completedCount / 9) * 100, 100) === 100 ? "green" : (completedCount / 9) * 100 > 0 ? "cyan" : "orange"}
+                                            hideLabel={true}
                                         />
                                     </div>
                                     <span className="text-sm font-black text-white">{Math.floor((completedCount / 9) * 100)}%</span>
@@ -89,17 +91,33 @@ export const CyberpunkDashboard = () => {
                         const progress = getModuleProgress(module.id);
 
                         return (
-                            <CyberpunkCard
-                                key={module.id}
-                                module={module}
-                                status={status}
-                                isLocked={isLocked}
-                                isCurrent={isCurrent}
-                                isCompleted={isCompleted}
-                                isActive={isActive}
-                                progress={progress}
-                                handleModuleSelect={handleModuleSelect}
-                            />
+                            <>{
+                                isLocked ? (
+                                    <CyberpunkLock
+                                        key={module.id}
+                                        module={module}
+                                        status={status}
+                                        isLocked={isLocked}
+                                        isCurrent={isCurrent}
+                                        isCompleted={isCompleted}
+                                        isActive={isActive}
+                                        progress={progress}
+                                    />
+                                ) : (
+                                    <CyberpunkCard
+                                        key={module.id}
+                                        module={module}
+                                        status={status}
+                                        isLocked={isLocked}
+                                        isCurrent={isCurrent}
+                                        isCompleted={isCompleted}
+                                        isActive={isActive}
+                                        progress={progress}
+                                        handleModuleSelect={handleModuleSelect}
+                                    />
+                                )
+                            }
+                            </>
                         );
                     })}
                 </div>

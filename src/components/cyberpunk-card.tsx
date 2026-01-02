@@ -75,6 +75,7 @@ export function CyberpunkCard({
     };
 
     const playaudioForModuleSelect = (id: string) => {
+        console.log("id", id)
         if (isLocked) {
             playSound("disabled");
             return;
@@ -86,7 +87,7 @@ export function CyberpunkCard({
     return (
         <motion.div
             whileTap={{ scale: 0.98 }}
-            onClick={(e) => { e.stopPropagation(); playaudioForModuleSelect(module.id) }}
+            onClick={() => playaudioForModuleSelect(module.id)}
             className={cn(
                 "relative cursor-pointer transition-all duration-300 group",
                 isLocked && "opacity-80"
@@ -97,10 +98,6 @@ export function CyberpunkCard({
                 "relative bg-slate-950/95 transition-all duration-300 overflow-hidden",
                 colors.glow
             )}>
-                {/* Micro-tech decor - Tiny Serial Numbers */}
-                <div className="absolute top-1 right-12 font-mono text-[6px] text-cyan-500/20 pointer-events-none select-none">
-                    M-CODE: {module.id.split('-').map(s => s[0]).join('').toUpperCase()}-{Math.floor(Math.random() * 9000 + 1000)}
-                </div>
 
                 {/* Scanline pattern */}
                 <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />

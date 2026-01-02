@@ -288,7 +288,7 @@ export default function Header() {
                                                     const isEven = i % 2 === 0;
 
                                                     return (
-                                                        <div key={node.id} data-node-index={i} className="relative">
+                                                        <div key={node.id} data-node-index={i} className="relative" onClick={() => setIsLevelModalOpen(!isLevelModalOpen)}>
                                                             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
                                                                 {/* Left Column */}
                                                                 <div className="flex justify-end">

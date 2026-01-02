@@ -295,17 +295,26 @@
 }
 
 @keyframes shake {
-  0%,
-  100% {
-    transform: translateX(0);
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
   }
 
-  25% {
-    transform: translateX(-5px);
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
   }
 
-  75% {
-    transform: translateX(5px);
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
   }
 }
 
@@ -313,6 +322,7 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -322,13 +332,14 @@
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(300%);
   }
 }
 
 .animate-shake {
-  animation: shake 0.2s ease-in-out 0s 2;
+  animation: shake 0.5s ease-out;
 }
 
 @layer utilities {

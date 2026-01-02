@@ -1,33 +1,80 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ChevronLeft, Gamepad2, Info, Trophy, Target, Zap } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import PuzzleGame from '@/components/PuzzleGame';
+import { motion } from "framer-motion"
+import PuzzleGame from "@/components/PuzzleGame"
 
 const PuzzlePage = () => {
     return (
-        <div className="min-h-screen bg-[#020617] relative overflow-hidden flex flex-col pt-5 pb-10 px-4 md:px-8">
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[50%] bg-cyan-500/10 blur-[120px] rounded-full animate-pulse" />
-                <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,24,38,0.1)_1.5px,transparent_1.5px),linear-gradient(90deg,rgba(18,24,38,0.1)_1.5px,transparent_1.5px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+        <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+            {/* Radial gradient background */}
+            <div className="fixed inset-0 opacity-40 pointer-events-none z-0">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage:
+                            "radial-gradient(circle at 15% 30%, rgba(6, 182, 212, 0.15) 0%, transparent 45%), radial-gradient(circle at 85% 70%, rgba(168, 85, 247, 0.15) 0%, transparent 45%), radial-gradient(circle at 50% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%)",
+                    }}
+                ></div>
             </div>
 
-            <div className="max-w-6xl mx-auto w-full relative z-10 flex flex-col gap-8">
-                <div className="grid gap-8 items-start">
-                    <div className="lg:col-span-8">
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.3 }}
-                        >
-                            <PuzzleGame />
-                        </motion.div>
-                    </div>
-                </div>
+            {/* Animated grid background */}
+            <div className="fixed inset-0 opacity-[0.06] pointer-events-none z-0">
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundImage:
+                            "linear-gradient(0deg, transparent 24%, rgba(6, 182, 212, 0.15) 25%, rgba(6, 182, 212, 0.15) 26%, transparent 27%, transparent 74%, rgba(6, 182, 212, 0.15) 75%, rgba(6, 182, 212, 0.15) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(6, 182, 212, 0.15) 25%, rgba(6, 182, 212, 0.15) 26%, transparent 27%, transparent 74%, rgba(6, 182, 212, 0.15) 75%, rgba(6, 182, 212, 0.15) 76%, transparent 77%, transparent)",
+                        backgroundSize: "60px 60px",
+                        animation: "gridScan 10s linear infinite",
+                    }}
+                ></div>
             </div>
+
+            {/* Floating particles decoration */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute w-2 h-2 bg-cyan-400/30 rounded-full"
+                        style={{
+                            left: `${10 + i * 12}%`,
+                            top: `${20 + (i % 3) * 25}%`,
+                        }}
+                        animate={{
+                            y: [0, -30, 0],
+                            opacity: [0.3, 0.7, 0.3],
+                            scale: [1, 1.3, 1],
+                        }}
+                        transition={{
+                            duration: 3 + i * 0.5,
+                            repeat: Infinity,
+                            delay: i * 0.3,
+                        }}
+                    />
+                ))}
+            </div>
+
+            {/* Main game content */}
+            <motion.div
+                className="relative z-10"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <PuzzleGame />
+            </motion.div>
+
+            {/* CSS for grid animation */}
+            <style>{`
+                @keyframes gridScan {
+                    0% {
+                        background-position: 0 0;
+                    }
+                    100% {
+                        background-position: 60px 60px;
+                    }
+                }
+            `}</style>
         </div>
-    );
-};
+    )
+}
 
-export default PuzzlePage;
+export default PuzzlePage

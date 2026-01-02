@@ -25,7 +25,6 @@ const ModuleDetailsPage = () => {
                     currentModuleId: moduleId,
                 },
             }));
-            // Also ensure content panel is "open" logic if needed, though here we are just showing it
             openContentPanel();
         }
     }, [moduleId, openContentPanel]);
@@ -34,8 +33,6 @@ const ModuleDetailsPage = () => {
         navigate(-1);
     };
 
-    // Check if module exists or is locked to potentially redirect? 
-    // For now we trust the card lock logic, but good to have a safeguard if user types URL manually.
     const moduleStatus = player.moduleStatus[moduleId || ""] || "locked";
     const isLocked = moduleStatus === "locked";
 
