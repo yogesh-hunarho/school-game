@@ -3,7 +3,7 @@ import PuzzleGame from "@/components/PuzzleGame"
 
 const PuzzlePage = () => {
     return (
-        <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="relative min-h-screen overflow-hidden bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
             {/* Radial gradient background */}
             <div className="fixed inset-0 opacity-40 pointer-events-none z-0">
                 <div

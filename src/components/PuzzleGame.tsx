@@ -1,9 +1,7 @@
-"use client"
-
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { RefreshCw, Eye, Star, Trophy, Zap, Target, Sparkles, RotateCcw, HelpCircle, TrendingUp, Clock, Gamepad2 } from "lucide-react"
+import { RefreshCw, Eye, Star, Zap, Target, Sparkles, RotateCcw, HelpCircle, TrendingUp, Clock } from "lucide-react"
 import confetti from "canvas-confetti"
 
 interface Tile {
