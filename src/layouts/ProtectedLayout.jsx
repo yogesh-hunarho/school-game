@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { useLayoutEffect, useState } from "react";
+import { Navigate, Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/auth.store";
 import Header from "@/components/Header";
 import { FloatingDock } from "@/components/ui/floating-dock";
@@ -39,6 +39,11 @@ export default function ProtectedLayout() {
     const token = useAuthStore((state) => state.token);
     const notification = useAuthStore((state) => state.notification);
     const [isDockHovered, setIsDockHovered] = useState(false);
+    const location = useLocation();
+
+    useLayoutEffect(() => {
+        document.documentElement.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }, [location.pathname]);
 
     if (!token) {
         return <Navigate to="/login" />;
@@ -93,6 +98,7 @@ export default function ProtectedLayout() {
 
                 <ConfettiEffect />
                 <ModuleUnlockAnimation />
+                <ScrollRestoration />
             </div>
         </ClickSpark>
     );

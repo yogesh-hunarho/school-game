@@ -8,8 +8,17 @@ export default function MainLayout() {
     return (
         <main className="relative w-full flex items-center justify-center overflow-hidden mt-10 p-4 md:p-2 mb-5">
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-                <div className="relative flex justify-center items-end min-h-[320px] sm:min-h-[380px] md:min-h-[420px]">
-                    {/* here 3d */}
+                <div className="relative flex justify-center items-end">
+                    <div className="relative flex justify-center items-end">
+                        {/* <div className="absolute bottom-6 w-[70%] h-[20%] bg-primary/20 blur-3xl rounded-full" /> */}
+                        <div className="relative w-full max-w-[260px] sm:max-w-sm transition-transform duration-500 md:hover:scale-105">
+                            <img
+                                src="/peep-standing-15.png"
+                                alt="Recruit"
+                                className="w-full h-[500px] object-contain "
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* CONTENT */}

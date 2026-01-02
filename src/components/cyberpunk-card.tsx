@@ -220,7 +220,7 @@ export function CyberpunkCard({
                                 >
                                     <div className="flex items-center gap-2">
                                         {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : null}
-                                        <span>{isCompleted ? "REVIEW_ARCHIVE" : isActive ? "RESUME_MISSION" : "INITIALIZE_LINK"}</span>
+                                        <span>{isCompleted ? "REVIEW_MISSION" : isActive ? "RESUME_MISSION" : "START_MISSION"}</span>
                                     </div>
                                 </CyberpunkButton>
                             </motion.div>

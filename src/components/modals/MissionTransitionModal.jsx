@@ -37,12 +37,13 @@ export const MissionTransitionModal = () => {
 
             // Construct cinematic text using the new data
             const description = nextModuleData.description || "Classified Operation";
-            const fullText = `MISSION COMPLETE: ${currentModule?.title || 'Unknown Sector'}\nDATA SYNC: 100%\n\nESTABLISHING SECURE LINK TO NEXT SECTOR...\nTARGET: ${nextModuleData.title.toUpperCase()}\nOBJECTIVE: ${description}\n\nACCESS GRANTED. STANDBY FOR TRANSFER.`;
+            const fullText = `MISSION COMPLETE: ${currentModule?.title || 'Unknown Mission'}\n DATA SYNC: 100%\n\nESTABLISHING SECURE LINK TO NEXT Mission...\nTARGET: ${nextModuleData.title.toUpperCase()}\nOBJECTIVE: ${description}\n\nACCESS GRANTED. STANDBY FOR TRANSFER.`;
 
             let currentIndex = 0;
             const typingInterval = setInterval(() => {
                 if (currentIndex < fullText.length) {
-                    setDisplayedText(prev => prev + fullText[currentIndex]);
+                    const char = fullText[currentIndex] ?? "";
+                    setDisplayedText(prev => prev + char);
                     currentIndex++;
                 } else {
                     clearInterval(typingInterval);
@@ -94,7 +95,7 @@ export const MissionTransitionModal = () => {
                 className="fixed inset-0 z-210 flex items-center justify-center bg-transparent/10 backdrop-blur-xl p-4"
             >
                 <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div className="relative h-64 md:h-96 bg-slate-900/50 border border-cyan-500/30 p-8 flex flex-col justify-between overflow-hidden">
+                    <div className="relative md:h-full bg-slate-900/50 border border-cyan-500/30 p-8 flex flex-col justify-between overflow-hidden">
                         <div className="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#0891b2_1px,transparent_1px),linear-gradient(to_bottom,#0891b2_1px,transparent_1px)] bg-size-[24px_24px]" />
                         <div className="relative z-10 flex items-center justify-between h-full">
                             <motion.div
@@ -142,11 +143,11 @@ export const MissionTransitionModal = () => {
                             {/* Text Content */}
                             <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed">
                                 {displayedText}
-                                <motion.span
+                                {!isTypingComplete && (<motion.span
                                     animate={{ opacity: [0, 1, 0] }}
                                     transition={{ repeat: Infinity, duration: 0.8 }}
-                                    className="inline-block w-2 H-4 bg-green-500 ml-1 align-middle"
-                                >_</motion.span>
+                                    className="inline-block w-2 h-4 bg-green-500 ml-1 align-middle"
+                                >_</motion.span>)}
                             </div>
                         </div>
 
@@ -158,20 +159,8 @@ export const MissionTransitionModal = () => {
                                     className="w-full"
                                     variant="secondary"
                                 >
-                                    Access Next Mission
+                                    Access_Next_Mission
                                 </CyberpunkButton>
-                                // <motion.button
-                                //     initial={{ opacity: 0, y: 20 }}
-                                //     animate={{ opacity: 1, y: 0 }}
-                                //     onClick={handleAccessNext}
-                                //     className="group relative w-full py-4 bg-cyan-500 hover:bg-cyan-400 transition-all duration-300 rounded-lg overflow-hidden"
-                                // >
-                                //     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                                //     <span className="relative z-10 flex items-center justify-center gap-2 font-bold text-black uppercase tracking-widest">
-                                //         Access Next Mission
-                                //         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                //     </span>
-                                // </motion.button>
                             )}
                         </AnimatePresence>
                     </div>

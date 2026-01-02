@@ -7,17 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 
-// Animation variants for staggered children
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: 0.08,
-            delayChildren: 0.1
-        }
-    }
-};
 
 const cardVariants = {
     hidden: {
@@ -118,7 +107,7 @@ export const ModuleContentPanel = () => {
     };
 
     return (
-        <div className="relative bg-gradient-to-br from-slate-950 via-slate-900/98 to-slate-950 shadow-2xl">
+        <div className="relative bg-linear-to-br from-slate-950 via-slate-900/98 to-slate-950 shadow-2xl">
             {/* Ambient background effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
@@ -148,14 +137,14 @@ export const ModuleContentPanel = () => {
                         transition={{ type: "spring", stiffness: 400 }}
                     >
                         <div className={cn(
-                            "flex h-16 w-16 items-center justify-center text-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-2 rounded-lg",
+                            "flex h-16 w-16 items-center justify-center text-3xl bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 border-2",
                             isLocked ? "border-slate-600" : "border-cyan-400/60"
                         )}>
                             {currentModule.icon}
                         </div>
                         {!isLocked && (
                             <motion.div
-                                className="absolute -inset-1 bg-gradient-to-r from-cyan-400/20 via-purple-500/20 to-cyan-400/20 rounded-lg blur-sm -z-10"
+                                className="absolute -inset-1 bg-linear-to-r from-cyan-400/20 via-purple-500/20 to-cyan-400/20 blur-sm -z-10"
                                 animate={{
                                     opacity: [0.5, 0.8, 0.5],
                                 }}
@@ -172,7 +161,7 @@ export const ModuleContentPanel = () => {
 
                     <div className="flex-1">
                         <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-cyan-400 uppercase tracking-wider">
+                            <h2 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-cyan-300 to-cyan-400 uppercase tracking-wider">
                                 {currentModule.name}
                             </h2>
                             {isLocked && (
@@ -204,7 +193,7 @@ export const ModuleContentPanel = () => {
             </motion.div>
 
             {/* Progress Bar */}
-            {!isLocked && (
+            {!isLocked && progress > 0 && (
                 <motion.div
                     initial={{ opacity: 0, scaleX: 0 }}
                     animate={{ opacity: 1, scaleX: 1 }}
@@ -226,7 +215,7 @@ export const ModuleContentPanel = () => {
                     transition={{ duration: 0.4, delay: 0.2 }}
                     className="mx-6 mt-4 relative overflow-hidden"
                 >
-                    <div className="relative border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-amber-500/10 backdrop-blur-sm p-4 rounded-lg">
+                    <div className="relative border border-amber-500/30 bg-linear-to-r from-amber-500/10 via-amber-500/5 to-amber-500/10 backdrop-blur-sm p-4">
                         <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-amber-400 rounded-tl" />
                         <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-amber-400 rounded-br" />
                         <div className="flex items-start gap-4">
@@ -250,7 +239,6 @@ export const ModuleContentPanel = () => {
             {/* Module Stats Grid (for locked modules) */}
             {isLocked && moduleInfo && (
                 <motion.div
-                    variants={containerVariants}
                     initial="hidden"
                     animate="visible"
                     className="mx-6 mt-4 grid grid-cols-3 gap-3"
@@ -258,9 +246,9 @@ export const ModuleContentPanel = () => {
                     {moduleInfo.videos > 0 && (
                         <motion.div
                             variants={cardVariants}
-                            className="relative p-4 text-center border border-cyan-400/20 bg-gradient-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm rounded-lg group hover:border-cyan-400/40 transition-colors duration-300"
+                            className="relative p-4 text-center border border-cyan-400/20 bg-linear-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm group hover:border-cyan-400/40 transition-colors duration-300"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-linear-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <p className="text-2xl font-bold text-cyan-400">{moduleInfo.videos}</p>
                             <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">VIDEOS</p>
                         </motion.div>
@@ -268,9 +256,9 @@ export const ModuleContentPanel = () => {
                     {moduleInfo.quizzes > 0 && (
                         <motion.div
                             variants={cardVariants}
-                            className="relative p-4 text-center border border-purple-400/20 bg-gradient-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm rounded-lg group hover:border-purple-400/40 transition-colors duration-300"
+                            className="relative p-4 text-center border border-purple-400/20 bg-linear-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm  group hover:border-purple-400/40 transition-colors duration-300"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-linear-to-br from-purple-500/5 to-transparent  opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <p className="text-2xl font-bold text-purple-400">{moduleInfo.quizzes}</p>
                             <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">QUIZZES</p>
                         </motion.div>
@@ -278,9 +266,9 @@ export const ModuleContentPanel = () => {
                     {moduleInfo.totalStars > 0 && (
                         <motion.div
                             variants={cardVariants}
-                            className="relative p-4 text-center border border-amber-400/20 bg-gradient-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm rounded-lg group hover:border-amber-400/40 transition-colors duration-300"
+                            className="relative p-4 text-center border border-amber-400/20 bg-linear-to-br from-slate-900/80 to-slate-800/40 backdrop-blur-sm  group hover:border-amber-400/40 transition-colors duration-300"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute inset-0 bg-linear-to-br from-amber-500/5 to-transparent  opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <p className="text-2xl font-bold text-amber-400">{moduleInfo.totalStars}00</p>
                             <p className="text-[10px] text-slate-500 uppercase tracking-wider mt-1">COINS</p>
                         </motion.div>
@@ -292,26 +280,16 @@ export const ModuleContentPanel = () => {
             <div onClick={playClick} className="flex-1 overflow-y-auto p-6 pb-24">
                 {/* Videos Section */}
                 {content.videos.length > 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="mb-8"
-                    >
+                    <motion.div className="mb-8">
                         <h3 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-cyan-400">
-                            <div className="p-2.5 bg-cyan-400/10 border border-cyan-400/30 rounded-lg">
+                            <div className="p-2.5 bg-cyan-400/10 border border-cyan-400/30 ">
                                 <Play className="h-4 w-4" />
                             </div>
                             <span>Data Streams</span>
                             <span className="text-slate-500">({content.videos.length})</span>
                         </h3>
 
-                        <motion.div
-                            variants={containerVariants}
-                            initial="hidden"
-                            animate="visible"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                        >
+                        <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {content.videos.map((video, index) => {
                                 const isWatched = isVideoWatched(moduleId, video.id);
                                 const isClicked = clickedId === video.id;
@@ -319,7 +297,6 @@ export const ModuleContentPanel = () => {
                                 return (
                                     <motion.button
                                         key={video.id}
-                                        variants={cardVariants}
                                         whileHover={{
                                             scale: isLocked ? 1 : 1.02,
                                             y: isLocked ? 0 : -4
@@ -327,26 +304,26 @@ export const ModuleContentPanel = () => {
                                         whileTap={{ scale: isLocked ? 1 : 0.98 }}
                                         onClick={(e) => handleItemClick(e, video.id, isLocked, () => openVideoModal(video))}
                                         className={cn(
-                                            "relative w-full text-left overflow-hidden rounded-xl transition-all duration-300 group",
+                                            "relative w-full text-left overflow-hidden transition-all duration-300 group",
                                             shakingId === video.id && "animate-shake",
                                             isClicked && "scale-95"
                                         )}
                                     >
                                         {/* Card Background */}
                                         <div className={cn(
-                                            "absolute inset-0 rounded-xl transition-all duration-300",
+                                            "absolute inset-0 transition-all duration-300",
                                             isLocked
                                                 ? "bg-slate-900/60 border border-slate-700/50"
                                                 : isWatched
-                                                    ? "bg-gradient-to-br from-emerald-950/80 via-emerald-900/40 to-slate-900/80 border border-emerald-500/30"
-                                                    : "bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 border border-cyan-500/20 group-hover:border-cyan-400/50"
+                                                    ? "bg-linear-to-br from-emerald-950/80 via-emerald-900/40 to-slate-900/80 border border-emerald-500/30"
+                                                    : "bg-linear-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 border border-cyan-500/20 group-hover:border-cyan-400/50"
                                         )} />
 
                                         {/* Hover Glow Effect */}
                                         {!isLocked && (
                                             <motion.div
                                                 className={cn(
-                                                    "absolute inset-0 rounded-xl blur-xl -z-10",
+                                                    "absolute inset-0 blur-xl -z-10",
                                                     isWatched
                                                         ? "bg-emerald-500/10"
                                                         : "bg-cyan-500/10"
@@ -362,7 +339,7 @@ export const ModuleContentPanel = () => {
                                             <div className="flex items-start justify-between mb-4">
                                                 <motion.div
                                                     className={cn(
-                                                        "flex h-10 w-10 items-center justify-center text-sm font-bold rounded-lg transition-all duration-300",
+                                                        "flex h-10 w-10 items-center justify-center text-sm font-bold  transition-all duration-300",
                                                         isLocked
                                                             ? "bg-slate-800/80 text-slate-500 border border-slate-700"
                                                             : isWatched
@@ -433,7 +410,7 @@ export const ModuleContentPanel = () => {
                                                 <motion.div
                                                     initial={{ scaleX: 0 }}
                                                     animate={{ scaleX: 1 }}
-                                                    className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500 rounded-b-xl origin-left"
+                                                    className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-emerald-500 via-emerald-400 to-emerald-500 rounded-b-xl origin-left"
                                                 />
                                             )}
                                         </div>
@@ -467,7 +444,7 @@ export const ModuleContentPanel = () => {
                         className="mb-8"
                     >
                         <h3 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-amber-400">
-                            <div className="p-2.5 bg-amber-400/10 border border-amber-400/30 rounded-lg">
+                            <div className="p-2.5 bg-amber-400/10 border border-amber-400/30 ">
                                 <BookCheck className="h-4 w-4" />
                             </div>
                             <span>Neural Tests</span>
@@ -475,7 +452,6 @@ export const ModuleContentPanel = () => {
                         </h3>
 
                         <motion.div
-                            variants={containerVariants}
                             initial="hidden"
                             animate="visible"
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -495,25 +471,25 @@ export const ModuleContentPanel = () => {
                                         whileTap={{ scale: isLocked ? 1 : 0.98 }}
                                         onClick={(e) => handleItemClick(e, quiz.id, isLocked, () => openQuizModal(quiz))}
                                         className={cn(
-                                            "relative w-full text-left overflow-hidden rounded-xl transition-all duration-300 group",
+                                            "relative w-full text-left overflow-hidden   transition-all duration-300 group",
                                             shakingId === quiz.id && "animate-shake",
                                             isClicked && "scale-95"
                                         )}
                                     >
                                         {/* Card Background */}
                                         <div className={cn(
-                                            "absolute inset-0 rounded-xl transition-all duration-300",
+                                            "absolute inset-0    transition-all duration-300",
                                             isLocked
                                                 ? "bg-slate-900/60 border border-slate-700/50"
                                                 : isCompleted
-                                                    ? "bg-gradient-to-br from-amber-950/80 via-orange-900/40 to-slate-900/80 border border-amber-500/30"
-                                                    : "bg-gradient-to-br from-slate-900/80 via-purple-900/20 to-slate-900/80 border border-purple-500/20 group-hover:border-amber-400/50"
+                                                    ? "bg-linear-to-br from-amber-950/80 via-orange-900/40 to-slate-900/80 border border-amber-500/30"
+                                                    : "bg-linear-to-br from-slate-900/80 via-purple-900/20 to-slate-900/80 border border-purple-500/20 group-hover:border-amber-400/50"
                                         )} />
 
                                         {/* Animated gradient border on hover */}
                                         {!isLocked && !isCompleted && (
                                             <motion.div
-                                                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                                className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                                                 style={{
                                                     background: "linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent)",
                                                     backgroundSize: "200% 100%",
@@ -532,7 +508,7 @@ export const ModuleContentPanel = () => {
                                         {/* Hover Glow Effect */}
                                         {!isLocked && (
                                             <motion.div
-                                                className="absolute inset-0 rounded-xl bg-amber-500/10 blur-xl -z-10"
+                                                className="absolute inset-0  bg-amber-500/10 blur-xl -z-10"
                                                 initial={{ opacity: 0 }}
                                                 whileHover={{ opacity: 1 }}
                                             />
@@ -544,12 +520,12 @@ export const ModuleContentPanel = () => {
                                             <div className="flex items-start justify-between mb-4">
                                                 <motion.div
                                                     className={cn(
-                                                        "flex h-10 w-10 items-center justify-center rounded-lg transition-all duration-300",
+                                                        "flex h-10 w-10 items-center justify-center  transition-all duration-300",
                                                         isLocked
                                                             ? "bg-slate-800/80 text-slate-500 border border-slate-700"
                                                             : isCompleted
-                                                                ? "bg-gradient-to-br from-amber-500 to-orange-500 text-black"
-                                                                : "bg-gradient-to-br from-purple-500/20 to-amber-500/20 text-amber-400 border border-amber-500/30 group-hover:from-amber-500/30 group-hover:to-orange-500/30"
+                                                                ? "bg-linear-to-br from-amber-500 to-orange-500 text-black"
+                                                                : "bg-linear-to-br from-purple-500/20 to-amber-500/20 text-amber-400 border border-amber-500/30 group-hover:from-amber-500/30 group-hover:to-orange-500/30"
                                                     )}
                                                     whileHover={!isLocked ? { scale: 1.1, rotate: -5 } : {}}
                                                 >
@@ -613,7 +589,7 @@ export const ModuleContentPanel = () => {
                                                 <motion.div
                                                     initial={{ scaleX: 0 }}
                                                     animate={{ scaleX: 1 }}
-                                                    className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500 rounded-b-xl origin-left"
+                                                    className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-amber-500 via-orange-400 to-amber-500 rounded-b-xl origin-left"
                                                 />
                                             )}
                                         </div>
@@ -646,7 +622,7 @@ export const ModuleContentPanel = () => {
                         transition={{ delay: 0.4 }}
                     >
                         <h3 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-emerald-400">
-                            <div className="p-2.5 bg-emerald-400/10 border border-emerald-400/30 rounded-lg">
+                            <div className="p-2.5 bg-emerald-400/10 border border-emerald-400/30 ">
                                 🏆
                             </div>
                             <span>Final Protocols</span>
@@ -654,7 +630,6 @@ export const ModuleContentPanel = () => {
                         </h3>
 
                         <motion.div
-                            variants={containerVariants}
                             initial="hidden"
                             animate="visible"
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -670,22 +645,22 @@ export const ModuleContentPanel = () => {
                                     whileTap={{ scale: isLocked ? 1 : 0.98 }}
                                     onClick={(e) => handleItemClick(e, assessment.id, isLocked, () => { })}
                                     className={cn(
-                                        "relative w-full text-left overflow-hidden rounded-xl transition-all duration-300 group",
+                                        "relative w-full text-left overflow-hidden   transition-all duration-300 group",
                                         shakingId === assessment.id && "animate-shake"
                                     )}
                                 >
                                     {/* Card Background */}
                                     <div className={cn(
-                                        "absolute inset-0 rounded-xl transition-all duration-300",
+                                        "absolute inset-0    transition-all duration-300",
                                         isLocked
                                             ? "bg-slate-900/60 border border-slate-700/50"
-                                            : "bg-gradient-to-br from-slate-900/80 via-emerald-900/20 to-slate-900/80 border border-emerald-500/20 group-hover:border-emerald-400/50"
+                                            : "bg-linear-to-br from-slate-900/80 via-emerald-900/20 to-slate-900/80 border border-emerald-500/20 group-hover:border-emerald-400/50"
                                     )} />
 
                                     {/* Hover Glow Effect */}
                                     {!isLocked && (
                                         <motion.div
-                                            className="absolute inset-0 rounded-xl bg-emerald-500/10 blur-xl -z-10"
+                                            className="absolute inset-0  bg-emerald-500/10 blur-xl -z-10"
                                             initial={{ opacity: 0 }}
                                             whileHover={{ opacity: 1 }}
                                         />
@@ -697,10 +672,10 @@ export const ModuleContentPanel = () => {
                                         <div className="flex items-start justify-between mb-4">
                                             <motion.div
                                                 className={cn(
-                                                    "flex h-10 w-10 items-center justify-center text-xl rounded-lg transition-all duration-300",
+                                                    "flex h-10 w-10 items-center justify-center text-xl  transition-all duration-300",
                                                     isLocked
                                                         ? "bg-slate-800/80 border border-slate-700"
-                                                        : "bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30"
+                                                        : "bg-linear-to-br from-emerald-500/20 to-teal-500/20 border border-emerald-500/30"
                                                 )}
                                                 whileHover={!isLocked ? { scale: 1.1, rotate: 10 } : {}}
                                             >
@@ -769,7 +744,7 @@ export const ModuleContentPanel = () => {
                         className="flex flex-col items-center justify-center py-16 text-center"
                     >
                         <motion.div
-                            className="relative mb-6 flex h-20 w-20 items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 border-2 border-cyan-400/20 rounded-xl"
+                            className="relative mb-6 flex h-20 w-20 items-center justify-center bg-linear-to-br from-slate-900 to-slate-800 border-2 border-cyan-400/20 "
                             animate={{
                                 boxShadow: ["0 0 20px rgba(34,211,238,0.1)", "0 0 40px rgba(34,211,238,0.2)", "0 0 20px rgba(34,211,238,0.1)"]
                             }}
@@ -794,7 +769,7 @@ export const ModuleContentPanel = () => {
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="absolute bottom-0 left-6 right-6 h-0.5 bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent origin-center"
+                className="absolute bottom-0 left-6 right-6 h-0.5 bg-linear-to-r from-transparent via-cyan-400/50 to-transparent origin-center"
             />
         </div>
     );

@@ -167,7 +167,7 @@ export default function CyberpunkSignup() {
                                             )}
                                         </span>
                                     </Button> */}
-                                    <CyberpunkButton type="submit" disabled={loading} variant="secondary" className={"w-full relative text-center group/btn overflow-hidden"}>
+                                    <CyberpunkButton type="submit" disabled={loading} variant="primary" className={"w-full relative text-center group/btn overflow-hidden"}>
                                         <span className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
                                             {loading ? (
                                                 <>

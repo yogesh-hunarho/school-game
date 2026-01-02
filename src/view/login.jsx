@@ -119,7 +119,7 @@ export default function CyberpunkLogin() {
                                 </motion.div>
 
                                 <motion.div variants={itemVariants} className="pt-2">
-                                    <CyberpunkButton type="submit" disabled={loading} variant="secondary" className={"w-full text-center relative group/btn overflow-hidden"}>
+                                    <CyberpunkButton type="submit" disabled={loading} variant="primary" className={"w-full text-center relative group/btn overflow-hidden"}>
                                         <p className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
                                             {loading ? (
                                                 <>

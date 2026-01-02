@@ -1,8 +1,21 @@
 import type React from "react"
 import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { RefreshCw, Eye, Star, Zap, Target, Sparkles, RotateCcw, HelpCircle, TrendingUp, Clock } from "lucide-react"
+import { RefreshCw, Eye, Star, Zap, Target, Sparkles, RotateCcw, HelpCircle, TrendingUp, Clock, Move } from "lucide-react"
 import confetti from "canvas-confetti"
+import {
+    DndContext,
+    DragOverlay,
+    closestCenter,
+    PointerSensor,
+    TouchSensor,
+    useSensor,
+    useSensors,
+    type DragStartEvent,
+    type DragEndEvent,
+} from "@dnd-kit/core"
+import { useSortable, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 interface Tile {
     id: number
@@ -14,9 +27,131 @@ const GRID_SIZE = 3
 const TOTAL_TILES = GRID_SIZE * GRID_SIZE
 const IMAGE_URL = "/assets/puzzle/cyberpunk-student.png"
 
+// Sortable Tile Component
+interface SortableTileProps {
+    tile: Tile
+    isGameActive: boolean
+    isSolved: boolean
+    showPreview: boolean
+    isCorrect: boolean
+    isDragOverlay?: boolean
+}
+
+const SortableTile: React.FC<SortableTileProps> = ({
+    tile,
+    isGameActive,
+    isSolved,
+    showPreview,
+    isCorrect,
+    isDragOverlay = false,
+}) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+        isOver,
+    } = useSortable({
+        id: tile.id.toString(),
+        disabled: !isGameActive || isSolved || showPreview,
+    })
+
+    const row = Math.floor(tile.id / GRID_SIZE)
+    const col = tile.id % GRID_SIZE
+
+    const style: React.CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition: isDragging ? undefined : transition,
+        zIndex: isDragging ? 50 : isOver ? 10 : 1,
+        opacity: isDragging && !isDragOverlay ? 0.3 : 1,
+    }
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            {...attributes}
+            {...listeners}
+            className={`relative overflow-hidden rounded-xl transition-all duration-200 aspect-square ${isGameActive && !isSolved && !showPreview
+                ? "cursor-grab active:cursor-grabbing"
+                : "cursor-default"
+                } ${isDragging
+                    ? "ring-4 ring-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.9)] scale-105"
+                    : isOver
+                        ? "ring-4 ring-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.8)] scale-[1.02]"
+                        : isCorrect && isGameActive && !isSolved
+                            ? "ring-2 ring-green-400/60"
+                            : "ring-1 ring-white/20 hover:ring-cyan-400/50"
+                }`}
+        >
+            <div
+                className="w-full h-full bg-cover transition-all"
+                style={{
+                    backgroundImage: `url(${IMAGE_URL})`,
+                    backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
+                    backgroundPosition: `${(col / (GRID_SIZE - 1)) * 100}% ${(row / (GRID_SIZE - 1)) * 100}%`,
+                    filter: isSolved ? "brightness(1.1) contrast(1.1)" : "brightness(0.95) contrast(1.2)",
+                }}
+            />
+
+            {/* Drag handle indicator */}
+            {isGameActive && !isSolved && !showPreview && !isDragging && (
+                <div className="absolute top-1.5 left-1.5 w-6 h-6 bg-slate-900/80 rounded-lg flex items-center justify-center opacity-60 hover:opacity-100 transition-opacity pointer-events-none">
+                    <Move className="w-3.5 h-3.5 text-cyan-300" />
+                </div>
+            )}
+
+            {/* Correct piece indicator */}
+            {isCorrect && isGameActive && !isSolved && !showPreview && (
+                <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-1.5 right-1.5 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg pointer-events-none z-10"
+                >
+                    <span className="text-white text-xs font-bold">✓</span>
+                </motion.div>
+            )}
+
+            {/* Hover/Drop overlay */}
+            {isOver && !isDragging && (
+                <div className="absolute inset-0 bg-yellow-400/30 pointer-events-none" />
+            )}
+        </div>
+    )
+}
+
+// Drag Overlay Tile (shows what's being dragged)
+interface DragOverlayTileProps {
+    tile: Tile
+}
+
+const DragOverlayTile: React.FC<DragOverlayTileProps> = ({ tile }) => {
+    const row = Math.floor(tile.id / GRID_SIZE)
+    const col = tile.id % GRID_SIZE
+
+    return (
+        <div
+            className="relative overflow-hidden rounded-xl ring-4 ring-cyan-400 shadow-[0_0_40px_rgba(6,182,212,0.9)] scale-110"
+            style={{ width: "100%", height: "100%", aspectRatio: "1" }}
+        >
+            <div
+                className="w-full h-full bg-cover"
+                style={{
+                    backgroundImage: `url(${IMAGE_URL})`,
+                    backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
+                    backgroundPosition: `${(col / (GRID_SIZE - 1)) * 100}% ${(row / (GRID_SIZE - 1)) * 100}%`,
+                    filter: "brightness(1.1) contrast(1.2)",
+                }}
+            />
+            <div className="absolute inset-0 bg-cyan-400/20 pointer-events-none" />
+        </div>
+    )
+}
+
 const PuzzleGame: React.FC = () => {
     const [tiles, setTiles] = useState<Tile[]>([])
-    const [selectedTile, setSelectedTile] = useState<number | null>(null)
     const [swaps, setSwaps] = useState(0)
     const [stars, setStars] = useState(3)
     const [showPreview, setShowPreview] = useState(true)
@@ -26,6 +161,22 @@ const PuzzleGame: React.FC = () => {
     const [countdown, setCountdown] = useState(5)
     const [gameTime, setGameTime] = useState(0)
     const [correctPieces, setCorrectPieces] = useState(0)
+    const [activeDragId, setActiveDragId] = useState<string | null>(null)
+
+    // DnD Kit sensors
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 8,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 150,
+                tolerance: 8,
+            },
+        })
+    )
 
     const initTiles = useCallback(() => {
         const newTiles: Tile[] = Array.from({ length: TOTAL_TILES }, (_, i) => ({
@@ -57,11 +208,13 @@ const PuzzleGame: React.FC = () => {
 
     // Game timer
     useEffect(() => {
-        let timer: any = null
+        let timer: ReturnType<typeof setInterval> | null = null
         if (isGameStarted && !isSolved && !isCountingDown) {
             timer = setInterval(() => setGameTime((prev) => prev + 1), 1000)
         }
-        return () => clearInterval(timer)
+        return () => {
+            if (timer) clearInterval(timer)
+        }
     }, [isGameStarted, isSolved, isCountingDown])
 
     // Calculate correct pieces
@@ -71,7 +224,7 @@ const PuzzleGame: React.FC = () => {
     }, [tiles])
 
     useEffect(() => {
-        let timer: any = null
+        let timer: ReturnType<typeof setTimeout> | null = null
         if (isCountingDown && countdown > 0) {
             timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000)
         } else if (isCountingDown && countdown === 0) {
@@ -83,35 +236,42 @@ const PuzzleGame: React.FC = () => {
             setStars(3)
             setIsSolved(false)
         }
-        return () => clearTimeout(timer)
+        return () => {
+            if (timer) clearTimeout(timer)
+        }
     }, [isCountingDown, countdown, initTiles])
 
     useEffect(() => {
         setTiles(initTiles())
     }, [initTiles])
 
-    const handleTileClick = (index: number) => {
-        if (isSolved || !isGameStarted || isCountingDown) return
+    // DnD handlers
+    const handleDragStart = (event: DragStartEvent) => {
+        setActiveDragId(event.active.id.toString())
+    }
 
-        if (selectedTile === null) {
-            setSelectedTile(index)
-        } else {
-            if (selectedTile !== index) {
-                const newTiles = [...tiles]
-                const tile1 = newTiles.find((t) => t.currentPos === selectedTile)
-                const tile2 = newTiles.find((t) => t.currentPos === index)
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event
+        setActiveDragId(null)
 
-                if (tile1 && tile2) {
-                    const tempPos = tile1.currentPos
-                    tile1.currentPos = tile2.currentPos
-                    tile2.currentPos = tempPos
+        if (!over || active.id === over.id) return
 
-                    setTiles(newTiles)
-                    setSwaps((prev) => prev + 1)
-                    checkWin(newTiles)
-                }
-            }
-            setSelectedTile(null)
+        const activeId = parseInt(active.id.toString())
+        const overId = parseInt(over.id.toString())
+
+        // Swap tiles
+        const newTiles = [...tiles]
+        const activeTile = newTiles.find((t) => t.id === activeId)
+        const overTile = newTiles.find((t) => t.id === overId)
+
+        if (activeTile && overTile) {
+            const tempPos = activeTile.currentPos
+            activeTile.currentPos = overTile.currentPos
+            overTile.currentPos = tempPos
+
+            setTiles(newTiles)
+            setSwaps((prev) => prev + 1)
+            checkWin(newTiles)
         }
     }
 
@@ -142,19 +302,23 @@ const PuzzleGame: React.FC = () => {
         setIsCountingDown(false)
         setIsSolved(false)
         setTiles(initTiles())
-        setSelectedTile(null)
         setGameTime(0)
+        setActiveDragId(null)
     }
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60)
         const secs = seconds % 60
-        return `${mins}:${secs.toString().padStart(2, '0')}`
+        return `${mins}:${secs.toString().padStart(2, "0")}`
     }
 
     const getProgressPercentage = () => {
         return Math.round((correctPieces / TOTAL_TILES) * 100)
     }
+
+    // Get sorted tiles for rendering
+    const sortedTiles = [...tiles].sort((a, b) => a.currentPos - b.currentPos)
+    const activeTile = tiles.find((t) => t.id.toString() === activeDragId)
 
     return (
         <div className="relative w-full min-h-screen overflow-hidden p-4 md:p-6">
@@ -162,9 +326,8 @@ const PuzzleGame: React.FC = () => {
             <div className="absolute top-10 right-10 w-72 h-72 bg-linear-to-br from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
             <div className="absolute bottom-10 left-10 w-64 h-64 bg-linear-to-br from-pink-500/20 to-yellow-500/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
 
-            {/* Main Layout - Left Panel + Right Game */}
+            {/* Main Layout */}
             <div className="relative z-10 flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto items-stretch">
-
                 {/* LEFT PANEL - Controls & Stats */}
                 <motion.div
                     initial={{ x: -50, opacity: 0 }}
@@ -199,8 +362,8 @@ const PuzzleGame: React.FC = () => {
                                     <Star
                                         key={i}
                                         className={`w-6 h-6 transition-all ${i <= stars
-                                            ? 'text-yellow-400 fill-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.8)]'
-                                            : 'text-slate-600'
+                                            ? "text-yellow-400 fill-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.8)]"
+                                            : "text-slate-600"
                                             }`}
                                     />
                                 ))}
@@ -236,7 +399,9 @@ const PuzzleGame: React.FC = () => {
                     <div className="bg-slate-900/80 rounded-2xl p-4 border-2 border-slate-700/50">
                         <div className="flex justify-between items-center mb-2">
                             <span className="text-slate-400 text-sm font-medium">Progress</span>
-                            <span className="text-cyan-400 text-sm font-bold">{correctPieces}/{TOTAL_TILES} pieces</span>
+                            <span className="text-cyan-400 text-sm font-bold">
+                                {correctPieces}/{TOTAL_TILES} pieces
+                            </span>
                         </div>
                         <div className="h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
                             <motion.div
@@ -250,7 +415,6 @@ const PuzzleGame: React.FC = () => {
 
                     {/* Action Buttons */}
                     <div className="flex flex-col gap-3">
-                        {/* Hint Button */}
                         <motion.button
                             onClick={useHint}
                             disabled={stars === 0 || isSolved || !isGameStarted || isCountingDown}
@@ -263,7 +427,6 @@ const PuzzleGame: React.FC = () => {
                             <Sparkles className="w-5 h-5" />
                         </motion.button>
 
-                        {/* Reset Button */}
                         <motion.button
                             onClick={resetGame}
                             whileHover={{ scale: 1.03, y: -2 }}
@@ -288,10 +451,14 @@ const PuzzleGame: React.FC = () => {
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-purple-400 font-bold">2.</span>
-                                <span>Tap a piece, then tap another to swap</span>
+                                <span>Drag a piece and drop it on another</span>
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-pink-400 font-bold">3.</span>
+                                <span>The pieces will swap positions!</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-green-400 font-bold">4.</span>
                                 <span>Arrange all pieces to win! 🎉</span>
                             </li>
                         </ul>
@@ -315,83 +482,43 @@ const PuzzleGame: React.FC = () => {
                         <div className="absolute bottom-0 left-0 w-20 h-20 bg-pink-400/20 rounded-full blur-2xl"></div>
                         <div className="absolute bottom-0 right-0 w-20 h-20 bg-yellow-400/20 rounded-full blur-2xl"></div>
 
-                        <div
-                            className="grid gap-2 w-full h-full p-3"
-                            style={{
-                                gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-                                gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
-                            }}
+                        {/* DnD Context */}
+                        <DndContext
+                            sensors={sensors}
+                            collisionDetection={closestCenter}
+                            onDragStart={handleDragStart}
+                            onDragEnd={handleDragEnd}
                         >
-                            {tiles
-                                .sort((a, b) => a.currentPos - b.currentPos)
-                                .map((tile) => {
-                                    const row = Math.floor(tile.id / GRID_SIZE)
-                                    const col = tile.id % GRID_SIZE
-                                    const isSelected = selectedTile === tile.currentPos
-                                    const isCorrect = tile.id === tile.currentPos
-
-                                    return (
-                                        <motion.div
+                            <SortableContext items={sortedTiles.map((t) => t.id.toString())} strategy={rectSortingStrategy}>
+                                <div
+                                    className="grid gap-2 w-full h-full p-3"
+                                    style={{
+                                        gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
+                                        gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
+                                    }}
+                                >
+                                    {sortedTiles.map((tile) => (
+                                        <SortableTile
                                             key={tile.id}
-                                            layout
-                                            onClick={() => handleTileClick(tile.currentPos)}
-                                            whileHover={
-                                                !isSolved && isGameStarted && !isCountingDown
-                                                    ? { scale: 0.94, filter: "brightness(1.2)" }
-                                                    : {}
-                                            }
-                                            whileTap={
-                                                !isSolved && isGameStarted && !isCountingDown
-                                                    ? { scale: 0.88 }
-                                                    : {}
-                                            }
-                                            className={`relative cursor-pointer overflow-hidden group rounded-xl transition-all duration-200 ${isSelected
-                                                ? "ring-4 ring-cyan-400 ring-offset-2 ring-offset-slate-900 shadow-[0_0_25px_rgba(6,182,212,0.8)] z-10"
-                                                : isCorrect && isGameStarted && !isSolved
-                                                    ? "ring-2 ring-green-400/60"
-                                                    : "ring-1 ring-white/10 hover:ring-cyan-400/50"
-                                                }`}
-                                        >
-                                            <div
-                                                className="w-full h-full bg-cover transition-all"
-                                                style={{
-                                                    backgroundImage: `url(${IMAGE_URL})`,
-                                                    backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
-                                                    backgroundPosition: `${(col / (GRID_SIZE - 1)) * 100}% ${(row / (GRID_SIZE - 1)) * 100}%`,
-                                                    filter: isSolved ? "brightness(1.1) contrast(1.1)" : "brightness(0.95) contrast(1.2)",
-                                                }}
-                                            />
+                                            tile={tile}
+                                            isGameActive={isGameStarted && !isCountingDown}
+                                            isSolved={isSolved}
+                                            showPreview={showPreview}
+                                            isCorrect={tile.id === tile.currentPos}
+                                        />
+                                    ))}
+                                </div>
+                            </SortableContext>
 
-                                            {/* Selection overlay */}
-                                            <motion.div
-                                                animate={isSelected ? { opacity: 0.25 } : { opacity: 0 }}
-                                                className="absolute inset-0 bg-linear-to-br from-cyan-400 to-purple-500"
-                                            />
-
-                                            {/* Correct piece indicator */}
-                                            {isCorrect && isGameStarted && !isSolved && !showPreview && (
-                                                <motion.div
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: 1 }}
-                                                    className="absolute top-2 right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg"
-                                                >
-                                                    <span className="text-white text-xs">✓</span>
-                                                </motion.div>
-                                            )}
-
-                                            {/* Pre-game piece numbers */}
-                                            {!isGameStarted && !showPreview && (
-                                                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-                                                    <span className="text-cyan-400/50 font-black text-4xl">{tile.id + 1}</span>
-                                                </div>
-                                            )}
-
-                                            {/* Hover glow effect */}
-                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none bg-linear-to-br from-cyan-400/10 to-purple-500/10"></div>
-                                        </motion.div>
-                                    )
-                                })}
-                        </div>
+                            {/* Drag Overlay */}
+                            <DragOverlay dropAnimation={{ duration: 200, easing: "ease-out" }}>
+                                {activeTile ? (
+                                    <div style={{ width: "calc((100% - 24px - 16px) / 3)", aspectRatio: "1" }}>
+                                        <DragOverlayTile tile={activeTile} />
+                                    </div>
+                                ) : null}
+                            </DragOverlay>
+                        </DndContext>
 
                         <AnimatePresence>
                             {showPreview && (
@@ -409,9 +536,8 @@ const PuzzleGame: React.FC = () => {
                                                 initial={{ y: 30, opacity: 0 }}
                                                 animate={{ y: 0, opacity: 1 }}
                                                 transition={{ delay: 0.2 }}
-                                                className="text-center space-y-8"
+                                                className="text-center space-y-8 px-4"
                                             >
-                                                {/* Fun Title */}
                                                 <div>
                                                     <motion.div
                                                         animate={{ rotate: [0, 5, -5, 0] }}
@@ -423,9 +549,7 @@ const PuzzleGame: React.FC = () => {
                                                     <h2 className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">
                                                         Ready to Play?
                                                     </h2>
-                                                    <p className="text-cyan-300/80 text-lg mt-2">
-                                                        Remember this picture! 📸
-                                                    </p>
+                                                    <p className="text-cyan-300/80 text-lg mt-2">Remember this picture! 📸</p>
                                                 </div>
 
                                                 <motion.button
@@ -467,7 +591,6 @@ const PuzzleGame: React.FC = () => {
                                                 </div>
                                             </motion.div>
 
-                                            {/* Progress bar */}
                                             <motion.div
                                                 className="absolute bottom-0 left-0 h-2 bg-linear-to-r from-cyan-500 via-purple-500 to-pink-500 shadow-[0_0_15px_rgba(6,182,212,0.6)]"
                                                 initial={{ width: "100%" }}
@@ -532,7 +655,9 @@ const PuzzleGame: React.FC = () => {
                                                 <Clock className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
                                                 <span>Time:</span>
                                             </div>
-                                            <span className="font-black font-sans text-lg sm:text-xl md:text-2xl text-green-400">{formatTime(gameTime)}</span>
+                                            <span className="font-black font-sans text-lg sm:text-xl md:text-2xl text-green-400">
+                                                {formatTime(gameTime)}
+                                            </span>
                                         </div>
                                         <div className="flex items-center justify-between w-full">
                                             <span className="text-white text-sm sm:text-base md:text-lg">Stars Left:</span>
@@ -541,8 +666,8 @@ const PuzzleGame: React.FC = () => {
                                                     <Star
                                                         key={i}
                                                         className={`w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 transition-all ${i <= stars
-                                                            ? 'text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.9)]'
-                                                            : 'text-slate-600'
+                                                            ? "text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.9)]"
+                                                            : "text-slate-600"
                                                             }`}
                                                     />
                                                 ))}

@@ -335,11 +335,11 @@ export default function Header() {
                             className="flex items-center gap-4"
                         >
                             {/* Coin Counter */}
-                            <div className="flex flex-col items-end gap-0.5">
+                            <div className=" hidden md:flex flex-col items-end gap-0.5">
                                 <div className="flex items-center gap-1.5">
                                     <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                     <span className="text-sm font-bold text-yellow-400 tabular-nums">
-                                        {player.totalXP.toLocaleString()} Coin
+                                        {player.totalXP.toLocaleString()} Coins
                                     </span>
                                 </div>
                                 {/* Coin Progress bar */}
@@ -365,7 +365,7 @@ export default function Header() {
                             </div>
 
                             {/* Arrow for navigation hint */}
-                            <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" />
+                            {/* <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" /> */}
                         </Link>
                     </div>
                 </div>

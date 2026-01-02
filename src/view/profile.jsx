@@ -528,7 +528,7 @@ export default function ProfilePage() {
 
                                 <div className="w-full md:w-auto">
                                     <CyberpunkButton>
-                                        <span className="tracking-widest uppercase text-sm">Initialize Task</span>
+                                        <span className="tracking-widest uppercase text-sm">Play Puzzle</span>
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                     </CyberpunkButton>
                                 </div>
