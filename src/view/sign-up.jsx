@@ -91,8 +91,8 @@ export default function CyberpunkSignup() {
 
                         <div className="relative z-10 space-y-6">
                             <motion.div variants={itemVariants} className="space-y-2 text-center">
-                                <h1 className="text-3xl font-bold bg-linear-to-r from-cyan-400 via-blue-400 to-magenta-400 bg-clip-text text-transparent uppercase tracking-wider">
-                                    [INIT ACCOUNT]
+                                <h1 className="text-3xl font-bold uppercase tracking-wider">
+                                    CREATE ACCOUNT
                                 </h1>
                                 <p className="text-sm text-cyan-300/80 font-mono tracking-widest">&gt; ESTABLISH CREDENTIALS</p>
                             </motion.div>
@@ -112,7 +112,7 @@ export default function CyberpunkSignup() {
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <div className="group/input pt-4">
                                         <CyberpunkInput
-                                            label="[IDENTIFIER]"
+                                            label="IDENTIFIER"
                                             placeholder="John Nexus"
                                             ref={nameRef}
                                             type="text"
@@ -123,7 +123,7 @@ export default function CyberpunkSignup() {
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <div className="group/input pt-4">
                                         <CyberpunkInput
-                                            label="[EMAIL]"
+                                            label="EMAIL"
                                             placeholder="user@network.sys"
                                             ref={emailRef}
                                             type="email"
@@ -134,7 +134,7 @@ export default function CyberpunkSignup() {
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <div className="group/input pt-4">
                                         <CyberpunkInput
-                                            label="[PASSWORD]"
+                                            label="PASSWORD"
                                             placeholder="••••••••"
                                             ref={passwordRef}
                                             type="password"
@@ -145,7 +145,7 @@ export default function CyberpunkSignup() {
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <div className="group/input pt-4">
                                         <CyberpunkInput
-                                            label="[CONFIRM PASSWORD]"
+                                            label="CONFIRM PASSWORD"
                                             placeholder="••••••••"
                                             ref={passwordConfirmationRef}
                                             type="password"
@@ -154,21 +154,9 @@ export default function CyberpunkSignup() {
                                 </motion.div>
 
                                 <motion.div variants={itemVariants} className="pt-2">
-                                    {/* <Button type="submit" disabled={loading} className="w-full relative group/btn overflow-hidden">
-                                        <div className="absolute inset-0 bg-linear-to-r from-cyan-500 via-magenta-500 to-cyan-500 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-                                        <span className="relative inline-flex items-center justify-center gap-2 font-mono font-bold uppercase tracking-wider text-sm">
-                                            {loading ? (
-                                                <>
-                                                    <span className="inline-block w-4 h-4 border-2 border-cyan-300 border-t-magenta-300 rounded-full animate-spin" />
-                                                    PROCESSING...
-                                                </>
-                                            ) : (
-                                                <>▶ CREATE ACCESS</>
-                                            )}
-                                        </span>
-                                    </Button> */}
+
                                     <CyberpunkButton type="submit" disabled={loading} variant="primary" className={"w-full relative text-center group/btn overflow-hidden"}>
-                                        <span className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
+                                        <span className="relative text-white inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
                                             {loading ? (
                                                 <>
                                                     <span className="inline-block w-4 h-4 border-2 animate-spin" />

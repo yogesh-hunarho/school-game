@@ -79,8 +79,8 @@ export default function CyberpunkLogin() {
 
                         <div className="space-y-6">
                             <motion.div variants={itemVariants} className="space-y-2 text-center">
-                                <h1 className="text-4xl font-bold bg-linear-to-r from-cyan-400 via-blue-400 to-magenta-400 bg-clip-text text-transparent uppercase tracking-wider">
-                                    [ACCESS GRANTED]
+                                <h1 className="text-4xl font-bold  uppercase tracking-wider">
+                                    WELCOME <br /> BACK
                                 </h1>
                                 <p className="text-sm text-cyan-300/80 font-mono tracking-widest">&gt; ENTER CREDENTIALS</p>
                             </motion.div>
@@ -120,7 +120,7 @@ export default function CyberpunkLogin() {
 
                                 <motion.div variants={itemVariants} className="pt-2">
                                     <CyberpunkButton type="submit" disabled={loading} variant="primary" className={"w-full text-center relative group/btn overflow-hidden"}>
-                                        <p className="relative inline-flex items-center justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
+                                        <p className="relative inline-flex items-center text-white justify-center gap-2 rounded-sm font-mono font-bold uppercase tracking-wider text-sm">
                                             {loading ? (
                                                 <>
                                                     <span className="inline-block w-4 h-4 border-2 animate-spin" />
