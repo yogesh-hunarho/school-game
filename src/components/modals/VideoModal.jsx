@@ -12,6 +12,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import VideoPlayer from "../video/VideoPlayer";
+import { useIsMobile } from "@/hook/use-mobile";
 
 export const VideoModal = ({ open, onOpenChange }) => {
     const {
@@ -22,6 +23,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
         getCurrentModuleContent,
         openVideoModal
     } = useLMSStore();
+    const isMobile = useIsMobile()
 
     const [activeTab, setActiveTab] = useState("about");
     const { playClick, playClose } = useSound();
@@ -77,7 +79,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
 
     return (
         <Dialog open={open} onOpenChange={handleCloseModal}>
-            <DialogContent showCloseButton={false} className="w-full md:min-w-6xl p-0 overflow-hidden border-none shadow-none ring-0 bg-transparent">
+            <DialogContent showCloseButton={isMobile ? true : false} className="w-full md:min-w-6xl p-0 overflow-hidden border-none shadow-none ring-0 bg-transparent">
                 <div className="relative bg-slate-950/98">
                     <div className="pointer-events-none absolute inset-0 z-30 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
                     <div className="absolute inset-0 border border-cyan-400/30" />
@@ -142,12 +144,13 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                     NEXT
                                     <ChevronRight className="w-3.5 h-3.5" />
                                 </button>
-                                <DialogClose
-                                    className="z-50 p-[8px] text-slate-400 hover:text-cyan-400 transition-colors bg-slate-900/80 border border-cyan-400/30 hover:border-cyan-400 cursor-pointer"
-                                >
-                                    <XIcon className="w-4 h-4" />
-                                    <span className="sr-only">Close</span>
-                                </DialogClose>
+                                {!isMobile &&
+                                    <DialogClose
+                                        className="z-50 p-[8px] text-slate-400 hover:text-cyan-400 transition-colors bg-slate-900/80 border border-cyan-400/30 hover:border-cyan-400 cursor-pointer"
+                                    >
+                                        <XIcon className="w-4 h-4" />
+                                        <span className="sr-only">Close</span>
+                                    </DialogClose>}
                             </div>
                         </DialogHeader>
 

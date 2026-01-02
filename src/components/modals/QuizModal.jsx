@@ -30,18 +30,18 @@ const mockQuestions = [
         options: ["To sell the product", "To understand user needs", "To build the solution", "To fix bugs"],
         correct: 1
     },
-    {
-        id: 4,
-        question: "True or False: Design Thinking is a linear process.",
-        options: ["True", "False"],
-        correct: 1
-    },
-    {
-        id: 5,
-        question: "In which phase do you gather feedback from users?",
-        options: ["Test", "Ideate", "Empathize", "Define"],
-        correct: 0
-    }
+    // {
+    //     id: 4,
+    //     question: "True or False: Design Thinking is a linear process.",
+    //     options: ["True", "False"],
+    //     correct: 1
+    // },
+    // {
+    //     id: 5,
+    //     question: "In which phase do you gather feedback from users?",
+    //     options: ["Test", "Ideate", "Empathize", "Define"],
+    //     correct: 0
+    // }
 ];
 
 export const QuizModal = ({ open, onOpenChange }) => {
@@ -119,7 +119,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
 
     return (
         <Dialog open={open} onOpenChange={handleCloseModal}>
-            <DialogContent className="min-w-6xl p-0 overflow-hidden shadow-none ring-0 border-none bg-transparent">
+            <DialogContent className="w-full md:min-w-6xl p-0 overflow-hidden shadow-none ring-0 border-none bg-transparent">
                 <div className="relative bg-slate-950/98">
                     {/* Scanline overlay */}
                     <div className="pointer-events-none absolute inset-0 z-30 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
@@ -162,26 +162,62 @@ export const QuizModal = ({ open, onOpenChange }) => {
                         {/* Content Grid */}
                         <div className="flex-1 overflow-hidden">
                             {!isSubmitted && !alreadyCompleted ? (
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full">
-                                    {/* Left Column: Question & Options */}
-                                    <div className="md:col-span-3 space-y-6">
+                                <div className="flex flex-col md:grid md:grid-cols-4 gap-4 md:gap-6 h-full">
+                                    {/* Mobile: Question Grid Navigation (Top) */}
+                                    <div className="md:hidden border-b border-cyan-400/10 pb-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Question Matrix</h3>
+                                            <div className="text-[10px] text-slate-500 font-mono flex gap-3">
+                                                <span>STATUS: <span className="text-cyan-400">{Object.keys(answers).length === totalQuestions ? "READY" : "INCOMPLETE"}</span></span>
+                                                <span>PROGRESS: <span className="text-cyan-400">{Math.round((Object.keys(answers).length / totalQuestions) * 100)}%</span></span>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-cyan-400/20">
+                                            {questions.map((_, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => {
+                                                        playClick();
+                                                        setCurrentQuestionIdx(i);
+                                                    }}
+                                                    className={cn(
+                                                        "relative shrink-0 w-9 h-9 flex items-center justify-center text-[11px] font-bold transition-all",
+                                                        currentQuestionIdx === i
+                                                            ? "bg-yellow-400 text-slate-900 shadow-[0_0_10px_rgba(250,204,21,0.3)]"
+                                                            : answers[i] !== undefined
+                                                                ? "bg-cyan-400/20 border border-cyan-400/40 text-cyan-400"
+                                                                : "bg-slate-900/60 border border-slate-700/50 text-slate-500"
+                                                    )}
+                                                >
+                                                    {answers[i] !== undefined && currentQuestionIdx !== i ? (
+                                                        <Check className="w-3.5 h-3.5" />
+                                                    ) : (
+                                                        i + 1
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Question & Options Column */}
+                                    <div className="md:col-span-3 space-y-4 md:space-y-6 flex-1">
                                         {/* Question */}
-                                        <div className="relative p-5 border border-cyan-400/30 bg-slate-900/50">
+                                        <div className="relative p-4 md:p-5 border border-cyan-400/30 bg-slate-900/50">
                                             <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400" />
                                             <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400" />
-                                            <p className="text-base text-cyan-50 font-medium leading-relaxed">
+                                            <p className="text-sm md:text-base text-cyan-50 font-medium leading-relaxed">
                                                 {currentQuestion.question}
                                             </p>
                                         </div>
 
                                         {/* Options */}
-                                        <div className="space-y-3">
+                                        <div className="space-y-2 md:space-y-3">
                                             {currentQuestion.options.map((option, idx) => (
                                                 <button
                                                     key={idx}
                                                     onClick={() => handleOptionSelect(idx)}
                                                     className={cn(
-                                                        "relative w-full p-4 text-left transition-all group",
+                                                        "relative w-full p-3 md:p-4 text-left transition-all group",
                                                         answers[currentQuestionIdx] === idx
                                                             ? "bg-yellow-400/10 border border-yellow-400 text-yellow-400"
                                                             : "bg-slate-900/60 border border-cyan-400/20 text-slate-300 hover:border-cyan-400/50"
@@ -197,23 +233,23 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                                         answers[currentQuestionIdx] === idx ? "border-yellow-400" : "border-cyan-400/30 group-hover:border-cyan-400"
                                                     )} />
 
-                                                    <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-2 md:gap-3">
                                                         <span className={cn(
-                                                            "inline-flex w-7 h-7 text-[12px] font-bold items-center justify-center transition-colors",
+                                                            "inline-flex w-6 h-6 md:w-7 md:h-7 text-[11px] md:text-[12px] font-bold items-center justify-center transition-colors flex-shrink-0",
                                                             answers[currentQuestionIdx] === idx
                                                                 ? "bg-yellow-400 text-slate-900"
                                                                 : "bg-cyan-400/20 text-cyan-400"
                                                         )}>
                                                             {String.fromCharCode(64 + (idx + 1))}
                                                         </span>
-                                                        <span className="text-sm uppercase tracking-wide">{option}</span>
+                                                        <span className="text-xs md:text-sm uppercase tracking-wide">{option}</span>
                                                     </div>
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
 
-                                    {/* Right Column: Question Grid Navigation */}
+                                    {/* Desktop: Right Column - Question Grid Navigation */}
                                     <div className="md:col-span-1 border-l border-cyan-400/10 pl-6 hidden md:block">
                                         <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Question Matrix</h3>
                                         <div className="grid grid-cols-4 gap-2">
@@ -244,18 +280,8 @@ export const QuizModal = ({ open, onOpenChange }) => {
 
                                         {/* Status Messages */}
                                         <div className="mt-8 space-y-4">
-                                            {totalQuestions - Object.keys(answers).length <= 3 && totalQuestions - Object.keys(answers).length > 0 && (
-                                                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-mono animate-pulse">
-                                                    <p className="mb-1">SYSTEM WARNING:</p>
-                                                    <p>CRITICAL - {totalQuestions - Object.keys(answers).length} NODES REMAINING</p>
-                                                </div>
-                                            )}
-
                                             <div className="text-[10px] text-slate-500 font-mono space-y-1">
-                                                <div className="flex justify-between">
-                                                    <span>STATUS:</span>
-                                                    <span className="text-cyan-400">{Object.keys(answers).length === totalQuestions ? "READY" : "INCOMPLETE"}</span>
-                                                </div>
+
                                                 <div className="flex justify-between">
                                                     <span>PROGRESS:</span>
                                                     <span className="text-cyan-400">{Math.round((Object.keys(answers).length / totalQuestions) * 100)}%</span>
