@@ -152,7 +152,7 @@ export const ModuleContentPanel = () => {
                         <div className="relative p-2 text-center border border-yellow-400/20 bg-slate-900/60">
                             <div className="absolute top-0 left-0 w-1 h-1 border-t border-l border-yellow-400/50" />
                             <p className="text-lg font-bold text-yellow-400">{moduleInfo.totalStars}00</p>
-                            <p className="text-[9px] text-slate-500 uppercase tracking-wider">XP</p>
+                            <p className="text-[9px] text-slate-500 uppercase tracking-wider">Coin</p>
                         </div>
                     )}
                 </div>
@@ -225,7 +225,7 @@ export const ModuleContentPanel = () => {
                                                     <span>•</span>
                                                     <span className="flex items-center gap-1 text-yellow-400">
                                                         <Zap className="h-2.5 w-2.5" />
-                                                        {video.xp} XP
+                                                        {video.xp} Coin
                                                     </span>
                                                 </div>
                                             </div>
@@ -325,7 +325,7 @@ export const ModuleContentPanel = () => {
                                                     <span>•</span>
                                                     <span className="flex items-center gap-1 text-yellow-400">
                                                         <Zap className="h-2.5 w-2.5" />
-                                                        {quiz.xp} XP
+                                                        {quiz.xp} Coin
                                                     </span>
                                                 </div>
                                             </div>
@@ -391,7 +391,7 @@ export const ModuleContentPanel = () => {
                                             <span>•</span>
                                             <span className="flex items-center gap-1 text-yellow-400">
                                                 <Zap className="h-2.5 w-2.5" />
-                                                {assessment.xp} XP
+                                                {assessment.xp} Coin
                                             </span>
                                         </div>
                                     </div>

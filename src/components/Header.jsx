@@ -115,7 +115,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
                 <div className={`flex items-center gap-2 mt-2 ${side === "right" ? "justify-end" : "justify-start"}`}>
                     <div className="px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-[10px] font-bold text-yellow-500 flex items-center gap-1">
                         <Star className="w-2.5 h-2.5 fill-yellow-500" />
-                        {content?.nextModule?.xp || 50} XP
+                        {content?.nextModule?.xp || 50} Coin
                     </div>
                     {node.isCurrent && (
                         <div className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400">
@@ -216,14 +216,14 @@ export default function Header() {
 
                 {/* Right: Profile Section */}
                 <div className="flex items-center gap-4 group">
-                    {/* XP and Level Stats */}
+                    {/* Coin and Level Stats */}
                     <div className="flex items-center gap-4">
                         <Popover open={isLevelModalOpen} onOpenChange={setIsLevelModalOpen}>
                             <PopoverTrigger asChild>
                                 <div className="flex items-center gap-2">
                                     <p className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors">
                                         <Zap className="w-4 h-4 text-purple-400" />
-                                        LVL {level}</p>
+                                        MISSION {level}</p>
                                 </div>
                             </PopoverTrigger>
 
@@ -334,15 +334,15 @@ export default function Header() {
                             onClick={playClick}
                             className="flex items-center gap-4"
                         >
-                            {/* XP Counter */}
+                            {/* Coin Counter */}
                             <div className="flex flex-col items-end gap-0.5">
                                 <div className="flex items-center gap-1.5">
                                     <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                                     <span className="text-sm font-bold text-yellow-400 tabular-nums">
-                                        {player.totalXP.toLocaleString()} XP
+                                        {player.totalXP.toLocaleString()} Coin
                                     </span>
                                 </div>
-                                {/* XP Progress bar */}
+                                {/* Coin Progress bar */}
                                 <div className="w-24 h-1 bg-slate-800 rounded-full overflow-hidden">
                                     <motion.div
                                         className="h-full bg-linear-to-r from-yellow-400 to-orange-500 rounded-full"

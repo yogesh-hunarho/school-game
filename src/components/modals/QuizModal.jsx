@@ -290,10 +290,10 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                         <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-yellow-400" />
 
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] text-slate-500 uppercase tracking-widest">XP ACQUIRED</span>
+                                            <span className="text-[10px] text-slate-500 uppercase tracking-widest">Coin ACQUIRED</span>
                                             <span className="text-yellow-400 font-bold flex items-center gap-1">
                                                 <Zap className="w-3.5 h-3.5" />
-                                                +{selectedQuiz.xp} XP
+                                                +{selectedQuiz.xp} Coin
                                             </span>
                                         </div>
                                         <div className="relative h-1.5 bg-slate-800 overflow-hidden">

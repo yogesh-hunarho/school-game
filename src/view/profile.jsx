@@ -22,6 +22,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 import PuzzleGame from "@/components/PuzzleGame";
+import CyberpunkButton from "@/components/ui/cyber-button";
 
 // Badge definitions
 const badgeDefinitions = [
@@ -29,8 +30,8 @@ const badgeDefinitions = [
     { id: "quick-learner", name: "Quick Learner", icon: "⚡", description: "Complete 5 videos", requirement: (p) => Object.values(p.progress).reduce((acc, m) => acc + m.watchedVideos.length, 0) >= 5 },
     { id: "quiz-master", name: "Quiz Master", icon: "🧠", description: "Complete 3 quizzes", requirement: (p) => Object.values(p.progress).reduce((acc, m) => acc + m.completedQuizzes.length, 0) >= 3 },
     { id: "module-complete", name: "Module Champion", icon: "🏆", description: "Complete a full module", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 1 },
-    { id: "xp-hunter", name: "XP Hunter", icon: "💎", description: "Earn 100 XP", requirement: (p) => p.totalXP >= 100 },
-    { id: "xp-master", name: "XP Master", icon: "👑", description: "Earn 500 XP", requirement: (p) => p.totalXP >= 500 },
+    { id: "xp-hunter", name: "Coin Hunter", icon: "💎", description: "Earn 100 Coin", requirement: (p) => p.totalXP >= 100 },
+    { id: "xp-master", name: "Coin Master", icon: "👑", description: "Earn 500 Coin", requirement: (p) => p.totalXP >= 500 },
     { id: "dedicated", name: "Dedicated Learner", icon: "📚", description: "Complete 2 modules", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 2 },
     { id: "pro-gamer", name: "Pro Gamer", icon: "🎮", description: "Complete 5 modules", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 5 },
 ];
@@ -111,7 +112,7 @@ export default function ProfilePage() {
                                 </div>
                                 {/* Level badge */}
                                 <div className="absolute -bottom-2 -right-2 px-3 py-1 bg-yellow-400 text-slate-900 text-xs font-bold uppercase tracking-wider">
-                                    LVL {level}
+                                    MISSION {level}
                                 </div>
                             </div>
 
@@ -124,14 +125,14 @@ export default function ProfilePage() {
                                     CYBER LEARNER • ACTIVE OPERATIVE
                                 </p>
 
-                                {/* XP Progress */}
+                                {/* Coin Progress */}
                                 <div className="flex justify-between text-[11px] font-mono uppercase tracking-wider">
                                     <span className="text-yellow-400 font-bold flex items-center gap-1">
                                         <Star className="w-3.5 h-3.5 fill-yellow-400" />
-                                        {player.totalXP.toLocaleString()} XP
+                                        {player.totalXP.toLocaleString()} Coin
                                     </span>
                                     <span className="text-slate-500">
-                                        {Math.round(xpProgress.required - xpProgress.current)} XP TO LVL {level + 1}
+                                        {Math.round(xpProgress.required - xpProgress.current)} Coin TO MISSION {level + 1}
                                     </span>
                                 </div>
                                 <CyberpunkProgressBar
@@ -150,7 +151,7 @@ export default function ProfilePage() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {[
-                        { icon: Star, label: "TOTAL XP", value: player.totalXP, color: "yellow" },
+                        { icon: Star, label: "TOTAL Coin", value: player.totalXP, color: "yellow" },
                         { icon: Zap, label: "LEVEL", value: level, color: "cyan" },
                         { icon: Video, label: "STREAMS", value: totalVideosWatched, color: "cyan" },
                         { icon: BookOpen, label: "TESTS", value: totalQuizzesCompleted, color: "emerald" },
@@ -498,7 +499,7 @@ export default function ProfilePage() {
                     </div>
 
                     <Link to="/puzzle" onClick={playClick} className="block group">
-                        <div className="relative bg-slate-900/60 border border-cyan-400/20 rounded-3xl p-8 overflow-hidden transition-all duration-500 hover:border-cyan-400/40 hover:bg-slate-900/80 group-hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+                        <div className="relative bg-slate-900/60 border border-cyan-400/20 p-8 overflow-hidden transition-all duration-500 hover:border-cyan-400/40 hover:bg-slate-900/80 group-hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
                             {/* Decorative background elements */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-cyan-400/10 transition-colors" />
                             <div className="absolute -bottom-8 -left-8 w-32 h-32 border border-cyan-400/10 rounded-full group-hover:scale-150 transition-transform duration-700" />
@@ -512,7 +513,7 @@ export default function ProfilePage() {
                                     </div>
                                     <div className="absolute -top-2 -right-2 bg-yellow-400 text-slate-950 text-[10px] font-black px-2 py-0.5 rounded flex items-center gap-1 shadow-lg">
                                         <Zap className="w-3 h-3 fill-slate-950" />
-                                        +50 XP
+                                        +50 Coin
                                     </div>
                                 </div>
 
@@ -526,10 +527,10 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div className="w-full md:w-auto">
-                                    <div className="inline-flex items-center gap-3 px-8 py-3 bg-cyan-500 text-slate-950 font-black rounded-2xl group-hover:bg-white transition-all transform active:scale-95 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                                    <CyberpunkButton>
                                         <span className="tracking-widest uppercase text-sm">Initialize Task</span>
                                         <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                    </div>
+                                    </CyberpunkButton>
                                 </div>
                             </div>
 

@@ -48,10 +48,10 @@ export default function MainLayout() {
                         <div className="grid grid-cols-2 gap-4 pt-2">
                             <div>
                                 <div className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
-                                    XP Reward
+                                    Coin Reward
                                 </div>
                                 <div className="flex items-center text-secondary font-sans text-sm">
-                                    <Zap className="w-3 h-3 mr-1" /> +1000 XP
+                                    <Zap className="w-3 h-3 mr-1" /> +1000 Coin
                                 </div>
                             </div>
 
