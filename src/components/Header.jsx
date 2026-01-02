@@ -201,17 +201,13 @@ export default function Header() {
                     className="flex items-center gap-3 group"
                 >
                     <div className="relative">
-                        {/* Glow effect behind logo */}
-                        <div className="absolute inset-0 bg-cyan-500/30 blur-lg rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <div className="absolute inset-0 bg-cyan-500/30 blur-lg rounded-full scale-150 opacity-0" />
                         <img
-                            src="/hunarho_small_logo.png"
+                            src="https://s3.us-east-1.amazonaws.com/hunarho.com/hunarhowhite.png"
                             alt="Hunarho"
-                            className="relative h-10 w-auto drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] group-hover:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] transition-all duration-300"
+                            className="relative h-10 w-auto"
                         />
                     </div>
-                    <span className="hidden sm:block text-lg font-bold bg-linear-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent tracking-wider">
-                        HUNARHO
-                    </span>
                 </Link>
 
                 {/* Right: Profile Section */}
@@ -364,8 +360,6 @@ export default function Header() {
                                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-950" />
                             </div>
 
-                            {/* Arrow for navigation hint */}
-                            {/* <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition-all" /> */}
                         </Link>
                     </div>
                 </div>

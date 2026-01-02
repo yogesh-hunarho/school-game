@@ -13,6 +13,7 @@ import {
     useSensors,
     type DragStartEvent,
     type DragEndEvent,
+    type DragOverEvent,
 } from "@dnd-kit/core"
 import { useSortable, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -35,6 +36,7 @@ interface SortableTileProps {
     showPreview: boolean
     isCorrect: boolean
     isDragOverlay?: boolean
+    isHoveredOver?: boolean
 }
 
 const SortableTile: React.FC<SortableTileProps> = ({
@@ -44,6 +46,7 @@ const SortableTile: React.FC<SortableTileProps> = ({
     showPreview,
     isCorrect,
     isDragOverlay = false,
+    isHoveredOver = false,
 }) => {
     const {
         attributes,
@@ -52,9 +55,8 @@ const SortableTile: React.FC<SortableTileProps> = ({
         transform,
         transition,
         isDragging,
-        isOver,
     } = useSortable({
-        id: tile.id.toString(),
+        id: tile.currentPos.toString(),
         disabled: !isGameActive || isSolved || showPreview,
     })
 
@@ -64,7 +66,7 @@ const SortableTile: React.FC<SortableTileProps> = ({
     const style: React.CSSProperties = {
         transform: CSS.Transform.toString(transform),
         transition: isDragging ? undefined : transition,
-        zIndex: isDragging ? 50 : isOver ? 10 : 1,
+        zIndex: isDragging ? 50 : isHoveredOver ? 10 : 1,
         opacity: isDragging && !isDragOverlay ? 0.3 : 1,
     }
 
@@ -79,8 +81,8 @@ const SortableTile: React.FC<SortableTileProps> = ({
                 : "cursor-default"
                 } ${isDragging
                     ? "ring-4 ring-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.9)] scale-105"
-                    : isOver
-                        ? "ring-4 ring-yellow-400 shadow-[0_0_25px_rgba(250,204,21,0.8)] scale-[1.02]"
+                    : isHoveredOver
+                        ? "shadow-[0_0_25px_rgba(250,204,21,0.8)] scale-[1.02]"
                         : isCorrect && isGameActive && !isSolved
                             ? "ring-2 ring-green-400/60"
                             : "ring-1 ring-white/20 hover:ring-cyan-400/50"
@@ -115,7 +117,7 @@ const SortableTile: React.FC<SortableTileProps> = ({
             )}
 
             {/* Hover/Drop overlay */}
-            {isOver && !isDragging && (
+            {isHoveredOver && !isDragging && (
                 <div className="absolute inset-0 bg-yellow-400/30 pointer-events-none" />
             )}
         </div>
@@ -162,6 +164,7 @@ const PuzzleGame: React.FC = () => {
     const [gameTime, setGameTime] = useState(0)
     const [correctPieces, setCorrectPieces] = useState(0)
     const [activeDragId, setActiveDragId] = useState<string | null>(null)
+    const [overPosition, setOverPosition] = useState<string | null>(null)
 
     // DnD Kit sensors
     const sensors = useSensors(
@@ -248,21 +251,32 @@ const PuzzleGame: React.FC = () => {
     // DnD handlers
     const handleDragStart = (event: DragStartEvent) => {
         setActiveDragId(event.active.id.toString())
+        setOverPosition(null)
+    }
+
+    const handleDragOver = (event: DragOverEvent) => {
+        const { over } = event
+        if (over) {
+            setOverPosition(over.id.toString())
+        } else {
+            setOverPosition(null)
+        }
     }
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
         setActiveDragId(null)
+        setOverPosition(null)
 
         if (!over || active.id === over.id) return
 
-        const activeId = parseInt(active.id.toString())
-        const overId = parseInt(over.id.toString())
+        const activePos = parseInt(active.id.toString())
+        const overPos = parseInt(over.id.toString())
 
-        // Swap tiles
+        // Swap tiles - find by currentPos since that's now the sortable ID
         const newTiles = [...tiles]
-        const activeTile = newTiles.find((t) => t.id === activeId)
-        const overTile = newTiles.find((t) => t.id === overId)
+        const activeTile = newTiles.find((t) => t.currentPos === activePos)
+        const overTile = newTiles.find((t) => t.currentPos === overPos)
 
         if (activeTile && overTile) {
             const tempPos = activeTile.currentPos
@@ -318,7 +332,7 @@ const PuzzleGame: React.FC = () => {
 
     // Get sorted tiles for rendering
     const sortedTiles = [...tiles].sort((a, b) => a.currentPos - b.currentPos)
-    const activeTile = tiles.find((t) => t.id.toString() === activeDragId)
+    const activeTile = activeDragId ? tiles.find((t) => t.currentPos.toString() === activeDragId) : null
 
     return (
         <div className="relative w-full min-h-screen overflow-hidden p-4 md:p-6">
@@ -487,9 +501,10 @@ const PuzzleGame: React.FC = () => {
                             sensors={sensors}
                             collisionDetection={closestCenter}
                             onDragStart={handleDragStart}
+                            onDragOver={handleDragOver}
                             onDragEnd={handleDragEnd}
                         >
-                            <SortableContext items={sortedTiles.map((t) => t.id.toString())} strategy={rectSortingStrategy}>
+                            <SortableContext items={sortedTiles.map((t) => t.currentPos.toString())} strategy={rectSortingStrategy}>
                                 <div
                                     className="grid gap-2 w-full h-full p-3"
                                     style={{
@@ -505,6 +520,7 @@ const PuzzleGame: React.FC = () => {
                                             isSolved={isSolved}
                                             showPreview={showPreview}
                                             isCorrect={tile.id === tile.currentPos}
+                                            isHoveredOver={overPosition === tile.currentPos.toString() && activeDragId !== tile.currentPos.toString()}
                                         />
                                     ))}
                                 </div>

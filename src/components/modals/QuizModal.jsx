@@ -50,14 +50,15 @@ export const QuizModal = ({ open, onOpenChange }) => {
         closeQuizModal,
         completeQuiz,
         player,
-        isQuizCompleted
+        isQuizCompleted,
+        toggleVideoQuizConfetti
     } = useLMSStore();
 
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [answers, setAnswers] = useState({});
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [score, setScore] = useState(0);
-    const { playClick, playClose } = useSound();
+    const { playClick, playClose, playSound } = useSound();
 
     // Reset state when modal opens
     useEffect(() => {
@@ -107,6 +108,10 @@ export const QuizModal = ({ open, onOpenChange }) => {
         const calculatedScore = Math.round((correctCount / totalQuestions) * 100);
         setScore(calculatedScore);
         setIsSubmitted(true);
+        toggleVideoQuizConfetti(true);
+        setTimeout(() => {
+            toggleVideoQuizConfetti(false);
+        }, 3000);
         completeQuiz(player.currentModuleId, selectedQuiz.id);
     };
 

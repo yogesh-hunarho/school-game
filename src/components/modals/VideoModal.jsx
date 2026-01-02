@@ -21,12 +21,13 @@ export const VideoModal = ({ open, onOpenChange }) => {
         player,
         isVideoWatched,
         getCurrentModuleContent,
-        openVideoModal
+        openVideoModal,
+        toggleVideoQuizConfetti
     } = useLMSStore();
     const isMobile = useIsMobile()
 
     const [activeTab, setActiveTab] = useState("about");
-    const { playClick, playClose } = useSound();
+    const { playClick, playClose, playSound } = useSound();
 
     // Get all videos in current module
     const moduleContent = getCurrentModuleContent();
@@ -46,7 +47,11 @@ export const VideoModal = ({ open, onOpenChange }) => {
     const isWatched = isVideoWatched(player.currentModuleId, selectedVideo.id);
 
     const handleMarkWatched = () => {
-        playClick();
+        playSound("success");
+        toggleVideoQuizConfetti(true)
+        setTimeout(() => {
+            toggleVideoQuizConfetti(false);
+        }, 3000);
         markVideoWatched(player.currentModuleId, selectedVideo.id);
     };
 
@@ -162,7 +167,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                     />
                                 </div>
 
-                                <div className="mt-4 flex items-center justify-between">
+                                <div className="mt-4 flex items-center justify-end">
                                     <button
                                         onClick={handleMarkWatched}
                                         disabled={isWatched}

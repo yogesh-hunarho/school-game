@@ -230,6 +230,8 @@ export const useLMSStore = create(
             selectedQuiz: null,
             showContentPanel: false,
 
+            showVideoQuizConfetti: false,
+
             // Animation state
             showConfetti: false,
             animatingStarFrom: null, // { x, y } coordinates
@@ -390,8 +392,9 @@ export const useLMSStore = create(
             closeContentPanel: () => set({ showContentPanel: false }),
 
             // Animation Actions
-            triggerConfetti: (moduleId) => set({ showConfetti: true, lastCompletedModuleId: moduleId }),
-            hideConfetti: () => set({ showConfetti: false, lastCompletedModuleId: null }),
+            triggerConfetti: () => set({ showConfetti: true }),
+            toggleVideoQuizConfetti: (val) => set({ showVideoQuizConfetti: val }),
+            hideConfetti: () => set({ showConfetti: false }),
             triggerStarAnimation: (fromPosition, xpAmount) => set({
                 animatingStarFrom: fromPosition,
                 pendingXPGain: xpAmount,

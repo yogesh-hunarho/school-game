@@ -99,8 +99,8 @@ export default function CyberpunkLogin() {
                                 <motion.div variants={itemVariants} className="space-y-2">
                                     <div className="group/input pt-4">
                                         <CyberpunkInput
-                                            label="USERNAME"
-                                            placeholder="ENTER_ID"
+                                            label="EMAIL"
+                                            placeholder="ENTER_EMAIL"
                                             ref={emailRef}
                                             type="email"
                                         />
@@ -134,7 +134,7 @@ export default function CyberpunkLogin() {
                                 </motion.div>
                             </form>
 
-                            <motion.div variants={itemVariants} className="text-center text-xs text-cyan-300/60 font-mono space-y-2">
+                            {/* <motion.div variants={itemVariants} className="text-center text-xs text-cyan-300/60 font-mono space-y-2">
                                 <p>NO ACCOUNT?</p>
                                 <Link
                                     to="/signup"
@@ -142,7 +142,7 @@ export default function CyberpunkLogin() {
                                 >
                                     &gt; CREATE NEW ACCESS
                                 </Link>
-                            </motion.div>
+                            </motion.div> */}
                         </div>
                     </div>
                 </div>

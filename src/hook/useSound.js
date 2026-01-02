@@ -6,7 +6,7 @@ const SOUNDS = {
     click: "/audio/click.wav",
     close: "/audio/close.wav",
     disabled: "/audio/disabled.mp3",
-    success: "/audio/click.wav",
+    success: "/audio/success.mp3",
 };
 
 /**
