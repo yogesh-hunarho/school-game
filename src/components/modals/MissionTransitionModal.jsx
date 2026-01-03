@@ -58,7 +58,7 @@ export const MissionTransitionModal = () => {
     const handleAccessNext = () => {
         closeMissionTransition();
         if (nextModuleId) {
-            navigate(`/module/${nextModuleId}`);
+            navigate(`/mission/${nextModuleId}`);
         }
     };
 

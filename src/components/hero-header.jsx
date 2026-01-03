@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import AnimatedBackground from "./animated-background";
 import { calculateLevel, getXPToNextLevel } from "./Header";
+import { RupeePulse } from "./coin";
 
 
 // Helper Components for Popover
@@ -161,7 +162,7 @@ export const HeroHeader = () => {
             return
         }
         playSound("click")
-        navigate(`/module/${node.id}`)
+        navigate(`/mission/${node.id}`)
     }
 
     const ICON_MAP = {
@@ -392,19 +393,20 @@ export const HeroHeader = () => {
                                             {/* COINS */}
                                             <div className="hidden md:flex flex-col items-end gap-0.5">
                                                 <div className="flex items-center gap-1.5">
-                                                    <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                                                    {/* <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" /> */}
+                                                    <RupeePulse />
                                                     <span className="text-sm font-bold text-yellow-400 tabular-nums">
                                                         {player.totalXP.toLocaleString()} Coins
                                                     </span>
                                                 </div>
-                                                <div className="w-24 h-1 bg-slate-800 rounded-full overflow-hidden">
+                                                {/* <div className="w-24 h-1 bg-slate-800 rounded-full overflow-hidden">
                                                     <motion.div
                                                         className="h-full bg-linear-to-r from-yellow-400 to-orange-500 rounded-full"
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
                                                         transition={{ duration: 0.5, ease: "easeOut" }}
                                                     />
-                                                </div>
+                                                </div> */}
                                             </div>
 
                                             {/* SEPARATOR */}

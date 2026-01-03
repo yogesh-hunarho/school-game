@@ -10,6 +10,7 @@ import ProfilePage from "./view/profile";
 import CoursesLayout from "./layouts/courses";
 import ModuleDetailsPage from "./view/ModuleDetailsPage";
 import PuzzlePage from "./view/PuzzlePage";
+import AchievementLayout from "./layouts/achievementLayout";
 
 const router = createBrowserRouter([
     {
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '/achievements',
-                element: <PuzzlePage />
+                element: <AchievementLayout />
             },
         ]
     },

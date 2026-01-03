@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion"
 import CyberpunkButton from "@/components/ui/cyber-button"
-import { Terminal, Shield, Zap, Target, Sparkles, Rocket, Star, Trophy, Gamepad2 } from "lucide-react"
+import { Terminal, Shield, Zap, Target, Sparkles, Rocket, Star, Trophy, Gamepad2, Mail } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import FloatingLines from "@/components/floating-lines"
 import TypeWriter from "@/components/typewritter"
+import { AmbientFloat, } from "@/components/FloatingAround"
 
 // Glitch text animation component
 const GlitchText = ({ children, className }) => {
@@ -181,6 +182,39 @@ export default function MainLayout() {
                                 whileHover={{ scale: 1.05 }}
                                 transition={{ type: "spring", stiffness: 300 }}
                             />
+
+                            <motion.div
+                                animate={{
+                                    opacity: [0.6, 1, 0.6],
+                                }}
+                                transition={{
+                                    duration: 3,
+                                    repeat: Infinity,
+                                    ease: "easeInOut",
+                                }}
+                            >
+                                <AmbientFloat baseX={0} baseY={-180}>
+                                    <Sparkles className="w-6 h-6 text-yellow-400" />
+                                </AmbientFloat>
+
+                                {/* LEFT */}
+                                <AmbientFloat baseX={-160} baseY={-40}>
+                                    <Star className="w-6 h-6 text-purple-400" />
+                                </AmbientFloat>
+
+                                {/* RIGHT */}
+                                <AmbientFloat baseX={160} baseY={-20}>
+                                    <Zap className="w-6 h-6 text-blue-400" />
+                                </AmbientFloat>
+
+                                {/* BOTTOM */}
+                                <AmbientFloat baseX={40} baseY={-140}>
+                                    <Mail className="w-6 h-6 text-red-400" />
+                                </AmbientFloat>
+
+                            </motion.div>
+
+
                         </motion.div>
                     </div>
                 </motion.div>

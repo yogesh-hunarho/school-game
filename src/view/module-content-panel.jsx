@@ -278,7 +278,7 @@ export const ModuleContentPanel = () => {
             )}
 
             {/* Content Grid */}
-            <div onClick={playClick} className="flex-1 overflow-y-auto p-6 pb-24">
+            <div onClick={playClick} className="flex-1 overflow-y-auto p-6">
                 {/* Videos Section */}
                 {content.videos.length > 0 && (
                     <motion.div className="mb-8">
@@ -773,14 +773,6 @@ export const ModuleContentPanel = () => {
                     </motion.div>
                 )}
             </div>
-
-            {/* Bottom accent line with animation */}
-            <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="absolute bottom-0 left-6 right-6 h-0.5 bg-linear-to-r from-transparent via-cyan-400/50 to-transparent origin-center"
-            />
         </div>
     );
 };
