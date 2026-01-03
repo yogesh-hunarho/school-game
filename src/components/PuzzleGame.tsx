@@ -17,6 +17,8 @@ import {
 } from "@dnd-kit/core"
 import { useSortable, SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { useLMSStore } from "../store/lms-store"
+import { Lock } from "lucide-react"
 
 interface Tile {
     id: number
@@ -37,6 +39,7 @@ interface SortableTileProps {
     isCorrect: boolean
     isDragOverlay?: boolean
     isHoveredOver?: boolean
+    isUnlocked: boolean
 }
 
 const SortableTile: React.FC<SortableTileProps> = ({
@@ -47,6 +50,7 @@ const SortableTile: React.FC<SortableTileProps> = ({
     isCorrect,
     isDragOverlay = false,
     isHoveredOver = false,
+    isUnlocked,
 }) => {
     const {
         attributes,
@@ -57,7 +61,7 @@ const SortableTile: React.FC<SortableTileProps> = ({
         isDragging,
     } = useSortable({
         id: tile.currentPos.toString(),
-        disabled: !isGameActive || isSolved || showPreview,
+        disabled: !isGameActive || isSolved || showPreview || !isUnlocked,
     })
 
     const row = Math.floor(tile.id / GRID_SIZE)
@@ -94,9 +98,22 @@ const SortableTile: React.FC<SortableTileProps> = ({
                     backgroundImage: `url(${IMAGE_URL})`,
                     backgroundSize: `${GRID_SIZE * 100}% ${GRID_SIZE * 100}%`,
                     backgroundPosition: `${(col / (GRID_SIZE - 1)) * 100}% ${(row / (GRID_SIZE - 1)) * 100}%`,
-                    filter: isSolved ? "brightness(1.1) contrast(1.1)" : "brightness(0.95) contrast(1.2)",
+                    filter: !isUnlocked ? "grayscale(1) brightness(0.4)" : isSolved ? "brightness(1.1) contrast(1.1)" : "brightness(0.95) contrast(1.2)",
                 }}
             />
+
+            {/* Locked Overlay */}
+            {!isUnlocked && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="bg-slate-900/80 p-2 rounded-full border border-white/20 shadow-xl"
+                    >
+                        <Lock className="w-5 h-5 text-slate-400" />
+                    </motion.div>
+                </div>
+            )}
 
             {/* Drag handle indicator */}
             {isGameActive && !isSolved && !showPreview && !isDragging && (
@@ -165,6 +182,10 @@ const PuzzleGame: React.FC = () => {
     const [correctPieces, setCorrectPieces] = useState(0)
     const [activeDragId, setActiveDragId] = useState<string | null>(null)
     const [overPosition, setOverPosition] = useState<string | null>(null)
+
+    const { player } = useLMSStore()
+    const unlockedCount = player?.unlockedPuzzleCount || 0
+    const allUnlocked = unlockedCount >= 9
 
     // DnD Kit sensors
     const sensors = useSensors(
@@ -335,7 +356,7 @@ const PuzzleGame: React.FC = () => {
     const activeTile = activeDragId ? tiles.find((t) => t.currentPos.toString() === activeDragId) : null
 
     return (
-        <div className="relative w-full min-h-screen overflow-hidden p-4 md:p-6">
+        <div className="relative w-full min-h-screen overflow-hidden p-4 md:p-6 mt-5">
             {/* Decorative background elements */}
             <div className="absolute top-10 right-10 w-72 h-72 bg-linear-to-br from-cyan-500/20 to-purple-500/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
             <div className="absolute bottom-10 left-10 w-64 h-64 bg-linear-to-br from-pink-500/20 to-yellow-500/20 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
@@ -407,24 +428,6 @@ const PuzzleGame: React.FC = () => {
                             </div>
                             <div className="text-2xl font-black text-white">{getProgressPercentage()}%</div>
                         </motion.div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="bg-slate-900/80 rounded-2xl p-4 border-2 border-slate-700/50">
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-slate-400 text-sm font-medium">Progress</span>
-                            <span className="text-cyan-400 text-sm font-bold">
-                                {correctPieces}/{TOTAL_TILES} pieces
-                            </span>
-                        </div>
-                        <div className="h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${getProgressPercentage()}%` }}
-                                transition={{ duration: 0.5, ease: "easeOut" }}
-                                className="h-full bg-linear-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.5)]"
-                            />
-                        </div>
                     </div>
 
                     {/* Action Buttons */}
@@ -521,6 +524,7 @@ const PuzzleGame: React.FC = () => {
                                             showPreview={showPreview}
                                             isCorrect={tile.id === tile.currentPos}
                                             isHoveredOver={overPosition === tile.currentPos.toString() && activeDragId !== tile.currentPos.toString()}
+                                            isUnlocked={tile.id < unlockedCount}
                                         />
                                     ))}
                                 </div>
@@ -552,40 +556,72 @@ const PuzzleGame: React.FC = () => {
                                                 initial={{ y: 30, opacity: 0 }}
                                                 animate={{ y: 0, opacity: 1 }}
                                                 transition={{ delay: 0.2 }}
-                                                className="text-center space-y-8 px-4"
+                                                className="text-center space-y-6 px-4 w-full max-w-sm"
                                             >
-                                                <div>
+                                                <div className="space-y-2">
                                                     <motion.div
                                                         animate={{ rotate: [0, 5, -5, 0] }}
                                                         transition={{ duration: 2, repeat: Infinity }}
                                                         className="text-6xl mb-4"
                                                     >
-                                                        🧩
+                                                        {allUnlocked ? "🧩" : "🔒"}
                                                     </motion.div>
-                                                    <h2 className="text-4xl md:text-5xl font-black text-white drop-shadow-lg">
-                                                        Ready to Play?
+                                                    <h2 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg">
+                                                        {allUnlocked ? "Ready to Play?" : "Mission Progress"}
                                                     </h2>
-                                                    <p className="text-cyan-300/80 text-lg mt-2">Remember this picture! 📸</p>
+                                                    <p className="text-cyan-300/80 text-base">
+                                                        {allUnlocked
+                                                            ? "You've collected all pieces! Remember this picture! 📸"
+                                                            : `Complete missions to unlock all 9 pieces! (${unlockedCount}/9)`}
+                                                    </p>
                                                 </div>
+
+                                                {/* Unlock Progress Bar */}
+                                                {!allUnlocked && (
+                                                    <div className="w-full space-y-2">
+                                                        <div className="h-3 bg-slate-800 rounded-full overflow-hidden border border-slate-700 p-0.5">
+                                                            <motion.div
+                                                                initial={{ width: 0 }}
+                                                                animate={{ width: `${(unlockedCount / 9) * 100}%` }}
+                                                                className="h-full bg-linear-to-r from-cyan-500 to-purple-500 rounded-full"
+                                                            />
+                                                        </div>
+                                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+                                                            {9 - unlockedCount} MORE PIECES TO GO
+                                                        </p>
+                                                    </div>
+                                                )}
 
                                                 <motion.button
                                                     onClick={startGame}
-                                                    whileHover={{ scale: 1.08, boxShadow: "0 0 40px rgba(34, 197, 94, 0.6)" }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    className="relative w-full px-12 py-5 bg-linear-to-r from-green-500 to-emerald-500 text-white font-black rounded-2xl hover:from-green-400 hover:to-emerald-400 transition-all flex items-center justify-center gap-4 shadow-[0_0_30px_rgba(34,197,94,0.5)] text-xl tracking-wider border-2 border-green-300/50"
+                                                    disabled={!allUnlocked}
+                                                    whileHover={allUnlocked ? { scale: 1.08, boxShadow: "0 0 40px rgba(34, 197, 94, 0.6)" } : {}}
+                                                    whileTap={allUnlocked ? { scale: 0.95 } : {}}
+                                                    className={`relative w-full px-12 py-5 font-black rounded-2xl transition-all flex items-center justify-center gap-4 text-xl tracking-wider border-2 ${allUnlocked
+                                                        ? "bg-linear-to-r from-green-500 to-emerald-500 text-white hover:from-green-400 hover:to-emerald-400 shadow-[0_0_30px_rgba(34, 197, 94, 0.5)] border-green-300/50"
+                                                        : "bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed opacity-80"
+                                                        }`}
                                                 >
-                                                    <Zap className="w-7 h-7" />
-                                                    <span>LET'S GO!</span>
-                                                    <Sparkles className="w-6 h-6" />
+                                                    {allUnlocked ? <Zap className="w-7 h-7" /> : <Lock className="w-6 h-6" />}
+                                                    <span>{allUnlocked ? "LET'S GO!" : "LOCKED"}</span>
+                                                    {allUnlocked && <Sparkles className="w-6 h-6" />}
                                                 </motion.button>
 
-                                                <motion.p
-                                                    animate={{ opacity: [0.5, 1, 0.5] }}
-                                                    transition={{ duration: 2, repeat: Infinity }}
-                                                    className="text-white/60 text-sm"
-                                                >
-                                                    👆 Tap the button to start!
-                                                </motion.p>
+                                                {!allUnlocked && (
+                                                    <p className="text-slate-500 text-sm italic">
+                                                        Finish all lessons to unlock the puzzle game!
+                                                    </p>
+                                                )}
+
+                                                {allUnlocked && (
+                                                    <motion.p
+                                                        animate={{ opacity: [0.5, 1, 0.5] }}
+                                                        transition={{ duration: 2, repeat: Infinity }}
+                                                        className="text-white/60 text-sm"
+                                                    >
+                                                        👆 Tap the button to start!
+                                                    </motion.p>
+                                                )}
                                             </motion.div>
                                         </motion.div>
                                     )}

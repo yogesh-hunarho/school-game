@@ -498,7 +498,7 @@ export default function ProfilePage() {
                         </h2>
                     </div>
 
-                    <Link to="/puzzle" onClick={playClick} className="block group">
+                    <Link to="/puzzle" onClick={playClick} className="block group mb-20">
                         <div className="relative bg-slate-900/60 border border-cyan-400/20 p-8 overflow-hidden transition-all duration-500 hover:border-cyan-400/40 hover:bg-slate-900/80 group-hover:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
                             {/* Decorative background elements */}
                             <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-cyan-400/10 transition-colors" />

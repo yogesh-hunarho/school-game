@@ -172,7 +172,7 @@ const moduleContent = {
 
 // Initial player state
 const initialPlayerState = {
-    name: "Student",
+    name: "Yogesh Singh",
     totalXP: 0,
     totalStars: 0,
     streak: 0,
@@ -202,19 +202,20 @@ const initialPlayerState = {
         "final-assessment": "locked",
     },
     badges: [],
+    unlockedPuzzleCount: 0,
 };
 
 // Module order for unlocking
 const moduleOrder = [
-    "innovators-mind",
-    "trebuchet",
-    "motor-robot",
-    "tetris",
-    "aqua-bridge",
-    "drawing-bot",
-    "soil-monitoring",
-    "homopolar-motor",
-    "final-assessment",
+    { id: "innovators-mind", unlockCount: 1 },
+    { id: "trebuchet", unlockCount: 1 },
+    { id: "motor-robot", unlockCount: 1 },
+    { id: "tetris", unlockCount: 1 },
+    { id: "aqua-bridge", unlockCount: 1 },
+    { id: "drawing-bot", unlockCount: 1 },
+    { id: "soil-monitoring", unlockCount: 1 },
+    { id: "homopolar-motor", unlockCount: 1 },
+    { id: "final-assessment", unlockCount: 1 },
 ];
 
 export const useLMSStore = create(
@@ -350,24 +351,24 @@ export const useLMSStore = create(
 
             // Check if module is complete and unlock next
             checkModuleCompletion: (moduleId) => {
+                const { player } = get();
                 const progress = get().getModuleProgress(moduleId);
 
-                if (progress === 100) {
-                    const currentIndex = moduleOrder.indexOf(moduleId);
-                    const nextModuleId = moduleOrder[currentIndex + 1];
+                if (progress === 100 && player.moduleStatus[moduleId] !== "completed") {
+                    const currentIndex = moduleOrder.findIndex(m => m.id === moduleId);
+                    const currentModuleConfig = moduleOrder[currentIndex];
+                    const nextModuleConfig = moduleOrder[currentIndex + 1];
 
                     set((state) => ({
                         player: {
                             ...state.player,
                             totalStars: state.player.totalStars + 1,
+                            unlockedPuzzleCount: Math.min(9, state.player.unlockedPuzzleCount + (currentModuleConfig?.unlockCount || 0)),
                             moduleStatus: {
                                 ...state.player.moduleStatus,
                                 [moduleId]: "completed",
-                                ...(nextModuleId ? { [nextModuleId]: "current" } : {}),
+                                ...(nextModuleConfig ? { [nextModuleConfig.id]: "current" } : {}),
                             },
-                            // DO NOT auto-update currentModuleId here. 
-                            // It will be updated when the user enters the new route.
-                            // currentModuleId: nextModuleId || moduleId, 
                         },
                         showConfetti: true,
                         lastCompletedModuleId: moduleId,

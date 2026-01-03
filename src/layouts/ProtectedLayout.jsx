@@ -12,6 +12,7 @@ import { Home, User, Trophy, BookOpen } from "lucide-react";
 import ClickSpark from "@/components/ClickSpark";
 import { Meteors } from "@/components/ui/meteors";
 import VideoQuizConfettiEffect from "@/components/videoquiz-confetti-effect";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
     {
@@ -61,24 +62,22 @@ export default function ProtectedLayout() {
             sparkCount={8}
             duration={400}
         >
-            <div className="relative w-full h-screen flex flex-col">
-                <ShootingStars starCount={20} className="pointer-events-none z-0" />
-                <StarsBackground className="pointer-events-none z-0" />
-                <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
+            <div className="relative w-full max-h-dvh flex flex-col">
+                {location.pathname !== "/" && (
+                    <>
+                        <ShootingStars starCount={20} className="pointer-events-none z-0" />
+                        <StarsBackground className="pointer-events-none z-0" />
+                        <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
+                    </>
+                )}
 
-                <Header />
+                {location.pathname === "/" && (<Header />)}
 
-                <main className="relative flex-1 z-10 pt-12 mb-16">
+                <main className={cn("relative flex-1 z-10", location.pathname === "/" && "mt-14 mb-16")}>
                     <Outlet />
                 </main>
 
-                {notification && (
-                    <div className="fixed top-20 right-4 z-50 px-4 py-2 bg-cyan-500/20 border border-cyan-500/50 rounded-lg text-cyan-400 backdrop-blur-sm">
-                        {notification}
-                    </div>
-                )}
-
-                {/* <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+                {location.pathname !== "/" && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
                     <GlassSurface
                         width={dockWidth}
                         borderRadius={20}
@@ -95,7 +94,7 @@ export default function ProtectedLayout() {
                             onHoverChange={setIsDockHovered}
                         />
                     </GlassSurface>
-                </div> */}
+                </div>}
 
                 <ConfettiEffect />
                 <VideoQuizConfettiEffect />

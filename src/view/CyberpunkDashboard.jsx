@@ -54,7 +54,7 @@ export const CyberpunkDashboard = () => {
 
 
     return (
-        <div className="relative min-h-screen  overflow-hidden pt-10 pb-20">
+        <div className="relative min-h-screen  overflow-hidden pb-20">
             {/* Cyberpunk Global Background Effects */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Horizontal Scanline */}
