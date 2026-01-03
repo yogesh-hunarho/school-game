@@ -21,7 +21,7 @@ const router = createBrowserRouter([
                 element: <MainLayout />
             },
             {
-                path: '/courses',
+                path: '/missions',
                 element: <CoursesLayout />
             },
             {
@@ -29,11 +29,15 @@ const router = createBrowserRouter([
                 element: <ProfilePage />
             },
             {
-                path: '/module/:moduleId',
+                path: '/mission/:moduleId',
                 element: <ModuleDetailsPage />
             },
             {
                 path: '/puzzle',
+                element: <PuzzlePage />
+            },
+            {
+                path: '/achievements',
                 element: <PuzzlePage />
             },
         ]

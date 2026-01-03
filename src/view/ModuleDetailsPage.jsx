@@ -42,13 +42,13 @@ const ModuleDetailsPage = () => {
     }
 
     return (
-        <div className="p-4 pt-10 max-w-7xl mx-auto">
+        <div className="p-4 pt-5 max-w-7xl mx-auto">
             <button
                 onClick={handleBack}
                 className="mb-4 flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors uppercase font-bold tracking-widest text-xs"
             >
                 <ArrowLeft className="w-4 h-4" />
-                Back to Modules
+                Back to Missions
             </button>
 
             <div className="bg-slate-950/80 overflow-hidden border border-cyan-400/20 shadow-[0_0_50px_rgba(34,211,238,0.1)]">

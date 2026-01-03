@@ -21,14 +21,14 @@ const navLinks = [
         href: "/",
     },
     {
-        title: "Courses",
+        title: "Missions",
         icon: <BookOpen className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
-        href: "/courses",
+        href: "/missions",
     },
     {
         title: "Achievements",
         icon: <Trophy className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
-        href: "/profile",
+        href: "/achievements",
     },
     {
         title: "Profile",
@@ -71,9 +71,9 @@ export default function ProtectedLayout() {
                     </>
                 )}
 
-                {location.pathname === "/" && (<Header />)}
+                <Header />
 
-                <main className={cn("relative flex-1 z-10", location.pathname === "/" && "mt-14 mb-16")}>
+                <main className={cn("relative flex-1 z-10 mb-16")}>
                     <Outlet />
                 </main>
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useMemo, useState } from "react"
 import { useLMSStore, moduleOrder, moduleContent } from "@/store/lms-store";
 import { useSound } from "@/hook/useSound";
 import { motion, useScroll } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
 import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, Star, User, ChevronRight, Menu } from "lucide-react"
 import { cn } from '@/lib/utils'
@@ -107,13 +107,17 @@ export const HeroHeader = () => {
     const [menuState, setMenuState] = useState(false)
     const [scrolled, setScrolled] = useState(false)
     const { scrollYProgress } = useScroll()
+    const location = useLocation()
 
     useEffect(() => {
+        if (location.pathname == '/') {
+            setScrolled(true)
+        }
         const unsubscribe = scrollYProgress.on('change', (latest) => {
             setScrolled(latest > 0.05)
         })
         return () => unsubscribe()
-    }, [scrollYProgress])
+    }, [scrollYProgress, location])
 
     const { player } = useLMSStore();
     const { playClick } = useSound();
@@ -172,12 +176,30 @@ export const HeroHeader = () => {
         "final-assessment": ClipboardCheck,
     }
 
+    const cardVariants = {
+        hidden: (side) => ({
+            x: side === "left" ? -80 : 80,
+            opacity: 0,
+            scale: 0.95,
+        }),
+        visible: {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            transition: {
+                type: "spring",
+                stiffness: 120,
+                damping: 18,
+            },
+        },
+    };
+
     return (
         <header>
             <nav
                 data-state={menuState && 'active'}
                 className="fixed z-20 w-full pt-2 px-4">
-                <div className={cn('mx-auto max-w-7xl rounded-3xl px-6 transition-all duration-300 lg:px-12', scrolled && 'bg-black/50 backdrop-blur-2xl')}>
+                <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur border md:rounded-3xl')}>
                     <motion.div
                         key={1}
                         className={cn('relative flex flex-wrap items-center justify-between gap-6 py-3 duration-200 lg:gap-0 lg:py-2', scrolled && 'lg:py-4')}>
@@ -235,10 +257,10 @@ export const HeroHeader = () => {
                                                 />
                                                 <div className="relative h-full flex flex-col">
                                                     {/* Header Info */}
-                                                    <div className="hidden p-6 border-b border-white/5 bg-white/5 backdrop-blur-md md:flex items-center justify-between shrink-0">
+                                                    <div className="hidden p-3 border-b border-white/5 bg-white/5 backdrop-blur-md md:flex items-center justify-between shrink-0">
                                                         <div>
                                                             <h2 className="text-xl font-bold text-cyan-300 tracking-tight flex items-center gap-2">
-                                                                Mission Timeline
+                                                                Mission Map
                                                             </h2>
                                                             <p className="text-xs text-emerald-300 mt-1">
                                                                 {nodes.filter(n => n.isCompleted).length} of {nodes.length} Missions Complete
@@ -272,7 +294,18 @@ export const HeroHeader = () => {
                                                                 />
                                                             </div>
 
-                                                            <div className="space-y-20 relative">
+                                                            <motion.div
+                                                                className="space-y-20 relative"
+                                                                initial="hidden"
+                                                                animate="visible"
+                                                                variants={{
+                                                                    hidden: {},
+                                                                    visible: {
+                                                                        transition: {
+                                                                            staggerChildren: 0.15,
+                                                                        },
+                                                                    },
+                                                                }}>
                                                                 {nodes.map((node, i) => {
                                                                     const Icon = ICON_MAP[node.id] || Brain;
                                                                     const content = moduleContent[node.id];
@@ -283,14 +316,33 @@ export const HeroHeader = () => {
                                                                             <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10">
                                                                                 <div className="flex justify-end">
                                                                                     {isEven && (
-                                                                                        <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="right" />
+                                                                                        <motion.div
+                                                                                            custom="right"
+                                                                                            variants={cardVariants}
+                                                                                            initial="hidden"
+                                                                                            whileInView="visible"
+                                                                                            viewport={{ once: true, margin: "-100px" }}
+                                                                                        >
+                                                                                            <MissionCard
+                                                                                                node={node}
+                                                                                                content={content}
+                                                                                                onClick={() => handleNodeClick(node)}
+                                                                                                side="right"
+                                                                                            />
+                                                                                        </motion.div>
                                                                                     )}
                                                                                 </div>
                                                                                 <div className="relative z-20">
                                                                                     <motion.div
                                                                                         initial={{ scale: 0.8, opacity: 0 }}
-                                                                                        animate={{ scale: 1, opacity: 1 }}
-                                                                                        transition={{ delay: i * 0.05 }}
+                                                                                        whileInView={{ scale: 1, opacity: 1 }}
+                                                                                        viewport={{ once: true }}
+                                                                                        transition={{
+                                                                                            type: "spring",
+                                                                                            stiffness: 200,
+                                                                                            damping: 15,
+                                                                                            delay: i * 0.04,
+                                                                                        }}
                                                                                     >
                                                                                         <LevelNode
                                                                                             node={node}
@@ -301,14 +353,27 @@ export const HeroHeader = () => {
                                                                                 </div>
                                                                                 <div className="flex justify-start">
                                                                                     {!isEven && (
-                                                                                        <MissionCard node={node} content={content} onClick={() => handleNodeClick(node)} side="left" />
+                                                                                        <motion.div
+                                                                                            custom="left"
+                                                                                            variants={cardVariants}
+                                                                                            initial="hidden"
+                                                                                            whileInView="visible"
+                                                                                            viewport={{ once: true, margin: "-100px" }}
+                                                                                        >
+                                                                                            <MissionCard
+                                                                                                node={node}
+                                                                                                content={content}
+                                                                                                onClick={() => handleNodeClick(node)}
+                                                                                                side="left"
+                                                                                            />
+                                                                                        </motion.div>
                                                                                     )}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     );
                                                                 })}
-                                                            </div>
+                                                            </motion.div>
                                                         </div>
                                                     </div>
                                                 </div>

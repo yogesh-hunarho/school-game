@@ -4,8 +4,9 @@ import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
 import useSound from "@/hook/useSound";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
+import TypeWriter from "@/components/typewritter";
 
 
 const cardVariants = {
@@ -281,12 +282,17 @@ export const ModuleContentPanel = () => {
                 {/* Videos Section */}
                 {content.videos.length > 0 && (
                     <motion.div className="mb-8">
-                        <h3 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-cyan-400">
-                            <div className="p-2.5 bg-cyan-400/10 border border-cyan-400/30 ">
+                        <h3 className="mb-5 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-lime-300">
+                            <div className="p-2.5 bg-lime-300/10 border border-lime-300/30 ">
                                 <Play className="h-4 w-4" />
                             </div>
-                            <span>Data Streams</span>
-                            <span className="text-slate-500">({content.videos.length})</span>
+                            {/* { text: "Finish the Videos, Claim Your Coins" } */}
+                            <div className="italic text-lime-300">
+                                <TypeWriter
+                                    text={`Finish the Videos, Claim Your Coins (${content.videos.length})`}
+                                    delay={30}
+                                />
+                            </div>
                         </h3>
 
                         <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -447,8 +453,12 @@ export const ModuleContentPanel = () => {
                             <div className="p-2.5 bg-amber-400/10 border border-amber-400/30 ">
                                 <BookCheck className="h-4 w-4" />
                             </div>
-                            <span>Neural Tests</span>
-                            <span className="text-slate-500">({content.quizzes.length})</span>
+                            <div className="italic text-amber-400">
+                                <TypeWriter
+                                    text={`Test Your Knowledge, Collect Your Coins (${content.quizzes.length})`}
+                                    delay={30}
+                                />
+                            </div>
                         </h3>
 
                         <motion.div

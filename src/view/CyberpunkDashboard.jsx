@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hook/use-mobile";
 import { motion } from "framer-motion";
 import { CyberpunkLock } from "@/components/ui/cyber-component/cyber-punk.cardlock";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
+import DecryptedText from "@/components/DecryptedText";
 
 export const CyberpunkDashboard = () => {
     const { player, getModuleProgress } = useLMSStore();
@@ -20,7 +21,7 @@ export const CyberpunkDashboard = () => {
         const status = player.moduleStatus[moduleId] || "locked";
         if (status === "locked") return;
 
-        navigate(`/module/${moduleId}`);
+        navigate(`/mission/${moduleId}`);
     };
 
     const getEntryAnimation = (index) => {
@@ -54,7 +55,7 @@ export const CyberpunkDashboard = () => {
 
 
     return (
-        <div className="relative min-h-screen  overflow-hidden pb-20">
+        <div className="relative min-h-screen  overflow-hidden pb-20 mt-14 md:mt-20">
             {/* Cyberpunk Global Background Effects */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Horizontal Scanline */}
@@ -80,7 +81,11 @@ export const CyberpunkDashboard = () => {
                             <div className="flex items-center gap-3 mb-1">
                                 <div className="w-2 h-6 bg-cyan-500 shadow-[0_0_10px_#06b6d4]" />
                                 <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">
-                                    Mission <span className="text-cyan-400">Control</span>
+                                    <DecryptedText
+                                        text="Mission Control"
+                                        animateOn="view"
+                                        revealDirection="center"
+                                    />
                                 </h1>
                             </div>
                             <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] ml-5">
@@ -89,15 +94,15 @@ export const CyberpunkDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-6 bg-slate-900/50 backdrop-blur-md border border-white/20 p-4 rounded-sm">
-                            <div className="flex flex-col items-end px-4 border-r border-white/10">
+                        <div className="flex flex-col md:flex-row md:items-center items-start gap-6 bg-slate-900/50 backdrop-blur-md border border-emerald-500/50 p-4">
+                            <div className="flex gap-5 w-full items-center justify-between md:items-end px-4 md:border-r border-emerald-500/10">
                                 <span className="text-[10px] font-mono  uppercase tracking-widest">Completed</span>
-                                <span className="text-2xl font-black text-emerald-400">{completedCount}<span className="text-xs italic ml-1">/9</span></span>
+                                <span className="text-4xl font-black text-emerald-400">{completedCount}<span className="text-xl italic ml-1">/9</span></span>
                             </div>
-                            <div className="flex flex-col items-end px-4">
-                                <span className="text-[10px] font-mono uppercase tracking-widest">Overall_Progress</span>
+                            <div className="flex flex-col w-full items-end px-4">
+                                <span className="text-[10px] w-full md:w-auto font-mono uppercase tracking-widest">Overall_Progress</span>
                                 <div className="flex items-center gap-3 mt-1">
-                                    <div className="w-60">
+                                    <div className="w-72 md:w-60">
                                         <CyberpunkProgressBar
                                             progress={(completedCount / 9) * 100}
                                             color={Math.min((completedCount / 9) * 100, 100) === 100 ? "green" : (completedCount / 9) * 100 > 0 ? "cyan" : "orange"}

@@ -4,6 +4,7 @@ import { Terminal, Shield, Zap, Target, Sparkles, Rocket, Star, Trophy, Gamepad2
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import FloatingLines from "@/components/floating-lines"
+import TypeWriter from "@/components/typewritter"
 
 // Glitch text animation component
 const GlitchText = ({ children, className }) => {
@@ -75,41 +76,12 @@ const AnimatedCounter = ({ value, suffix = "" }) => {
     return <span>{count.toLocaleString()}{suffix}</span>
 }
 
-// Typing effect component
-const TypeWriter = ({ text, delay = 50 }) => {
-    const [displayText, setDisplayText] = useState("")
-    const [currentIndex, setCurrentIndex] = useState(0)
-
-    useEffect(() => {
-        if (currentIndex < text.length) {
-            const timeout = setTimeout(() => {
-                setDisplayText(prev => prev + text[currentIndex])
-                setCurrentIndex(prev => prev + 1)
-            }, delay)
-            return () => clearTimeout(timeout)
-        }
-    }, [currentIndex, text, delay])
-
-    return (
-        <span>
-            {displayText}
-            <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.5, repeat: Infinity }}
-                className="text-primary"
-            >
-                |
-            </motion.span>
-        </span>
-    )
-}
-
 export default function MainLayout() {
     const [isHovered, setIsHovered] = useState(false)
     const [colorPreset, setColorPreset] = useState(['#4E56C0', '#9B5DE0', '#D78FEE', '#FDCFFA']);
 
     return (
-        <main className="relative w-full min-h-dvh flex items-center justify-center overflow-hidden mt-6 p-4 md:p-2 mb-5">
+        <main className="relative w-full min-h-dvh flex items-center justify-center overflow-hidden p-4 md:p-2">
             <div className="absolute inset-0 z-0">
                 <FloatingLines
                     linesGradient={colorPreset}
@@ -127,10 +99,10 @@ export default function MainLayout() {
                 />
             </div>
 
-            <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-center">
+            <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
                 {/* Character Section */}
                 <motion.div
-                    className="relative flex justify-center items-end"
+                    className="relative flex justify-center items-center"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -205,7 +177,7 @@ export default function MainLayout() {
                             <motion.img
                                 src="/peep-standing-15.png"
                                 alt="Your Avatar"
-                                className="w-full h-[450px] sm:h-[500px] object-contain drop-shadow-2xl"
+                                className="w-full h-[250px] md:h-[450px] object-contain drop-shadow-2xl"
                                 whileHover={{ scale: 1.05 }}
                                 transition={{ type: "spring", stiffness: 300 }}
                             />
@@ -234,11 +206,10 @@ export default function MainLayout() {
                         />
                     </motion.div>
 
-                    {/* Main title */}
-                    <div className="space-y-2">
+                    <div className="space-y-2 hidden md:block">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-sans font-black uppercase leading-none">
                             <span className="text-foreground">Ready to be a </span>
-                            <GlitchText className="text-primary">LEGEND</GlitchText>
+                            <GlitchText className="text-primary">CHAMPION? </GlitchText>
                             <span className="text-foreground">?</span>
                         </h1>
                         <motion.h2
@@ -249,9 +220,15 @@ export default function MainLayout() {
                         >
                             Welcome to <span className="italic text-primary">HUNARHO</span> 🚀
                         </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                        >
+                            The Ultimate Playground for AI, Innovation, and Financial Wisdom.
+                        </motion.p>
                     </div>
 
-                    {/* Animated divider */}
                     <motion.div
                         className="h-1 bg-linear-to-r from-primary via-secondary to-yellow-400 rounded-full"
                         initial={{ width: 0 }}
@@ -367,7 +344,7 @@ export default function MainLayout() {
                             variant="secondary"
                             className="w-full max-w-sm relative text-base sm:text-lg py-4"
                         >
-                            <Link to="/courses" className="flex items-center justify-center gap-2">
+                            <Link to="/missions" className="flex items-center justify-center gap-2">
                                 <motion.span
                                     animate={{ rotate: [0, 15, -15, 0] }}
                                     transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
