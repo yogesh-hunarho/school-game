@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { IndianRupee } from "lucide-react";
+// import { IndianRupee } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 
 const COINS = 8;

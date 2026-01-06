@@ -127,8 +127,6 @@ export default function Counter({
     counterStyle,
     digitStyle,
     gradientHeight = 16,
-    gradientFrom = 'black',
-    gradientTo = 'transparent',
     topGradientStyle,
     bottomGradientStyle
 }: CounterProps) {
