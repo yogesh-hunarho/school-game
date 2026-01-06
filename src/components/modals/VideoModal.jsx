@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Play, FileText, MessageSquare, CheckCircle, Info, ChevronLeft, ChevronRight, XIcon } from "lucide-react";
+import { Play, FileText, MessageSquare, CheckCircle, Info, ChevronLeft, ChevronRight, XIcon, Download } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
@@ -90,7 +90,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
     const tabs = [
         { id: "about", label: "DETAILS", icon: Info },
         { id: "resources", label: "FILES", icon: FileText },
-        { id: "comments", label: "COMMS", icon: MessageSquare },
+        // { id: "comments", label: "COMMS", icon: MessageSquare },
     ];
 
     return (
@@ -282,17 +282,23 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                                         )}>
                                                             <FileText className="w-3.5 h-3.5" />
                                                         </div>
-                                                        <div>
-                                                            <p className="text-xs text-cyan-50 group-hover:text-cyan-400 transition-colors uppercase">{file.name}</p>
-                                                            <p className="text-[10px] text-slate-500 font-mono">{file.size} • {file.type}</p>
+                                                        <div className="flex justify-between gap-3 w-full items-center">
+                                                            <div>
+                                                                <p className="text-xs text-cyan-50 group-hover:text-cyan-400 transition-colors uppercase">{file.name}</p>
+                                                                <p className="text-[10px] text-slate-500 font-mono">{file.size} • {file.type}</p>
+                                                            </div>
+                                                            <div>
+                                                                <Download className="w-3.5 h-3.5" />
+                                                            </div>
                                                         </div>
+
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
                                     )}
 
-                                    {activeTab === "comments" && (
+                                    {/* {activeTab === "comments" && (
                                         <div className="flex flex-col items-center justify-center h-full text-center py-8">
                                             <div className="w-12 h-12 border border-cyan-400/30 flex items-center justify-center mb-3">
                                                 <MessageSquare className="w-5 h-5 text-slate-500" />
@@ -304,7 +310,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                                 Be the first to broadcast
                                             </p>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         </div>

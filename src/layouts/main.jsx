@@ -7,52 +7,10 @@ import FloatingLines from "@/components/floating-lines"
 import TypeWriter from "@/components/typewritter"
 import { AmbientFloat, } from "@/components/FloatingAround"
 import CharacterVideo from "@/components/CharacterVideo"
-
-// Glitch text animation component
-const GlitchText = ({ children, className }) => {
-    return (
-        <motion.span
-            className={`relative inline-block ${className}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-        >
-            <span className="relative z-10">{children}</span>
-            <motion.span
-                className="absolute inset-0 text-secondary opacity-70"
-                animate={{
-                    x: [0, -2, 2, 0],
-                    opacity: [0.7, 0.4, 0.7, 0.7],
-                }}
-                transition={{
-                    duration: 0.3,
-                    repeat: Infinity,
-                    repeatDelay: 3,
-                }}
-                style={{ clipPath: 'inset(0 0 50% 0)' }}
-            >
-                {children}
-            </motion.span>
-            <motion.span
-                className="absolute inset-0 text-primary opacity-70"
-                animate={{
-                    x: [0, 2, -2, 0],
-                    opacity: [0.7, 0.4, 0.7, 0.7],
-                }}
-                transition={{
-                    duration: 0.3,
-                    repeat: Infinity,
-                    repeatDelay: 3,
-                    delay: 0.1,
-                }}
-                style={{ clipPath: 'inset(50% 0 0 0)' }}
-            >
-                {children}
-            </motion.span>
-        </motion.span>
-    )
-}
-
+import RotatingText from "@/components/RotatingText"
+import HeaderCoin from "@/components/HeaderCoin"
+import Counter from "@/components/counter"
+import { useIsMobile } from "@/hook/use-mobile"
 
 // Animated counter component
 const AnimatedCounter = ({ value, suffix = "" }) => {
@@ -81,6 +39,7 @@ const AnimatedCounter = ({ value, suffix = "" }) => {
 export default function MainLayout() {
     const [isHovered, setIsHovered] = useState(false)
     const [colorPreset, setColorPreset] = useState(['#4E56C0', '#9B5DE0', '#D78FEE', '#FDCFFA']);
+    const isMobile = useIsMobile()
 
     return (
         <main className="relative w-full min-h-dvh flex items-center justify-center overflow-hidden p-4 md:p-2">
@@ -104,7 +63,7 @@ export default function MainLayout() {
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
                 {/* Character Section */}
                 <motion.div
-                    className="relative flex justify-center items-end min-h-[520px]"
+                    className="relative  flex justify-center items-end md:min-h-[520px] min-h-[320px]"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -138,20 +97,20 @@ export default function MainLayout() {
                             >
                                 <CharacterVideo />
                                 <motion.div className="absolute inset-0 pointer-events-none">
-                                    <AmbientFloat baseX={-60} baseY={-60}>
-                                        <img src="/assets/icon/AI.png" className="size-16 rounded-full object-cover" />
+                                    <AmbientFloat baseX={isMobile ? -90 : -60} baseY={isMobile ? -30 : -60}>
+                                        <img src="/assets/icon/AI.png" className="size-12 md:size-16 rounded-full object-cover" />
                                     </AmbientFloat>
 
-                                    <AmbientFloat baseX={10} baseY={-20}>
-                                        <img src="/assets/icon/financial.png" className="size-16 rounded-full object-cover bg-background backdrop-blur-none" />
+                                    <AmbientFloat baseX={isMobile ? -50 : 10} baseY={isMobile ? -40 : 100}>
+                                        <img src="/assets/icon/financial.png" className="size-12 md:size-16 rounded-full object-cover bg-background backdrop-blur-none" />
                                     </AmbientFloat>
 
-                                    <AmbientFloat baseX={280} baseY={-30}>
-                                        <img src="/assets/icon/design.png" className="size-16 rounded-full object-cover bg-background backdrop-blur-none" />
+                                    <AmbientFloat baseX={isMobile ? 120 : 280} baseY={isMobile ? -50 : -30}>
+                                        <img src="/assets/icon/design.png" className="size-12 md:size-16 rounded-full object-cover bg-background backdrop-blur-none" />
                                     </AmbientFloat>
 
-                                    <AmbientFloat baseX={320} baseY={-80}>
-                                        <img src="/assets/icon/brain.jpg" className="size-16 rounded-full" />
+                                    <AmbientFloat baseX={isMobile ? 180 : 320} baseY={isMobile ? 10 : -80}>
+                                        <img src="/assets/icon/brain.jpg" className="size-12 md:size-16 rounded-full" />
                                     </AmbientFloat>
                                 </motion.div>
 
@@ -182,11 +141,21 @@ export default function MainLayout() {
                         />
                     </motion.div>
 
-                    <div className="space-y-2 hidden md:block">
+                    <div className="space-y-2">
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-black uppercase leading-none">
                             <span className="text-foreground">Ready to be a </span>
-                            <GlitchText className="text-primary">CHAMPION? </GlitchText>
-                            <span className="text-foreground">?</span>
+                            <RotatingText
+                                texts={['CHAMPION?', ' PRO?', 'Cool!']}
+                                mainClassName="px-2 sm:px-2 text-primary bg-primary md:bg-transparent text-white md:text-primary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
+                                staggerFrom={"first"}
+                                initial={{ y: "100%" }}
+                                animate={{ y: 0 }}
+                                exit={{ y: "-120%" }}
+                                staggerDuration={0.025}
+                                splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                                transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                                rotationInterval={5000}
+                            />
                         </h1>
                         <motion.h2
                             className="text-xl sm:text-2xl font-bold text-secondary"
@@ -196,13 +165,6 @@ export default function MainLayout() {
                         >
                             Welcome to <span className="italic text-primary">HUNARHO</span> 🚀
                         </motion.h2>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                        >
-                            The Ultimate Playground for AI, Innovation, and Financial Wisdom.
-                        </motion.p>
                     </div>
 
                     <motion.div
@@ -269,29 +231,14 @@ export default function MainLayout() {
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
                             >
                                 <div className="flex items-center justify-center gap-1 text-yellow-400">
-                                    <Zap className="w-4 h-4" />
+                                    <HeaderCoin size={24} className="group-hover:animate-pulse" />
                                     <span className="font-bold text-base sm:text-lg">
                                         <AnimatedCounter value={1000} />
                                     </span>
                                 </div>
-                                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                                    Coins 💰
-                                </div>
-                            </motion.div>
-
-                            <motion.div
-                                className="text-center p-2 bg-secondary/10 rounded-lg border border-secondary/30"
-                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(168,85,247,0.2)' }}
-                            >
-                                <div className="flex items-center justify-center gap-1 text-secondary">
-                                    <Trophy className="w-4 h-4" />
-                                    <span className="font-bold text-base sm:text-lg">
-                                        <AnimatedCounter value={500} />
-                                    </span>
-                                </div>
-                                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                                    XP ⭐
-                                </div>
+                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
+                                    Coins
+                                </div> */}
                             </motion.div>
 
                             <motion.div
@@ -302,9 +249,9 @@ export default function MainLayout() {
                                     <Target className="w-4 h-4" />
                                     <span className="font-bold text-base sm:text-lg">EASY</span>
                                 </div>
-                                <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
+                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
                                     Level 🎯
-                                </div>
+                                </div> */}
                             </motion.div>
                         </div>
                     </motion.div>
