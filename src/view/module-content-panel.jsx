@@ -79,15 +79,15 @@ export const ModuleContentPanel = () => {
 
     // Module display names and icons
     const moduleNames = {
-        "innovators-mind": { name: "Innovators Mind", icon: "💡", description: "Learn the fundamentals of design thinking and innovation" },
-        "trebuchet": { name: "Project Trebuchet", icon: "🏰", description: "Build and understand medieval engineering" },
-        "motor-robot": { name: "Motor Robot", icon: "🤖", description: "Create your own motor-powered robot" },
-        "tetris": { name: "Project Tetris", icon: "🧱", description: "Learn programming through the classic game" },
-        "aqua-bridge": { name: "Aqua Bridge", icon: "🌊", description: "Design bridges that can withstand water pressure" },
-        "drawing-bot": { name: "Drawing Bot", icon: "🎨", description: "Build an AI-powered drawing machine" },
-        "soil-monitoring": { name: "Soil Monitoring", icon: "🌱", description: "Create smart sensors for agriculture" },
-        "homopolar-motor": { name: "Homopolar Motor", icon: "⚡", description: "Quick experiment with electromagnetic motors" },
-        "final-assessment": { name: "Final Assessment", icon: "🏆", description: "Complete your Grade 6 journey" },
+        "innovators-mind": { name: "Innovators Mind", image: "/assets/images/3d_1.png", description: "Learn the fundamentals of design thinking and innovation" },
+        "trebuchet": { name: "Project Trebuchet", image: "/assets/images/3d_2.png", description: "Build and understand medieval engineering" },
+        "motor-robot": { name: "Motor Robot", image: "/assets/images/3d_3.png", description: "Create your own motor-powered robot" },
+        "tetris": { name: "Project Tetris", image: "/assets/images/3d_4.png", description: "Learn programming through the classic game" },
+        "aqua-bridge": { name: "Aqua Bridge", image: "/assets/images/3d_5.png", description: "Design bridges that can withstand water pressure" },
+        "drawing-bot": { name: "Drawing Bot", image: "/assets/images/3d_6.png", description: "Build an AI-powered drawing machine" },
+        "soil-monitoring": { name: "Soil Monitoring", image: "/assets/images/3d_7.png", description: "Create smart sensors for agriculture" },
+        "homopolar-motor": { name: "Homopolar Motor", image: "/assets/images/3d_8.png", description: "Quick experiment with electromagnetic motors" },
+        "final-assessment": { name: "Final Assessment", image: "/assets/images/3d_8.png", description: "Complete your Grade 6 journey" },
     };
 
     const currentModule = moduleNames[moduleId] || { name: "Module", icon: "📚", description: "Learn something new" };
@@ -142,7 +142,7 @@ export const ModuleContentPanel = () => {
                             "flex h-16 w-16 items-center justify-center text-3xl bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 border-2",
                             isLocked ? "border-slate-600" : "border-cyan-400/60"
                         )}>
-                            {currentModule.icon}
+                            <img src={currentModule.image} alt={currentModule.name} />
                         </div>
                         {!isLocked && (
                             <motion.div

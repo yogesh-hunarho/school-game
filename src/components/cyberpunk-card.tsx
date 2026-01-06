@@ -11,7 +11,7 @@ interface Module {
     id: string;
     name: string;
     description?: string;
-    icon: ReactNode;
+    image: string;
     totalStars: number;
     videos: number;
     quizzes: number;
@@ -133,12 +133,20 @@ export function CyberpunkCard({
                             <motion.div
                                 whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
                                 className={cn(
-                                    "w-14 h-14 flex items-center justify-center text-3xl bg-slate-900/90 shadow-xl transition-all duration-500",
+                                    "w-14 h-14 flex items-center justify-center text-3xl bg-slate-900/90 shadow-xl transition-all duration-500 overflow-hidden",
                                     isActive ? "border border-yellow-400/50 text-yellow-400" :
                                         isCompleted ? "border border-emerald-400/50 text-emerald-400" :
                                             "border border-cyan-400/30 text-cyan-400"
                                 )}>
-                                {isLocked ? <Lock className="w-6 h-6 text-slate-600" /> : module.icon}
+                                {isLocked ? (
+                                    <Lock className="w-6 h-6 text-slate-600" />
+                                ) : (
+                                    <img
+                                        src={module.image}
+                                        alt={module.name}
+                                        className="w-full h-full object-cover group-hover:grayscale-0 group-hover:-scale-x-100 transition-all duration-500"
+                                    />
+                                )}
                             </motion.div>
                             {/* Tech crosshairs */}
                             <div className={cn("absolute -top-1 -left-1 w-3 h-3 border-t border-l", colors.border)} />

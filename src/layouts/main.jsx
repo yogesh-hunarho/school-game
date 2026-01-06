@@ -5,8 +5,6 @@ import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
 import FloatingLines from "@/components/floating-lines"
 import TypeWriter from "@/components/typewritter"
-import { AmbientFloat, } from "@/components/FloatingAround"
-import CharacterVideo from "@/components/CharacterVideo"
 import RotatingText from "@/components/RotatingText"
 import HeaderCoin from "@/components/HeaderCoin"
 import Counter from "@/components/counter"
@@ -43,7 +41,16 @@ export default function MainLayout() {
 
     return (
         <main className="relative w-full min-h-dvh flex items-center justify-center overflow-hidden p-4 md:p-2">
-            <div className="absolute inset-0 z-0">
+            {/* Background Image */}
+            <div className="absolute inset-0">
+                <img
+                    src="/assets/images/grok_2.png"
+                    alt="Background"
+                    className="w-full h-full object-cover"
+                />
+            </div>
+
+            {/* <div className="absolute inset-0 z-0">
                 <FloatingLines
                     linesGradient={colorPreset}
                     enabledWaves={["bottom", "middle", "top"]}
@@ -58,71 +65,14 @@ export default function MainLayout() {
                     parallaxStrength={0.15}
                     mixBlendMode="screen"
                 />
-            </div>
+            </div> */}
 
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
-                {/* Character Section */}
-                <motion.div
-                    className="relative  flex justify-center items-end md:min-h-[520px] min-h-[320px]"
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                >
-                    <div
-                        className="relative"
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                    >
-                        <motion.div
-                            className="absolute inset-0 blur-3xl opacity-30"
-                            style={{
-                                background: 'radial-gradient(circle, var(--primary) 0%, transparent 70%)',
-                            }}
-                            animate={{
-                                scale: [1, 1.2, 1],
-                                opacity: [0.2, 0.4, 0.2],
-                            }}
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
-                        />
 
-                        <div className="relative flex justify-center items-end w-full h-full">
-                            <motion.div
-                                className="relative w-full max-w-[290px] sm:max-w-sm"
-                                animate={{ y: [0, -15, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                            >
-                                <CharacterVideo />
-                                <motion.div className="absolute inset-0 pointer-events-none">
-                                    <AmbientFloat baseX={isMobile ? -90 : -60} baseY={isMobile ? -30 : -60}>
-                                        <img src="/assets/icon/AI.png" className="size-12 md:size-16 rounded-full object-cover" />
-                                    </AmbientFloat>
-
-                                    <AmbientFloat baseX={isMobile ? -50 : 10} baseY={isMobile ? -40 : 100}>
-                                        <img src="/assets/icon/financial.png" className="size-12 md:size-16 rounded-full object-cover bg-background backdrop-blur-none" />
-                                    </AmbientFloat>
-
-                                    <AmbientFloat baseX={isMobile ? 120 : 280} baseY={isMobile ? -50 : -30}>
-                                        <img src="/assets/icon/design.png" className="size-12 md:size-16 rounded-full object-cover bg-background backdrop-blur-none" />
-                                    </AmbientFloat>
-
-                                    <AmbientFloat baseX={isMobile ? 180 : 320} baseY={isMobile ? 10 : -80}>
-                                        <img src="/assets/icon/brain.jpg" className="size-12 md:size-16 rounded-full" />
-                                    </AmbientFloat>
-                                </motion.div>
-
-                            </motion.div>
-                        </div>
-
-                    </div>
-                </motion.div>
 
                 {/* Content Section */}
                 <motion.div
-                    className="flex flex-col space-y-5 sm:space-y-6"
+                    className="flex flex-col space-y-5 sm:space-y-6 md:col-start-2"
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
