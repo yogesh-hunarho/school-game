@@ -11,12 +11,12 @@ export default function CoinAnimation() {
         if (showCoinAnimation && coinSourcePos && coinTargetPos) {
             const newCoins = Array.from({ length: coinCount }).map((_, i) => ({
                 id: Math.random(),
-                delay: i * 0.05,
+                delay: i * 0.500,
             }));
             setCoins(newCoins);
 
             // Cleanup animation after it's done
-            const totalDuration = 0.8 + (coinCount * 0.05);
+            const totalDuration = 0.8 + (coinCount * 0.5);
             const timer = setTimeout(() => {
                 setCoins([]);
                 completeCoinAnimation();
@@ -29,7 +29,7 @@ export default function CoinAnimation() {
     if (!showCoinAnimation || !coinSourcePos || !coinTargetPos) return null;
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-[9999]">
+        <div className="fixed inset-0 pointer-events-none z-9999">
             <AnimatePresence>
                 {coins.map((coin) => (
                     <motion.div

@@ -53,6 +53,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
         isQuizCompleted,
         toggleVideoQuizConfetti
     } = useLMSStore();
+    const triggerStarAnimation = useLMSStore((s) => s.triggerStarAnimation);
 
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
     const [answers, setAnswers] = useState({});
@@ -99,7 +100,8 @@ export const QuizModal = ({ open, onOpenChange }) => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
         let correctCount = 0;
         questions.forEach((q, idx) => {
             if (answers[idx] === q.correct) correctCount++;
@@ -108,10 +110,18 @@ export const QuizModal = ({ open, onOpenChange }) => {
         const calculatedScore = Math.round((correctCount / totalQuestions) * 100);
         setScore(calculatedScore);
         setIsSubmitted(true);
-        toggleVideoQuizConfetti(true);
-        setTimeout(() => {
-            toggleVideoQuizConfetti(false);
-        }, 3000);
+        triggerStarAnimation(
+            {
+                x: rect.left + rect.width / 2,
+                y: (rect.top - 30) + rect.height / 2,
+            },
+            selectedQuiz.xp
+        );
+
+        // toggleVideoQuizConfetti(true);
+        // setTimeout(() => {
+        //     toggleVideoQuizConfetti(false);
+        // }, 3000);
         completeQuiz(player.currentModuleId, selectedQuiz.id);
     };
 

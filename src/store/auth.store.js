@@ -14,7 +14,8 @@ export const useAuthStore = create(
             },
             logout: () => {
                 set({ user: null, token: null });
-                localStorage.removeItem('ACCESS_TOKEN'); // Clean up specific key if needed, though persist handles state
+                localStorage.removeItem('hunarho-lms-storage');
+                localStorage.removeItem('ACCESS_TOKEN');
             },
             setNotification: (message) => {
                 set({ notification: message });

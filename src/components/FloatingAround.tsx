@@ -13,7 +13,7 @@ export const AmbientFloat = ({
   children,
   baseX,
   baseY,
-  range = 12,      // 🔹 small area
+  range = 70,      // 🔹 small area
   duration = 3.5,  // 🔹 slow & subtle
 }: AmbientFloatProps) => {
   const controls = useAnimation();

@@ -174,6 +174,7 @@ const moduleContent = {
 const initialPlayerState = {
     name: "Yogesh Singh",
     totalXP: 0,
+    protocol: "Grade_6",
     totalStars: 0,
     streak: 0,
     currentModuleId: "innovators-mind",
@@ -236,6 +237,7 @@ export const useLMSStore = create(
             // Animation state
             showConfetti: false,
             animatingStarFrom: null, // { x, y } coordinates
+            coinTarget: null,
             pendingXPGain: 0,
             lastCompletedModuleId: null,
             showMissionTransition: false, // New state for modal transition
@@ -245,6 +247,8 @@ export const useLMSStore = create(
             toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
 
             // Mission Transition Actions
+
+
             openMissionTransition: () => {
                 console.log("STORE: openMissionTransition CALLED");
                 set({ showMissionTransition: true });
@@ -396,6 +400,7 @@ export const useLMSStore = create(
             triggerConfetti: () => set({ showConfetti: true }),
             toggleVideoQuizConfetti: (val) => set({ showVideoQuizConfetti: val }),
             hideConfetti: () => set({ showConfetti: false }),
+            setCoinTarget: (pos) => set({ coinTarget: pos }),
             triggerStarAnimation: (fromPosition, xpAmount) => set({
                 animatingStarFrom: fromPosition,
                 pendingXPGain: xpAmount,
@@ -407,11 +412,25 @@ export const useLMSStore = create(
         }),
         {
             name: "hunarho-lms-storage",
-            partial: (state) => ({
+            version: 2,
+            migrate: (persistedState) => ({
+                ...persistedState,
+                coinTarget: null,
+                animatingStarFrom: null,
+            }),
+            partialize: (state) => ({
                 player: state.player,
                 soundEnabled: state.soundEnabled,
             }),
         }
+
+        // {
+        //     name: "hunarho-lms-storage",
+        //     partial: (state) => ({
+        //         player: state.player,
+        //         soundEnabled: state.soundEnabled,
+        //     }),
+        // }
     )
 );
 

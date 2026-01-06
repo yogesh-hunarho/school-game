@@ -17,15 +17,6 @@ export function CyberpunkLock({
     const { playSound } = useSound()
     const [glitch, setGlitch] = useState(false)
 
-    // Random glitch effect trigger
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setGlitch(true)
-            setTimeout(() => setGlitch(false), 150)
-        }, 3000)
-        return () => clearInterval(interval)
-    }, [])
-
     const getColors = () => {
         if (isCompleted) return {
             border: "border-emerald-400",
@@ -58,6 +49,8 @@ export function CyberpunkLock({
 
     return (
         <div
+            onMouseEnter={() => setGlitch(true)}
+            onMouseLeave={() => setGlitch(false)}
             className={`relative group h-full p-4 transition-transform duration-500 bg-slate-950/95 ${glitch ? "animate-shake" : ""}`}
         >
             <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />

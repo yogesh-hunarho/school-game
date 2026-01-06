@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 import TypeWriter from "@/components/typewritter";
+import DecryptedText from "@/components/DecryptedText";
 
 
 const cardVariants = {
@@ -163,7 +164,11 @@ export const ModuleContentPanel = () => {
                     <div className="flex-1">
                         <div className="flex items-center gap-3">
                             <h2 className="text-xl font-bold text-transparent bg-clip-text bg-linear-to-r from-cyan-400 via-cyan-300 to-cyan-400 uppercase tracking-wider">
-                                {currentModule.name}
+                                <DecryptedText
+                                    text={currentModule.name}
+                                    animateOn="view"
+                                    revealDirection="center"
+                                />
                             </h2>
                             {isLocked && (
                                 <motion.span

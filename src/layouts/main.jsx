@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import FloatingLines from "@/components/floating-lines"
 import TypeWriter from "@/components/typewritter"
 import { AmbientFloat, } from "@/components/FloatingAround"
+import CharacterVideo from "@/components/CharacterVideo"
 
 // Glitch text animation component
 const GlitchText = ({ children, className }) => {
@@ -103,7 +104,7 @@ export default function MainLayout() {
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
                 {/* Character Section */}
                 <motion.div
-                    className="relative flex justify-center items-center"
+                    className="relative flex justify-center items-end min-h-[520px]"
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -113,7 +114,6 @@ export default function MainLayout() {
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
-                        {/* Character glow effect */}
                         <motion.div
                             className="absolute inset-0 blur-3xl opacity-30"
                             style={{
@@ -130,92 +130,34 @@ export default function MainLayout() {
                             }}
                         />
 
-                        {/* Floating sparkles around character */}
-                        <AnimatePresence>
-                            {isHovered && (
-                                <>
-                                    {[...Array(6)].map((_, i) => (
-                                        <motion.div
-                                            key={i}
-                                            className="absolute"
-                                            initial={{ opacity: 0, scale: 0 }}
-                                            animate={{
-                                                opacity: [0, 1, 0],
-                                                scale: [0, 1, 0],
-                                                x: Math.cos(i * 60 * Math.PI / 180) * 120,
-                                                y: Math.sin(i * 60 * Math.PI / 180) * 120 - 200,
-                                            }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{
-                                                duration: 1.5,
-                                                repeat: Infinity,
-                                                delay: i * 0.2,
-                                            }}
-                                            style={{
-                                                left: '50%',
-                                                top: '50%',
-                                            }}
-                                        >
-                                            <Sparkles className="w-5 h-5 text-yellow-400" />
-                                        </motion.div>
-                                    ))}
-                                </>
-                            )}
-                        </AnimatePresence>
-
-                        {/* Character image with floating animation */}
-                        <motion.div
-                            className="relative w-full max-w-[260px] sm:max-w-sm"
-                            animate={{
-                                y: [0, -15, 0],
-                            }}
-                            transition={{
-                                duration: 4,
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                            }}
-                        >
-                            <motion.img
-                                src="/peep-standing-15.png"
-                                alt="Your Avatar"
-                                className="w-full h-[250px] md:h-[450px] object-contain drop-shadow-2xl"
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ type: "spring", stiffness: 300 }}
-                            />
-
+                        <div className="relative flex justify-center items-end w-full h-full">
                             <motion.div
-                                animate={{
-                                    opacity: [0.6, 1, 0.6],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                }}
+                                className="relative w-full max-w-[290px] sm:max-w-sm"
+                                animate={{ y: [0, -15, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                             >
-                                <AmbientFloat baseX={0} baseY={-180}>
-                                    <Sparkles className="w-6 h-6 text-yellow-400" />
-                                </AmbientFloat>
+                                <CharacterVideo />
+                                <motion.div className="absolute inset-0 pointer-events-none">
+                                    <AmbientFloat baseX={-60} baseY={-60}>
+                                        <img src="/assets/icon/AI.png" className="size-16 rounded-full object-cover" />
+                                    </AmbientFloat>
 
-                                {/* LEFT */}
-                                <AmbientFloat baseX={-160} baseY={-40}>
-                                    <Star className="w-6 h-6 text-purple-400" />
-                                </AmbientFloat>
+                                    <AmbientFloat baseX={10} baseY={-20}>
+                                        <img src="/assets/icon/financial.png" className="size-16 rounded-full object-cover bg-background backdrop-blur-none" />
+                                    </AmbientFloat>
 
-                                {/* RIGHT */}
-                                <AmbientFloat baseX={160} baseY={-20}>
-                                    <Zap className="w-6 h-6 text-blue-400" />
-                                </AmbientFloat>
+                                    <AmbientFloat baseX={280} baseY={-30}>
+                                        <img src="/assets/icon/design.png" className="size-16 rounded-full object-cover bg-background backdrop-blur-none" />
+                                    </AmbientFloat>
 
-                                {/* BOTTOM */}
-                                <AmbientFloat baseX={40} baseY={-140}>
-                                    <Mail className="w-6 h-6 text-red-400" />
-                                </AmbientFloat>
+                                    <AmbientFloat baseX={320} baseY={-80}>
+                                        <img src="/assets/icon/brain.jpg" className="size-16 rounded-full" />
+                                    </AmbientFloat>
+                                </motion.div>
 
                             </motion.div>
+                        </div>
 
-
-                        </motion.div>
                     </div>
                 </motion.div>
 
@@ -241,7 +183,7 @@ export default function MainLayout() {
                     </motion.div>
 
                     <div className="space-y-2 hidden md:block">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-sans font-black uppercase leading-none">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-black uppercase leading-none">
                             <span className="text-foreground">Ready to be a </span>
                             <GlitchText className="text-primary">CHAMPION? </GlitchText>
                             <span className="text-foreground">?</span>

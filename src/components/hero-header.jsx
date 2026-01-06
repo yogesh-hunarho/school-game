@@ -4,13 +4,26 @@ import { useSound } from "@/hook/useSound";
 import { motion, useScroll } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
-import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, Star, User, ChevronRight, Menu } from "lucide-react"
+import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu } from "lucide-react"
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import AnimatedBackground from "./animated-background";
 import { calculateLevel, getXPToNextLevel } from "./Header";
-import { RupeePulse } from "./coin";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useAuthStore } from "@/store/auth.store";
+import HeaderCoin from "./HeaderCoin";
+import Counter from "./counter";
 
 
 // Helper Components for Popover
@@ -88,7 +101,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
             {!node.isLocked && (
                 <div className={`flex items-center gap-2 mt-2 ${side === "right" ? "justify-end" : "justify-start"}`}>
                     <div className="px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-[10px] font-bold text-yellow-500 flex items-center gap-1">
-                        <Star className="w-2.5 h-2.5 fill-yellow-500" />
+                        <img src="/assets/icon/header_coin.png" className="size-6" />
                         {content?.nextModule?.xp || 50} Coin
                     </div>
                     {node.isCurrent && (
@@ -106,21 +119,13 @@ const MissionCard = ({ node, content, onClick, side }) => (
 
 export const HeroHeader = () => {
     const [menuState, setMenuState] = useState(false)
-    const [scrolled, setScrolled] = useState(false)
+    const [scrolled, setScrolled] = useState(true)
     const { scrollYProgress } = useScroll()
     const location = useLocation()
 
-    useEffect(() => {
-        if (location.pathname == '/') {
-            setScrolled(true)
-        }
-        const unsubscribe = scrollYProgress.on('change', (latest) => {
-            setScrolled(latest > 0.05)
-        })
-        return () => unsubscribe()
-    }, [scrollYProgress, location])
-
-    const { player } = useLMSStore();
+    const { player, soundEnabled, toggleSound } = useLMSStore();
+    const { logout } = useAuthStore();
+    const setCoinTarget = useLMSStore((s) => s.setCoinTarget);
     const { playClick } = useSound();
     const level = calculateLevel(player.totalXP);
     const xpProgress = getXPToNextLevel(player.totalXP);
@@ -129,6 +134,16 @@ export const HeroHeader = () => {
     const navigate = useNavigate()
     const scrollContainerRef = useRef(null)
     const isMobile = useIsMobile()
+    const coinRef = useRef(null);
+    useEffect(() => {
+        if (!coinRef.current || !setCoinTarget) return;
+
+        const rect = coinRef.current.getBoundingClientRect();
+        setCoinTarget({
+            x: rect.left + rect.width / 2,
+            y: rect.top + rect.height / 2,
+        });
+    }, [setCoinTarget]);
 
     const nodes = useMemo(
         () =>
@@ -199,7 +214,7 @@ export const HeroHeader = () => {
         <header>
             <nav
                 data-state={menuState && 'active'}
-                className="fixed z-20 w-full pt-2 px-4">
+                className="fixed z-9999 w-full pt-2 px-4">
                 <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur border md:rounded-3xl')}>
                     <motion.div
                         key={1}
@@ -391,36 +406,47 @@ export const HeroHeader = () => {
                                             className="flex items-center gap-6 group"
                                         >
                                             {/* COINS */}
-                                            <div className="hidden md:flex flex-col items-end gap-0.5">
-                                                <div className="flex items-center gap-1.5">
-                                                    {/* <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" /> */}
-                                                    <RupeePulse />
-                                                    <span className="text-sm font-bold text-yellow-400 tabular-nums">
-                                                        {player.totalXP.toLocaleString()} Coins
-                                                    </span>
-                                                </div>
-                                                {/* <div className="w-24 h-1 bg-slate-800 rounded-full overflow-hidden">
-                                                    <motion.div
-                                                        className="h-full bg-linear-to-r from-yellow-400 to-orange-500 rounded-full"
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: `${Math.min(xpProgress.percentage, 100)}%` }}
-                                                        transition={{ duration: 0.5, ease: "easeOut" }}
+                                            <div className="hidden md:flex flex-col items-end gap-0.5 group">
+                                                <div ref={coinRef} className="flex items-center gap-1.5">
+                                                    <HeaderCoin size={24} className="group-hover:animate-pulse" />
+                                                    <Counter
+                                                        value={player.totalXP.toLocaleString()}
+                                                        fontSize={16}
+
+                                                        gap={0}
                                                     />
-                                                </div> */}
+                                                </div>
                                             </div>
 
                                             {/* SEPARATOR */}
                                             <div className="w-px h-6 bg-white/20" />
-
-                                            {/* AVATAR */}
-                                            <div className="relative">
-                                                <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                <div className="relative w-10 h-10 rounded-full bg-slate-900 border-2 border-cyan-500/50 flex items-center justify-center overflow-hidden group-hover:border-cyan-400 transition-colors">
-                                                    <User className="w-5 h-5 text-cyan-400" />
-                                                </div>
-                                                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-950" />
-                                            </div>
                                         </Link>
+                                        {/* AVATAR */}
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <div className="relative cursor-pointer">
+                                                    <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                    <div className="relative w-10 h-10 rounded-full bg-slate-900 border-2 border-cyan-500/50 flex items-center justify-center overflow-hidden group-hover:border-cyan-400 transition-colors">
+                                                        <User className="w-5 h-5 text-cyan-400" />
+                                                    </div>
+                                                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-950" />
+                                                </div>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-56">
+                                                <DropdownMenuItem asChild>
+                                                    <Link to="/profile">Profile</Link>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuCheckboxItem
+                                                    checked={soundEnabled}
+                                                    onCheckedChange={toggleSound}
+                                                >
+                                                    {soundEnabled ? 'Audio Enabled' : ' Audio Disabled'}
+                                                </DropdownMenuCheckboxItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+
                                     </div>
                                 </div>
                             </div>

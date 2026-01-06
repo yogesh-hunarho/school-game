@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import VideoPlayer from "../video/VideoPlayer";
 import { useIsMobile } from "@/hook/use-mobile";
+import HeaderCoin from "../HeaderCoin";
 
 export const VideoModal = ({ open, onOpenChange }) => {
     const {
@@ -24,6 +25,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
         openVideoModal,
         toggleVideoQuizConfetti
     } = useLMSStore();
+    const triggerStarAnimation = useLMSStore((s) => s.triggerStarAnimation);
     const isMobile = useIsMobile()
 
     const [activeTab, setActiveTab] = useState("about");
@@ -46,12 +48,21 @@ export const VideoModal = ({ open, onOpenChange }) => {
 
     const isWatched = isVideoWatched(player.currentModuleId, selectedVideo.id);
 
-    const handleMarkWatched = () => {
+    const handleMarkWatched = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
         playSound("success");
-        toggleVideoQuizConfetti(true)
-        setTimeout(() => {
-            toggleVideoQuizConfetti(false);
-        }, 3000);
+        // toggleVideoQuizConfetti(true)
+        // setTimeout(() => {
+        //     toggleVideoQuizConfetti(false);
+        // }, 3000);
+
+        triggerStarAnimation(
+            {
+                x: rect.left + rect.width / 2,
+                y: (rect.top - 30) + rect.height / 2,
+            },
+            selectedVideo.xp
+        );
         markVideoWatched(player.currentModuleId, selectedVideo.id);
     };
 
@@ -167,7 +178,9 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                     />
                                 </div>
 
-                                <div className="mt-4 flex items-center justify-end">
+                                <div className="mt-4 flex gap-2 items-center justify-end">
+                                    <HeaderCoin size={24} />
+                                    {selectedVideo.xp} coins
                                     <button
                                         onClick={handleMarkWatched}
                                         disabled={isWatched}

@@ -90,7 +90,7 @@ export const CyberpunkDashboard = () => {
                             </div>
                             <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.4em] ml-5">
                                 <span className="w-1 h-1 bg-slate-700 rounded-full" />
-                                <span>Protocol: Grade_6</span>
+                                <span>Protocol: {player.protocol}</span>
                             </div>
                         </div>
 
