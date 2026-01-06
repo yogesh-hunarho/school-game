@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import AnimatedBackground from "./animated-background";
 import { calculateLevel, getXPToNextLevel } from "./Header";
+import HeaderCoin from "./HeaderCoin";
 
 // Helper Components for Popover
 const LevelNode = ({ node, Icon, onClick }) => (
@@ -63,7 +64,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
             ${node.isLocked
                 ? "bg-slate-900/30 border-white/5 text-slate-600 grayscale backdrop-blur-sm"
                 : node.isCurrent
-                    ? "bg-white/10 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md"
+                    ? "bg-white/10 border-cyan-500 border-2 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md"
                     : "bg-white/5 border-white/10 hover:border-purple-500/30 hover:bg-white/10 backdrop-blur-md"
             }
         `}
@@ -75,7 +76,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
 
         <div className={`flex flex-col ${side === "right" ? "text-right" : "text-left"}`}>
             <span className={`font-mono text-[10px] uppercase tracking-[0.2em] mb-1.5 
-                ${node.isCurrent ? "text-cyan-400" : "text-white/30"}`}>
+                ${node.isCurrent ? "text-cyan-400 animate-pulse" : "text-white/30"}`}>
                 Mission {node.index.toString().padStart(2, "0")}
             </span>
             <h3 className={`font-bold uppercase tracking-tight text-sm md:text-base leading-tight mb-2
@@ -86,16 +87,16 @@ const MissionCard = ({ node, content, onClick, side }) => (
             {!node.isLocked && (
                 <div className={`flex items-center gap-2 mt-2 ${side === "right" ? "justify-end" : "justify-start"}`}>
                     <div className="px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-[10px] font-bold text-yellow-500 flex items-center gap-1">
-                        <img src="/assets/icon/header_coin.png" className="size-6" />
+                        <HeaderCoin className="" size={15} />
                         {content?.nextModule?.xp || 50} Coin
                     </div>
-                    {node.isCurrent && (
-                        <div className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400">
-                            ACTIVE
-                        </div>
-                    )}
                 </div>
             )}
+            {/* {node.isCurrent && (
+                <div className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400">
+                    ACTIVE
+                </div>
+            )} */}
         </div>
     </motion.div>
 );
@@ -174,6 +175,9 @@ const MissionMap = ({ }) => {
         },
     };
 
+    const progress = (nodes.filter(n => n.isCompleted).length / nodes.length) * 100
+
+
     return (
         <Popover open={isLevelModalOpen} onOpenChange={setIsLevelModalOpen}>
             <PopoverTrigger asChild>
@@ -208,13 +212,44 @@ const MissionMap = ({ }) => {
                                 {nodes.filter(n => n.isCompleted).length} of {nodes.length} Missions Complete
                             </p>
                         </div>
-                        <div className="flex flex-col items-end">
-                            <div className="text-xs font-mono text-emerald-300 mb-1">Total Progress</div>
-                            <div className="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="flex flex-col items-end gap-1">
+                            <motion.div
+                                className="text-xs font-mono text-emerald-300"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                            >
+                                Total Progress
+                            </motion.div>
+
+                            <div className="relative w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                {/* Progress Fill */}
                                 <motion.div
-                                    className="h-full bg-emerald-500 shadow-[0_0_10px_#06b6d4]"
+                                    className="absolute inset-y-0 left-0 bg-emerald-500 rounded-full"
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${(nodes.filter(n => n.isCompleted).length / nodes.length) * 100}%` }}
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{
+                                        duration: 0.8,
+                                        ease: "easeOut",
+                                    }}
+                                    style={{
+                                        boxShadow: `
+                                        0 0 8px rgba(16, 185, 129, 0.6),
+                                        0 0 14px rgba(16, 185, 129, 0.4)
+                                        `,
+                                    }}
+                                />
+
+                                {/* Shimmer Glow */}
+                                <motion.div
+                                    className="absolute inset-y-0 w-10 bg-linear-to-r from-transparent via-white/30 to-transparent"
+                                    animate={{
+                                        x: ["-40%", "140%"],
+                                    }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 1.8,
+                                        ease: "linear",
+                                    }}
                                 />
                             </div>
                         </div>

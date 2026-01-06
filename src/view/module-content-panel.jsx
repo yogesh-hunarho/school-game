@@ -493,11 +493,11 @@ export const ModuleContentPanel = () => {
                                     >
                                         {/* Card Background */}
                                         <div className={cn(
-                                            "absolute inset-0    transition-all duration-300",
+                                            "absolute inset-0 transition-all duration-300",
                                             isLocked
                                                 ? "bg-slate-900/60 border border-slate-700/50"
                                                 : isCompleted
-                                                    ? "bg-linear-to-br from-amber-950/80 via-orange-900/40 to-slate-900/80 border border-amber-500/30"
+                                                    ? "bg-linear-to-br from-yellow-600/50 via-yellow-900/20 to-slate-600/20 border border-amber-500/30 "
                                                     : "bg-linear-to-br from-slate-900/80 via-purple-900/20 to-slate-900/80 border border-purple-500/20 group-hover:border-amber-400/50"
                                         )} />
 

@@ -1,10 +1,11 @@
-import { Lock, Star, Zap, CheckCircle2 } from "lucide-react"
+import { Lock, Star, Zap, CheckCircle2, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import useSound from "@/hook/useSound";
 import CyberpunkButton from "./ui/cyber-button";
 import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
+import HeaderCoin from "./HeaderCoin";
 
 interface Module {
     id: string;
@@ -36,6 +37,17 @@ export function CyberpunkCard({
     handleModuleSelect
 }: CyberpunkCardProps) {
     const { playSound } = useSound()
+    const [expanded, setExpanded] = useState(false);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const descRef = useRef<HTMLParagraphElement>(null);
+
+    useEffect(() => {
+        if (!descRef.current) return;
+
+        const el = descRef.current;
+        setIsOverflowing(el.scrollHeight > el.clientHeight);
+    }, [module.description]);
+
     // Color scheme based on state
     const getColors = () => {
         if (isCompleted) return {
@@ -87,7 +99,6 @@ export function CyberpunkCard({
     return (
         <motion.div
             whileTap={{ scale: 0.98 }}
-            onClick={() => playaudioForModuleSelect(module.id)}
             className={cn(
                 "relative cursor-pointer transition-all duration-300 group",
                 isLocked && "opacity-80"
@@ -155,26 +166,49 @@ export function CyberpunkCard({
                             {module.name}
                         </motion.h3>
                         <div className="flex items-center gap-2">
-                            <div className={cn("h-0.5 w-8", colors.bg)} />
-                            <p className="font-mono text-[9px] text-slate-500 uppercase tracking-[0.3em]">
-                                UID_{module.id.toUpperCase().replace(/-/g, '_')}
-                            </p>
+                            <div className={cn("h-0.5 w-8 animate-pulse", colors.bg)} />
                         </div>
                     </div>
+                    <motion.div
+                        initial={false}
+                        animate={{ height: expanded ? "auto" : "2.3rem" }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="relative overflow-hidden mb-1"
+                    >
+                        <div className="relative">
+                            <p
+                                ref={descRef}
+                                className={cn(
+                                    "text-slate-400 text-xs leading-relaxed italic font-mono font-medium pr-0",
+                                    !expanded && "line-clamp-2 pr-10",
+                                )}
+                            >
+                                {module.description ||
+                                    "Initializing module protocols for advanced neural development and engineering training."}
+                            </p>
 
-                    {/* Module Short Description - 2 lines limit */}
-                    <p className="text-slate-400 text-xs leading-relaxed h-12 line-clamp-2 italic font-medium mb-4">
-                        {module.description || "Initializing module protocols for advanced neural development and engineering training."}
-                    </p>
+                            {isOverflowing && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setExpanded((prev) => !prev);
+                                    }}
+                                    className="absolute bottom-0 right-0 text-[10px] font-mono uppercase text-cyan-400 hover:text-cyan-300 transition"
+                                >
+                                    {expanded ? "LESS ▲" : "MORE ▼"}
+                                </button>
+                            )}
+                        </div>
+                    </motion.div>
 
-                    <div className="grid grid-cols-2 gap-3 mb-5">
+                    <div className="grid grid-cols-2 gap-2 mb-5 mt-5">
                         <div className="group/metric relative p-2.5 bg-slate-900/60 border border-white/5 hover:border-cyan-400/30 transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-1.5 bg-yellow-500/10 rounded-sm">
-                                    <Star className="w-4 h-4 text-yellow-500" />
+                                    <HeaderCoin />
                                 </div>
                                 <div className="font-mono">
-                                    <p className="font-bold text-[8px] text-slate-500 uppercase tracking-tighter">REWARD_XP</p>
+                                    <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">REWARD_COINS</p>
                                     <p className="font-black text-sm text-white">{module.totalStars * 100}</p>
                                 </div>
                             </div>
@@ -184,10 +218,10 @@ export function CyberpunkCard({
                         <div className="group/metric relative p-2.5 bg-slate-900/60 border border-white/5 hover:border-cyan-400/30 transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-1.5 bg-cyan-500/10 rounded-sm">
-                                    <Zap className="w-4 h-4 text-cyan-400" />
+                                    <Info className="w-6 h-6 text-cyan-400 animate-pulse" />
                                 </div>
                                 <div className="font-mono">
-                                    <p className="font-bold text-[8px] text-slate-500 uppercase tracking-tighter">TOTAL_SEQ</p>
+                                    <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">TOTAL_VIDEOS_QUIZ</p>
                                     <p className="font-black text-sm text-white">{module.videos + module.quizzes}</p>
                                 </div>
                             </div>
@@ -213,7 +247,7 @@ export function CyberpunkCard({
                                 </div>
                             </CyberpunkButton>
                         ) : (
-                            <motion.div whileHover={{ x: 2 }}>
+                            <motion.div whileHover={{ x: 2 }} onClick={() => playaudioForModuleSelect(module.id)}>
                                 <CyberpunkButton
                                     variant={isCompleted ? "secondary" : isActive ? "outline" : "secondary"}
                                     className="w-full"

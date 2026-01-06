@@ -4,7 +4,7 @@ import { useSound } from "@/hook/useSound";
 import { motion, useScroll } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
-import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu } from "lucide-react"
+import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu, Volume2, VolumeX, LogOut } from "lucide-react"
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
@@ -139,26 +139,53 @@ export const HeroHeader = () => {
                                             </Link>}
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <div className="relative cursor-pointer">
-                                                    <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                    <div className="relative w-10 h-10 rounded-full bg-slate-900 border-2 border-cyan-500/50 flex items-center justify-center overflow-hidden group-hover:border-cyan-400 transition-colors">
-                                                        <User className="w-5 h-5 text-cyan-400" />
+                                                <div className="group relative cursor-pointer">
+                                                    <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 transition group-hover:opacity-100" />
+
+                                                    <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-500/50 bg-slate-900 transition group-hover:border-cyan-400">
+                                                        <User className="h-5 w-5 text-cyan-400" />
                                                     </div>
-                                                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-950" />
+
+                                                    <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-slate-950 bg-green-500" />
                                                 </div>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="w-56">
-                                                <DropdownMenuItem asChild>
-                                                    <Link to="/profile">Profile</Link>
+
+                                            <DropdownMenuContent
+                                                align="end"
+                                                className="w-56 rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl p-2 shadow-2xl"
+                                            >
+                                                <DropdownMenuItem asChild className="rounded-xl">
+                                                    <Link to="/profile" className="flex items-center gap-3">
+                                                        <User className="h-4 w-4 text-cyan-400" />
+                                                        <span>Profile</span>
+                                                    </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuCheckboxItem
                                                     checked={soundEnabled}
                                                     onCheckedChange={toggleSound}
+                                                    className="rounded-xl flex items-center gap-3"
                                                 >
-                                                    {soundEnabled ? 'Audio Enabled' : ' Audio Disabled'}
+                                                    {soundEnabled ? (
+                                                        <Volume2 className="h-4 w-4 text-emerald-400" />
+                                                    ) : (
+                                                        <VolumeX className="h-4 w-4 text-red-400" />
+                                                    )}
+
+                                                    <span className="flex-1">Sound</span>
+
+                                                    <span className="text-xs font-mono text-white/60">
+                                                        {soundEnabled ? "ON" : "OFF"}
+                                                    </span>
                                                 </DropdownMenuCheckboxItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+
+                                                <DropdownMenuSeparator className="my-2 bg-white/10" />
+                                                <DropdownMenuItem
+                                                    onClick={logout}
+                                                    className="rounded-xl text-red-400 focus:text-red-300 focus:bg-red-500/10"
+                                                >
+                                                    <LogOut className="mr-3 h-4 w-4" />
+                                                    Logout
+                                                </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
 
@@ -168,10 +195,43 @@ export const HeroHeader = () => {
 
                         </div>
 
-                        <div className="bg-black/80 backdrop-blur-xl in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border border-white/10 p-6 shadow-2xl md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-0">
-                            <div className="lg:hidden">
-                                {/* for mobile menu */}
-                            </div>
+                        <div className="bg-black/80 backdrop-blur-xl mb-6 hidden w-full border border-white/10 p-4 shadow-2xl in-data-[state=active]:block lg:hidden">
+
+                            <nav className="space-y-1 text-sm font-medium">
+                                <Link
+                                    to="/profile"
+                                    className="flex items-center gap-3 rounded-xl px-4 py-3 text-white/90 transition hover:bg-white/5 hover:text-white"
+                                >
+                                    <User size={18} />
+                                    <span>Profile</span>
+                                </Link>
+                                <button
+                                    onClick={toggleSound}
+                                    className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-white/90 transition hover:bg-white/5"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+                                        <span>Sound</span>
+                                    </div>
+
+                                    <span
+                                        className={`text-xs font-mono ${soundEnabled ? "text-emerald-400" : "text-red-400"
+                                            }`}
+                                    >
+                                        {soundEnabled ? "ON" : "OFF"}
+                                    </span>
+                                </button>
+
+                                <div className="my-2 h-px bg-white/10" />
+                                <button
+                                    onClick={logout}
+                                    className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
+                                >
+                                    <LogOut size={18} />
+                                    <span>Logout</span>
+                                </button>
+
+                            </nav>
                         </div>
                     </motion.div>
                 </div>

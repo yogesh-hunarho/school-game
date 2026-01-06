@@ -72,7 +72,7 @@ export default function ProfilePage() {
                     className="inline-flex items-center gap-2 text-[11px] text-cyan-400 hover:text-yellow-400 transition-colors group uppercase tracking-widest font-bold"
                 >
                     <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    RETURN TO DASHBOARD
+                    RETURN TO MISSION
                 </Link>
 
                 {/* Profile Header Card */}

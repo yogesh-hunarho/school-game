@@ -84,7 +84,7 @@ export const modules = [
         id: "innovators-mind",
         name: "Innovators Mind",
         shortName: "Design Thinking",
-        description: "Master the 5 stages of Design Thinking to solve complex problems with a human-centric approach.",
+        description: "Master the 5 stages of Design Thinking to solve complex problems with a human-centric approach. Master the 5 stages of Design Thinking to solve complex problems with a human-centric approach.Master the 5 stages of Design Thinking to solve complex problems with a human-centric approach.",
         icon: "💡",
         videos: 2,
         quizzes: 1,

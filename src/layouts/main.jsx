@@ -145,7 +145,7 @@ export default function MainLayout() {
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-black uppercase leading-none">
                             <span className="text-foreground">Ready to be a </span>
                             <RotatingText
-                                texts={['CHAMPION?', ' PRO?', 'Cool!']}
+                                texts={['CHAMPION?', 'EXPERT?', 'SKILLED?', 'WIZARD?']}
                                 mainClassName="px-2 sm:px-2 text-primary bg-primary md:bg-transparent text-white md:text-primary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
                                 staggerFrom={"first"}
                                 initial={{ y: "100%" }}

@@ -30,18 +30,6 @@ const mockQuestions = [
         options: ["To sell the product", "To understand user needs", "To build the solution", "To fix bugs"],
         correct: 1
     },
-    // {
-    //     id: 4,
-    //     question: "True or False: Design Thinking is a linear process.",
-    //     options: ["True", "False"],
-    //     correct: 1
-    // },
-    // {
-    //     id: 5,
-    //     question: "In which phase do you gather feedback from users?",
-    //     options: ["Test", "Ideate", "Empathize", "Define"],
-    //     correct: 0
-    // }
 ];
 
 export const QuizModal = ({ open, onOpenChange }) => {
@@ -117,11 +105,6 @@ export const QuizModal = ({ open, onOpenChange }) => {
             },
             selectedQuiz.xp
         );
-
-        // toggleVideoQuizConfetti(true);
-        // setTimeout(() => {
-        //     toggleVideoQuizConfetti(false);
-        // }, 3000);
         completeQuiz(player.currentModuleId, selectedQuiz.id);
     };
 
@@ -250,7 +233,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
 
                                                     <div className="flex items-center gap-2 md:gap-3">
                                                         <span className={cn(
-                                                            "inline-flex w-6 h-6 md:w-7 md:h-7 text-[11px] md:text-[12px] font-bold items-center justify-center transition-colors flex-shrink-0",
+                                                            "inline-flex w-6 h-6 md:w-7 md:h-7 text-[11px] md:text-[12px] font-bold items-center justify-center transition-colors shrink-0",
                                                             answers[currentQuestionIdx] === idx
                                                                 ? "bg-yellow-400 text-slate-900"
                                                                 : "bg-cyan-400/20 text-cyan-400"
