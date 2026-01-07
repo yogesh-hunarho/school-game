@@ -1,7 +1,7 @@
-import { Lock, Star, Zap, CheckCircle2, Info } from "lucide-react"
+import { Lock, CheckCircle2, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { useEffect, useRef, useState, type ReactNode } from "react"
+import { useEffect, useRef, useState, } from "react"
 import useSound from "@/hook/useSound";
 import CyberpunkButton from "./ui/cyber-button";
 import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
