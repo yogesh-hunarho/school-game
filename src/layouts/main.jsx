@@ -142,10 +142,10 @@ export default function MainLayout() {
                                 animate={{ rotate: [0, 15, -15, 0] }}
                                 transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
                             >
-                                <Rocket className="w-5 h-5 text-white" />
+                                🚀
                             </motion.div>
                             <h2 className="text-sm md:text-lg font-mono uppercase tracking-widest text-white font-extrabold">
-                                Your First Quest!
+                                Welcome to <span className="italic text-secondary">HUNARHO</span>
                             </h2>
                         </div>
 
@@ -171,7 +171,7 @@ export default function MainLayout() {
                                 </div>
                             </motion.div>
 
-                            <motion.div
+                            {/* <motion.div
                                 className="text-center p-2 bg-green-500/10 rounded-lg border border-green-500/30"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(34,197,94,0.2)' }}
                             >
@@ -179,7 +179,7 @@ export default function MainLayout() {
                                     <span className="text-2xl animate-pulse">🎯</span>
                                     <span className="font-bold text-base sm:text-lg">EASY</span>
                                 </div>
-                            </motion.div>
+                            </motion.div> */}
                         </div>
                         <BorderBeam duration={8} size={100} />
                     </motion.div>
