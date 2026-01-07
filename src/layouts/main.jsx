@@ -44,7 +44,7 @@ export default function MainLayout() {
             {/* Background Image */}
             <div className="absolute inset-0">
                 <img
-                    src="/assets/images/grok_2.png"
+                    src="/assets/images/grok_1.png"
                     alt="Background"
                     className="w-full h-full object-cover"
                 />
