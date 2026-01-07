@@ -70,11 +70,11 @@ export const HeroHeader = () => {
         <header>
             <nav
                 data-state={menuState && 'active'}
-                className="fixed z-9999 w-full pt-2 px-4">
-                <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur md:border md:rounded-3xl')}>
+                className="fixed z-9999 w-full pt-1 px-4">
+                <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur md:border md:rounded-xl')}>
                     <motion.div
                         key={1}
-                        className={cn('relative flex flex-wrap items-center justify-between gap-6 py-3 duration-200 lg:gap-0 lg:py-2', scrolled && 'lg:py-4')}>
+                        className={cn('relative flex flex-wrap items-center justify-between gap-6 py-3 duration-200 lg:gap-0 lg:py-2', scrolled && 'lg:py-3')}>
                         <div className="flex w-full items-center justify-between gap-12">
                             <button
                                 onClick={() => setMenuState(!menuState)}
@@ -105,7 +105,7 @@ export const HeroHeader = () => {
                                         className="flex items-center gap-3 group shrink-0"
                                     >
                                         <div className="relative">
-                                            <div className="absolute inset-0 bg-cyan-500/30 blur-lg rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            <div className="absolute inset-0 bg-cyan-500/30 blur-lg rounded-full scale-150 opacity-0 transition-opacity" />
                                             <img
                                                 src="https://s3.us-east-1.amazonaws.com/hunarho.com/hunarhowhite.png"
                                                 alt="Hunarho"

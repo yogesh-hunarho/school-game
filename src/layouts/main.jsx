@@ -9,6 +9,8 @@ import RotatingText from "@/components/RotatingText"
 import HeaderCoin from "@/components/HeaderCoin"
 import Counter from "@/components/counter"
 import { useIsMobile } from "@/hook/use-mobile"
+import { BorderBeam } from "@/components/BorderBeam"
+import CharacterVideo from "@/components/CharacterVideo"
 
 // Animated counter component
 const AnimatedCounter = ({ value, suffix = "" }) => {
@@ -40,39 +42,28 @@ export default function MainLayout() {
     const isMobile = useIsMobile()
 
     return (
-        <main className="relative w-full min-h-dvh flex items-center justify-center overflow-hidden p-4 md:p-2">
+        // <main className="relative w-full min-h-dvh flex items-center justify-center bg-cyan-300/25 overflow-hidden p-4 md:p-2">
+        <main className={`relative w-full min-h-dvh flex bg-cyan-300/25 overflow-hidden p-4 md:p-2 ${isMobile ? "items-end" : "items-center justify-center"}`} >
             {/* Background Image */}
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 ">
+                {isMobile && (
+                    <img
+                        src="/assets/images/mobile-image.png"
+                        alt="Background"
+                        className="w-full h-full object-cover"
+                    />
+                )}
                 <img
-                    src="/assets/images/grok_1.png"
+                    src="/assets/images/desktop-image.png"
                     alt="Background"
                     className="w-full h-full object-cover"
                 />
             </div>
-
-            {/* <div className="absolute inset-0 z-0">
-                <FloatingLines
-                    linesGradient={colorPreset}
-                    enabledWaves={["bottom", "middle", "top"]}
-                    lineCount={[4, 6, 3]}
-                    lineDistance={[8, 5, 10]}
-                    animationSpeed={0.8}
-                    interactive={true}
-                    bendRadius={5.0}
-                    bendStrength={-0.5}
-                    mouseDamping={0.05}
-                    parallax={true}
-                    parallaxStrength={0.15}
-                    mixBlendMode="screen"
-                />
-            </div> */}
-
             <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
-
-
                 {/* Content Section */}
+                <div className="hidden md:block" />
                 <motion.div
-                    className="flex flex-col space-y-5 sm:space-y-6 md:col-start-2"
+                    className="flex flex-col space-y-5 sm:space-y-6 "
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
@@ -96,7 +87,7 @@ export default function MainLayout() {
                             <span className="text-foreground">Ready to be a </span>
                             <RotatingText
                                 texts={['CHAMPION?', 'EXPERT?', 'SKILLED?', 'WIZARD?']}
-                                mainClassName="px-2 sm:px-2 text-primary bg-primary md:bg-transparent text-white md:text-primary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
+                                mainClassName="text-secondary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
                                 staggerFrom={"first"}
                                 initial={{ y: "100%" }}
                                 animate={{ y: 0 }}
@@ -107,14 +98,14 @@ export default function MainLayout() {
                                 rotationInterval={5000}
                             />
                         </h1>
-                        <motion.h2
+                        {/* <motion.h2
                             className="text-xl sm:text-2xl font-bold text-secondary"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
                         >
                             Welcome to <span className="italic text-primary">HUNARHO</span> 🚀
-                        </motion.h2>
+                        </motion.h2> */}
                     </div>
 
                     <motion.div
@@ -127,7 +118,7 @@ export default function MainLayout() {
 
                     {/* Mission Card */}
                     <motion.div
-                        className="relative bg-background border border-primary/30 p-4 sm:p-5 space-y-4 overflow-hidden"
+                        className="relative bg-cyan-300/10 backdrop-blur-lg border border-cyan-300 p-4 sm:p-5 space-y-4 overflow-hidden"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.4 }}
@@ -136,14 +127,6 @@ export default function MainLayout() {
                             boxShadow: '0 0 30px rgba(6,182,212,0.3)',
                         }}
                     >
-                        {/* Card glow effect */}
-                        <motion.div
-                            className="absolute -top-20 -right-20 w-40 h-40 opacity-20"
-                            style={{ background: 'radial-gradient(circle, var(--secondary) 0%, transparent 70%)' }}
-                            animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
-                            transition={{ duration: 4, repeat: Infinity }}
-                        />
-
                         {/* Decorative icons */}
                         <motion.div
                             className="absolute top-3 right-3"
@@ -156,18 +139,18 @@ export default function MainLayout() {
                         {/* Mission header */}
                         <div className="flex items-center gap-2">
                             <motion.div
-                                animate={{ rotate: [0, 10, -10, 0] }}
-                                transition={{ duration: 2, repeat: Infinity }}
+                                animate={{ rotate: [0, 15, -15, 0] }}
+                                transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
                             >
-                                <Rocket className="w-5 h-5 text-yellow-400" />
+                                <Rocket className="w-5 h-5 text-white" />
                             </motion.div>
-                            <h2 className="text-sm sm:text-base font-mono uppercase tracking-widest text-secondary font-bold">
-                                🎮 Your First Quest!
+                            <h2 className="text-sm md:text-lg font-mono uppercase tracking-widest text-white font-extrabold">
+                                Your First Quest!
                             </h2>
                         </div>
 
                         {/* Mission description */}
-                        <div className="text-xs sm:text-sm text-muted-foreground font-mono leading-relaxed">
+                        <div className="text-sm md:text-lg text-white font-mono leading-relaxed">
                             <TypeWriter
                                 text="Hey Champion! 👋 Get ready to learn awesome stuff about ROBOTS! Complete missions, earn coins, and become a tech superhero! 🦸‍♂️"
                                 delay={30}
@@ -175,9 +158,9 @@ export default function MainLayout() {
                         </div>
 
                         {/* Stats grid */}
-                        <div className="grid grid-cols-3 gap-3 pt-2">
+                        <div className="grid grid-cols-4 gap-3 mb-0">
                             <motion.div
-                                className="text-center p-2 bg-primary/10 rounded-lg border border-primary/30"
+                                className="text-center p-2 bg-primary/30 rounded-lg border border-primary/30"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
                             >
                                 <div className="flex items-center justify-center gap-1 text-yellow-400">
@@ -186,9 +169,6 @@ export default function MainLayout() {
                                         <AnimatedCounter value={1000} />
                                     </span>
                                 </div>
-                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                                    Coins
-                                </div> */}
                             </motion.div>
 
                             <motion.div
@@ -196,14 +176,12 @@ export default function MainLayout() {
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(34,197,94,0.2)' }}
                             >
                                 <div className="flex items-center justify-center gap-1 text-green-400">
-                                    <Target className="w-4 h-4" />
+                                    <span className="text-2xl animate-pulse">🎯</span>
                                     <span className="font-bold text-base sm:text-lg">EASY</span>
                                 </div>
-                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                                    Level 🎯
-                                </div> */}
                             </motion.div>
                         </div>
+                        <BorderBeam duration={8} size={100} />
                     </motion.div>
 
                     {/* CTA Button */}
@@ -215,7 +193,7 @@ export default function MainLayout() {
                     >
                         <CyberpunkButton
                             variant="secondary"
-                            className="w-full max-w-sm relative text-base sm:text-lg py-4"
+                            className="w-full max-w-sm relative text-base sm:text-lg"
                         >
                             <Link to="/missions" className="flex items-center justify-center gap-2">
                                 <motion.span

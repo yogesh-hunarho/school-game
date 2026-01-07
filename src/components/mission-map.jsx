@@ -4,13 +4,14 @@ import { useSound } from "@/hook/useSound";
 import { motion, useScroll } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
-import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu } from "lucide-react"
+import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu, MapPin } from "lucide-react"
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import AnimatedBackground from "./animated-background";
 import { calculateLevel, getXPToNextLevel } from "./Header";
 import HeaderCoin from "./HeaderCoin";
+import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
 
 // Helper Components for Popover
 const LevelNode = ({ node, Icon, onClick }) => (
@@ -183,7 +184,7 @@ const MissionMap = ({ }) => {
             <PopoverTrigger asChild>
                 <div className="flex items-center">
                     <p className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors text-white font-bold">
-                        <Zap className="w-4 h-4 text-purple-400" />
+                        <MapPin className="md:w-5 md:h-5 animate-pulse" />
                         MISSION {level}
                     </p>
                 </div>
@@ -220,38 +221,10 @@ const MissionMap = ({ }) => {
                             >
                                 Total Progress
                             </motion.div>
-
-                            <div className="relative w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                                {/* Progress Fill */}
-                                <motion.div
-                                    className="absolute inset-y-0 left-0 bg-emerald-500 rounded-full"
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${progress}%` }}
-                                    transition={{
-                                        duration: 0.8,
-                                        ease: "easeOut",
-                                    }}
-                                    style={{
-                                        boxShadow: `
-                                        0 0 8px rgba(16, 185, 129, 0.6),
-                                        0 0 14px rgba(16, 185, 129, 0.4)
-                                        `,
-                                    }}
-                                />
-
-                                {/* Shimmer Glow */}
-                                <motion.div
-                                    className="absolute inset-y-0 w-10 bg-linear-to-r from-transparent via-white/30 to-transparent"
-                                    animate={{
-                                        x: ["-40%", "140%"],
-                                    }}
-                                    transition={{
-                                        repeat: Infinity,
-                                        duration: 1.8,
-                                        ease: "linear",
-                                    }}
-                                />
-                            </div>
+                            <CyberpunkProgressBar
+                                progress={progress}
+                                hideLabel
+                            />
                         </div>
                     </div>
 
