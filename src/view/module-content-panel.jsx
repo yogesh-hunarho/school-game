@@ -80,15 +80,15 @@ export const ModuleContentPanel = () => {
 
     // Module display names and icons
     const moduleNames = {
-        "innovators-mind": { name: "Innovators Mind", image: "/assets/images/3d_1.png", description: "Learn the fundamentals of design thinking and innovation" },
-        "trebuchet": { name: "Project Trebuchet", image: "/assets/images/3d_2.png", description: "Build and understand medieval engineering" },
-        "motor-robot": { name: "Motor Robot", image: "/assets/images/3d_3.png", description: "Create your own motor-powered robot" },
-        "tetris": { name: "Project Tetris", image: "/assets/images/3d_4.png", description: "Learn programming through the classic game" },
-        "aqua-bridge": { name: "Aqua Bridge", image: "/assets/images/3d_5.png", description: "Design bridges that can withstand water pressure" },
-        "drawing-bot": { name: "Drawing Bot", image: "/assets/images/3d_6.png", description: "Build an AI-powered drawing machine" },
-        "soil-monitoring": { name: "Soil Monitoring", image: "/assets/images/3d_7.png", description: "Create smart sensors for agriculture" },
-        "homopolar-motor": { name: "Homopolar Motor", image: "/assets/images/3d_8.png", description: "Quick experiment with electromagnetic motors" },
-        "final-assessment": { name: "Final Assessment", image: "/assets/images/3d_8.png", description: "Complete your Grade 6 journey" },
+        "innovators-mind": { name: "Innovators Mind", image: "/assets/images/icons/Grade6_IM.png", description: "Learn the fundamentals of design thinking and innovation" },
+        "trebuchet": { name: "Project Trebuchet", image: "/assets/images/icons/Grade6_Trebuchet.png", description: "Build and understand medieval engineering" },
+        "motor-robot": { name: "Motor Robot", image: "/assets/images/icons/Grade6_MotorRobot.png", description: "Create your own motor-powered robot" },
+        "tetris": { name: "Project Tetris", image: "/assets/images/icons/Grade6_Tetris.png", description: "Learn programming through the classic game" },
+        "aqua-bridge": { name: "Aqua Bridge", image: "/assets/images/icons/Grade6_AquaBridge.png", description: "Design bridges that can withstand water pressure" },
+        "drawing-bot": { name: "Drawing Bot", image: "/assets/images/icons/Grade6_DrawingBot.png", description: "Build an AI-powered drawing machine" },
+        "soil-monitoring": { name: "Soil Monitoring", image: "/assets/images/icons/Grade6_SoilMonitoring.png", description: "Create smart sensors for agriculture" },
+        "homopolar-motor": { name: "Homopolar Motor", image: "/assets/images/icons/Grade6_HomopolarMotor.png", description: "Quick experiment with electromagnetic motors" },
+        "final-assessment": { name: "Final Assessment", image: "/assets/images/icons/Grade6_Assessment.png", description: "Complete your Grade 6 journey" },
     };
 
     const currentModule = moduleNames[moduleId] || { name: "Module", icon: "📚", description: "Learn something new" };

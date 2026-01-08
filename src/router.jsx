@@ -11,6 +11,7 @@ import CoursesLayout from "./layouts/courses";
 import ModuleDetailsPage from "./view/ModuleDetailsPage";
 import PuzzlePage from "./view/PuzzlePage";
 import AchievementLayout from "./layouts/achievementLayout";
+import SpinAndWin from "./view/SpinAndWin";
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: '/achievements',
                 element: <AchievementLayout />
+            },
+            {
+                path: '/spin-and-win',
+                element: <SpinAndWin />
             },
         ]
     },

@@ -179,7 +179,25 @@ export default function MainLayout() {
                                     <span className="text-2xl animate-pulse">🎯</span>
                                     <span className="font-bold text-base sm:text-lg">EASY</span>
                                 </div>
-                            </motion.div> */}
+                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
+                                    Level 🎯
+                                </div> */}
+
+                            <Link to="/spin-and-win">
+                                <motion.div
+                                    className="text-center p-2 bg-pink-500/10 rounded-lg border border-pink-500/30 cursor-pointer h-full flex flex-col justify-center"
+                                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(236,72,153,0.2)' }}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <div className="flex items-center justify-center gap-1 text-pink-400">
+                                        <Sparkles className="w-4 h-4 animate-spin-slow" />
+                                        <span className="font-bold text-base sm:text-lg">SPIN</span>
+                                    </div>
+                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
+                                        WIN PRIZES!
+                                    </div>
+                                </motion.div>
+                            </Link>
                         </div>
                         <BorderBeam duration={8} size={100} />
                     </motion.div>

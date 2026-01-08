@@ -204,6 +204,8 @@ const initialPlayerState = {
     },
     badges: [],
     unlockedPuzzleCount: 0,
+    coins: 1000, // Initial coins for testing
+    spinHistory: [], // Array of { id, date, reward, type }
 };
 
 // Module order for unlocking
@@ -407,17 +409,60 @@ export const useLMSStore = create(
             }),
             completeStarAnimation: () => set({ animatingStarFrom: null, pendingXPGain: 0 }),
 
+            // Coin Management
+            updateCoins: (amount) => set((state) => ({
+                player: {
+                    ...state.player,
+                    coins: state.player.coins + amount
+                }
+            })),
+
+            addSpinResult: (result) => set((state) => ({
+                player: {
+                    ...state.player,
+                    spinHistory: [result, ...state.player.spinHistory].slice(0, 50) // Keep last 50
+                }
+            })),
+
             // Reset progress (for testing)
             resetProgress: () => set({ player: initialPlayerState }),
         }),
         {
             name: "hunarho-lms-storage",
-            version: 2,
-            migrate: (persistedState) => ({
-                ...persistedState,
-                coinTarget: null,
-                animatingStarFrom: null,
-            }),
+            version: 4,
+            migrate: (persistedState, version) => {
+                let state = persistedState;
+
+                if (version < 2) {
+                    state = {
+                        ...state,
+                        coinTarget: null,
+                        animatingStarFrom: null,
+                    };
+                }
+
+                if (version < 3) {
+                    state = {
+                        ...state,
+                        player: {
+                            ...state.player,
+                            coins: state.player?.coins ?? 1000 // Initialize coins if missing, preserve if exists (though unlikely for v2->v3)
+                        }
+                    };
+                }
+
+                if (version < 4) {
+                    state = {
+                        ...state,
+                        player: {
+                            ...state.player,
+                            spinHistory: []
+                        }
+                    };
+                }
+
+                return state;
+            },
             partialize: (state) => ({
                 player: state.player,
                 soundEnabled: state.soundEnabled,

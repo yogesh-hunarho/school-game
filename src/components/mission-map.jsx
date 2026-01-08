@@ -4,7 +4,7 @@ import { useSound } from "@/hook/useSound";
 import { motion, useScroll } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
-import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu, MapPin } from "lucide-react"
+import { X, Lock, Check, Brain, User, ChevronRight, Menu, MapPin } from "lucide-react"
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
@@ -36,7 +36,13 @@ const LevelNode = ({ node, Icon, onClick }) => (
                 }
             `}
         >
-            {node.isLocked ? <Lock className="w-5 h-5 md:w-8 md:h-8" /> : <Icon className="w-6 h-6 md:w-10 md:h-10" />}
+            {node.isLocked ? (
+                <Lock className="w-5 h-5 md:w-8 md:h-8" />
+            ) : typeof Icon === "string" ? (
+                <img src={Icon} alt={node.title} className="w-6 h-6 md:w-10 md:h-10 object-contain" />
+            ) : (
+                <Icon className="w-6 h-6 md:w-10 md:h-10" />
+            )}
 
             {node.isCompleted && (
                 <div className="absolute -top-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-2 border-slate-950 shadow-lg z-20">
@@ -147,15 +153,15 @@ const MissionMap = ({ }) => {
     }
 
     const ICON_MAP = {
-        "innovators-mind": Brain,
-        trebuchet: Box,
-        "motor-robot": Bot,
-        tetris: Gamepad2,
-        "aqua-bridge": Droplets,
-        "drawing-bot": PenTool,
-        "soil-monitoring": Sprout,
-        "homopolar-motor": Zap,
-        "final-assessment": ClipboardCheck,
+        "innovators-mind": "/assets/images/icons/Grade6_IM.png",
+        trebuchet: "/assets/images/icons/Grade6_Trebuchet.png",
+        "motor-robot": "/assets/images/icons/Grade6_MotorRobot.png",
+        tetris: "/assets/images/icons/Grade6_Tetris.png",
+        "aqua-bridge": "/assets/images/icons/Grade6_AquaBridge.png",
+        "drawing-bot": "/assets/images/icons/Grade6_DrawingBot.png",
+        "soil-monitoring": "/assets/images/icons/Grade6_SoilMonitoring.png",
+        "homopolar-motor": "/assets/images/icons/Grade6_HomopolarMotor.png",
+        "final-assessment": "/assets/images/icons/Grade6_Assessment.png",
     }
 
     const cardVariants = {
