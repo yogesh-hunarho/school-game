@@ -160,7 +160,7 @@ export default function MainLayout() {
                         {/* Stats grid */}
                         <div className="grid grid-cols-4 gap-3 mb-0">
                             <motion.div
-                                className="text-center p-2 bg-primary/30 rounded-lg border border-primary/30"
+                                className="text-center p-2 bg-green-400/20 backdrop-blur-xl rounded-lg border border-green-500/30"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
                             >
                                 <div className="flex items-center justify-center gap-1 text-yellow-400">

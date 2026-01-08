@@ -71,7 +71,14 @@ export const HeroHeader = () => {
             <nav
                 data-state={menuState && 'active'}
                 className="fixed z-9999 w-full pt-1 px-4">
-                <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur md:border md:rounded-xl')}>
+                <div className={cn('mx-auto max-w-7xl border-0 md:border-b px-4 transition-all duration-300 lg:px-12', scrolled && 'bg-black/20 backdrop-blur md:border')}>
+                    <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
+
+                    <div className={cn("absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 transition-colors z-30 border-emerald-400 animate-pulse")} />
+                    <div className={cn("absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 transition-colors z-30 border-yellow-400 animate-pulse")} />
+                    <div className={cn("absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 transition-colors z-30 border-emerald-400 animate-pulse")} />
+                    <div className={cn("absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 transition-colors z-30 border-yellow-400 animate-pulse")} />
+
                     <motion.div
                         key={1}
                         className={cn('relative flex flex-wrap items-center justify-between gap-6 py-3 duration-200 lg:gap-0 lg:py-2', scrolled && 'lg:py-3')}>

@@ -87,7 +87,6 @@ export function CyberpunkCard({
     };
 
     const playaudioForModuleSelect = (id: string) => {
-        console.log("id", id)
         if (isLocked) {
             playSound("disabled");
             return;
@@ -106,7 +105,7 @@ export function CyberpunkCard({
         >
             {/* Main Card Container */}
             <div className={cn(
-                "relative bg-slate-950/95 transition-all duration-300 overflow-hidden",
+                "relative backdrop-blur-3xl bg-background/10 transition-all duration-300 overflow-hidden",
                 colors.glow
             )}>
 

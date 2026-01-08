@@ -42,7 +42,7 @@ const ModuleDetailsPage = () => {
     }
 
     return (
-        <div className="p-4 pt-5 max-w-7xl mx-auto mt-20">
+        <div className="pt-5 max-w-7xl min-h-screen  overflow-hidden pb-20 mx-auto mt-20">
             <button
                 onClick={handleBack}
                 className="mb-4 flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors uppercase font-bold tracking-widest text-xs"
@@ -51,7 +51,7 @@ const ModuleDetailsPage = () => {
                 Back to Missions
             </button>
 
-            <div className="bg-slate-950/80 overflow-hidden border border-cyan-400/20 shadow-[0_0_50px_rgba(34,211,238,0.1)] mb-20">
+            <div className=" overflow-hidden border border-cyan-400/20 mb-2">
                 <ModuleContentPanel />
             </div>
 

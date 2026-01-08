@@ -73,7 +73,7 @@ export const CyberpunkDashboard = () => {
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/5 blur-[120px] rounded-full" />
             </div>
 
-            <div className="relative xl:max-w-7xl lg:max-w-6xl md:max-w-5xl max-w-4xl mx-auto flex flex-col p-4 gap-8">
+            <div className="relative xl:max-w-7xl lg:max-w-6xl md:max-w-5xl max-w-4xl mx-auto flex flex-col py-2">
                 {/* Header with Tech Ornaments */}
                 <div className="relative">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-cyan-500/30 pb-6 transition-all">
@@ -122,7 +122,7 @@ export const CyberpunkDashboard = () => {
                         const isLocked = status === "locked";
                         const isCurrent = status === "current";
                         const isCompleted = status === "completed";
-                        const isActive = player.currentModuleId === module.id;
+                        const isActive = player.moduleStatus[module.id] === "current";
                         const progress = getModuleProgress(module.id);
 
                         return (
@@ -166,33 +166,6 @@ export const CyberpunkDashboard = () => {
                                     />
                                 )}
                             </motion.div>
-                            // <>{
-                            //     isLocked ? (
-                            //         <CyberpunkLock
-                            //             key={module.id}
-                            //             module={module}
-                            //             status={status}
-                            //             isLocked={isLocked}
-                            //             isCurrent={isCurrent}
-                            //             isCompleted={isCompleted}
-                            //             isActive={isActive}
-                            //             progress={progress}
-                            //         />
-                            //     ) : (
-                            //         <CyberpunkCard
-                            //             key={module.id}
-                            //             module={module}
-                            //             status={status}
-                            //             isLocked={isLocked}
-                            //             isCurrent={isCurrent}
-                            //             isCompleted={isCompleted}
-                            //             isActive={isActive}
-                            //             progress={progress}
-                            //             handleModuleSelect={handleModuleSelect}
-                            //         />
-                            //     )
-                            // }
-                            // </>
                         );
                     })}
                 </div>

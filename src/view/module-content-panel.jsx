@@ -10,6 +10,7 @@ import TypeWriter from "@/components/typewritter";
 import DecryptedText from "@/components/DecryptedText";
 import HeaderCoin from "@/components/HeaderCoin";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 const cardVariants = {
     hidden: {
@@ -110,7 +111,7 @@ export const ModuleContentPanel = () => {
     };
 
     return (
-        <div className="relative bg-linear-to-br from-slate-950 via-slate-900/98 to-slate-950 shadow-2xl">
+        <div className="relative backdrop-blur-xl bg-background/10">
             {/* Ambient background effects */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl" />
@@ -309,128 +310,166 @@ export const ModuleContentPanel = () => {
                                 const isWatched = isVideoWatched(moduleId, video.id);
                                 const isClicked = clickedId === video.id;
 
+                                // Sequential logic:
+                                // 1. Module must be unlocked
+                                // 2. First video is always unlocked if module is unlocked
+                                // 3. Subsequent videos are unlocked only if the previous video is watched
+                                const isModuleLocked = moduleStatus === "locked";
+                                const isPreviousWatched = index === 0 || isVideoWatched(moduleId, content.videos[index - 1].id);
+                                const isVideoLocked = isModuleLocked || !isPreviousWatched;
+                                const isActive = !isWatched && !isVideoLocked;
+
+                                let color = "slate-500";
+                                let badgeText = "Locked";
+
+                                if (isWatched) {
+                                    color = "red-500";
+                                    badgeText = "Finished";
+                                } else if (isActive) {
+                                    color = "red-500";
+                                    badgeText = "Currently Playing";
+                                } else if (isVideoLocked) {
+                                    color = "red-500";
+                                    badgeText = "Pending";
+                                }
+
                                 return (
                                     <motion.button
                                         key={video.id}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.4, ease: "easeOut" }}
-                                        whileHover={!isLocked ? { y: -6 } : {}}
-                                        whileTap={!isLocked ? { scale: 0.98 } : {}}
-                                        onClick={(e) => handleItemClick(e, video.id, isLocked, () => openVideoModal(video))}
-                                        disabled={isLocked}
+                                        whileHover={!isVideoLocked ? { y: -6 } : {}}
+                                        whileTap={!isVideoLocked ? { scale: 0.98 } : {}}
+                                        onClick={(e) => handleItemClick(e, video.id, isVideoLocked, () => openVideoModal(video))}
+                                        disabled={isVideoLocked}
                                         className={cn(
-                                            "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50  overflow-hidden",
+                                            "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 overflow-hidden",
                                             "transition-all duration-500",
                                             shakingId === video.id && "animate-shake",
                                             isClicked && "scale-95",
-                                            isLocked && "cursor-not-allowed opacity-80"
+                                            isVideoLocked && "cursor-not-allowed opacity-80"
                                         )}
-                                        aria-label={`${isLocked ? 'Locked' : isWatched ? 'Watched' : 'Watch'} video: ${video.title}`}
+                                        aria-label={`${isVideoLocked ? 'Locked' : isWatched ? 'Watched' : 'Watch'} video: ${video.title}`}
                                     >
-                                        {/* Background Layer */}
-                                        <div className="absolute inset-0">
+                                        {/* Thumbnail Section */}
+                                        <div className="relative w-full aspect-video overflow-hidden">
+                                            {/* Thumbnail Image */}
+                                            <img
+                                                src={`/assets/thumb.jpeg`}
+                                                alt={video.title}
+                                                className={cn(
+                                                    "w-full h-full object-cover transition-all duration-700",
+                                                    isVideoLocked && "grayscale",
+                                                    !isVideoLocked && "group-hover:scale-110"
+                                                )}
+                                            />
+
+                                            {/* Gradient Overlay */}
                                             <div className={cn(
                                                 "absolute inset-0 transition-all duration-700",
-                                                isLocked
-                                                    ? "bg-linear-to-br from-slate-900/90 to-slate-950/90"
+                                                isVideoLocked
+                                                    ? "bg-linear-to-t from-slate-950/95 via-slate-900/70 to-slate-900/50"
                                                     : isWatched
-                                                        ? "bg-linear-to-br from-emerald-950/60 via-emerald-900/30 to-slate-950/80"
-                                                        : "bg-linear-to-br from-slate-900/90 via-slate-800/70 to-slate-950/90"
+                                                        ? "bg-linear-to-t from-emerald-950/80 via-slate-900/40 to-transparent group-hover:from-emerald-950/90"
+                                                        : "bg-linear-to-t from-slate-950/80 via-slate-900/40 to-transparent group-hover:from-slate-950/90"
                                             )} />
-
-                                            {/* Subtle hover glow */}
-                                            {!isLocked && (
-                                                <motion.div
+                                            <div className="absolute top-3 right-3">
+                                                <div
                                                     className={cn(
-                                                        "absolute inset-0 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700",
-                                                        isWatched ? "bg-emerald-500/20" : "bg-cyan-500/25"
+                                                        "relative group font-mono font-normal text-xs px-3 py-1 backdrop-blur-xl",
+                                                        `bg-${color}`,
+                                                        "transition-all duration-200 ease-out",
+                                                        "disabled:opacity-50 disabled:cursor-not-allowed",
+                                                        "clip-path-slant"
                                                     )}
-                                                />
-                                            )}
-                                        </div>
-
-                                        {/* Card Content */}
-                                        <div className="relative p-6 flex flex-col h-full border border-b-0 rounded-b-sm">
-                                            {/* Header: Badge + Play Button */}
-                                            <div className="flex items-start justify-between mb-5">
-                                                {/* Number / Status Badge */}
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-12 w-12 items-center justify-center backdrop-blur-md font-bold text-sm tracking-wider",
-                                                        "border transition-all duration-500",
-                                                        isLocked
-                                                            ? "bg-slate-800/70 border-slate-700/50 text-slate-500"
-                                                            : isWatched
-                                                                ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-lg shadow-emerald-500/20"
-                                                                : "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/60"
-                                                    )}
-                                                    whileHover={!isLocked ? { scale: 1.1, rotate: 6 } : {}}
+                                                    style={{
+                                                        clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'
+                                                    }}
                                                 >
-                                                    {isLocked ? (
-                                                        <Lock className="h-5 w-5" />
+                                                    <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-in-out skew-x-12 pointer-events-none" />
+
+                                                    <span className="relative text-center z-10 flex items-center justify-center gap-2">
+                                                        {badgeText}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Glassmorphic Play Button Overlay */}
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <motion.div
+                                                    className={cn(
+                                                        "relative flex items-center justify-center",
+                                                        isVideoLocked
+                                                            ? " border-slate-700/50"
+                                                            : isWatched
+                                                                ? "bg-emerald-500/20 rounded-full backdrop-blur-3xl"
+                                                                : ""
+                                                    )}
+                                                    whileHover={!isVideoLocked ? { scale: 1.15 } : {}}
+                                                    whileTap={!isVideoLocked ? { scale: 0.95 } : {}}
+                                                >
+                                                    {/* Inner glow effect */}
+                                                    {!isVideoLocked && (
+                                                        <motion.div
+                                                            className={cn(
+                                                                "absolute inset-0 blur-xl opacity-50",
+                                                            )}
+                                                            animate={{
+                                                                scale: [1, 1.2, 1],
+                                                                opacity: [0.5, 0.7, 0.5]
+                                                            }}
+                                                            transition={{
+                                                                duration: 2,
+                                                                repeat: Infinity,
+                                                                ease: "easeInOut"
+                                                            }}
+                                                        />
+                                                    )}
+
+                                                    {isVideoLocked ? (
+                                                        <Lock className="h-8 w-8 text-slate-500 relative z-10" />
                                                     ) : isWatched ? (
-                                                        <CheckCircle2 className="h-6 w-6" />
+                                                        <CheckCircle2 className="h-10 w-10 text-emerald-300 relative z-10" />
                                                     ) : (
-                                                        String(index + 1).padStart(2, '0')
-                                                    )}
-                                                </motion.div>
-
-                                                {/* Play Icon */}
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-14 w-14 items-center justify-center  backdrop-blur-md",
-                                                        "transition-all duration-500 shadow-lg",
-                                                        isLocked
-                                                            ? "bg-slate-800/60 text-slate-600 border border-slate-700/50"
-                                                            : isWatched
-                                                                ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 group-hover:bg-emerald-500/35"
-                                                                : "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 group-hover:bg-cyan-500/25 group-hover:scale-110"
-                                                    )}
-                                                    whileHover={!isLocked ? { scale: 1.15, rotate: 8 } : {}}
-                                                    whileTap={!isLocked ? { scale: 0.95 } : {}}
-                                                >
-                                                    {isLocked ? (
-                                                        <Lock className="h-5 w-5" />
-                                                    ) : (
-                                                        <Play className="h-6 w-6 fill-current ml-1" />
+                                                        <div className="flex items-center gap-1 text-white border border-white/50 bg-[#153543] transition-all duration-500 px-2 py-2 rounded-2xl">
+                                                            <Play className="h-4 w-4  fill-current relative z-10 transition-colors ml-1" /> Play Video
+                                                        </div>
                                                     )}
                                                 </motion.div>
                                             </div>
 
-                                            {/* Title */}
-                                            <h4 className={cn(
-                                                "font-semibold text-start text-lg leading-tight mb-2 line-clamp-2 transition-colors duration-500",
-                                                isLocked
-                                                    ? "text-slate-500"
-                                                    : isWatched
-                                                        ? "text-emerald-200 group-hover:text-emerald-100"
-                                                        : "text-white group-hover:text-cyan-50"
+                                            {/* Video Number Badge */}
+                                            <motion.div
+                                                className={cn(
+                                                    "absolute top-3 left-3 flex h-10 w-10 items-center justify-center backdrop-blur-md font-bold text-sm tracking-wider",
+                                                    "border-2 transition-all duration-500 z-10",
+                                                    isVideoLocked
+                                                        ? "bg-slate-900/70 border-slate-700/50 text-slate-500"
+                                                        : isWatched
+                                                            ? "bg-emerald-500/25 border-emerald-500/50 text-emerald-300 shadow-lg shadow-emerald-500/20"
+                                                            : "bg-cyan-500/15 border-cyan-500/40 text-cyan-300 group-hover:bg-cyan-500/25 group-hover:border-cyan-400/70"
+                                                )}
+                                            >
+                                                {String(index + 1).padStart(2, '0')}
+                                            </motion.div>
+
+                                            {/* Duration Badge */}
+                                            <div className={cn(
+                                                "absolute bottom-3 right-3 px-3 py-1.5 backdrop-blur-md font-medium text-xs tracking-wide",
+                                                "border transition-all duration-500 flex items-center gap-1.5 z-10",
+                                                isVideoLocked
+                                                    ? "bg-slate-900/70 border-slate-700/50 text-slate-400"
+                                                    : "bg-slate-900/80 border-slate-700/60 text-slate-300"
                                             )}>
-                                                {video.title}
-                                            </h4>
-                                            <Separator className="mb-2" />
-
-                                            {/* Metadata */}
-                                            <div className="mt-auto flex items-center justify-between text-sm">
-                                                <span className={cn(
-                                                    "flex items-center gap-2 font-medium",
-                                                    isLocked ? "text-slate-600" : "text-slate-400"
-                                                )}>
-                                                    <Clock className="h-4 w-4" />
-                                                    {video.duration}
-                                                </span>
-
-                                                <span className="flex items-center gap-2 text-amber-400 font-semibold">
-                                                    <HeaderCoin className="h-4 w-4" />
-                                                    {video.xp} Coins
-                                                </span>
+                                                <Clock className="h-3 w-3" />
+                                                {video.duration}
                                             </div>
 
-                                            {/* Progress Bar for Watched */}
-                                            {isWatched && !isLocked && (
+                                            {/* Watched Progress Bar */}
+                                            {isWatched && !isVideoLocked && (
                                                 <motion.div
-                                                    className="absolute bottom-0 left-0 right-0 h-1.5 bg-linear-to-r from-emerald-500 via-emerald-400 to-emerald-600 rounded-b-2xl"
+                                                    className="absolute bottom-0 left-0 right-0 bg-linear-to-r from-emerald-500 via-emerald-400 to-emerald-600 z-10"
                                                     initial={{ scaleX: 0 }}
                                                     animate={{ scaleX: 1 }}
                                                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -438,11 +477,47 @@ export const ModuleContentPanel = () => {
                                                 />
                                             )}
                                         </div>
-                                        {!isLocked && (
+
+                                        {/* Content Section */}
+                                        <div className="relative p-5 flex flex-col border-x border-b">
+                                            <div className="absolute inset-0">
+                                                <div className={cn(
+                                                    "absolute inset-0 transition-all duration-700",
+                                                    isVideoLocked
+                                                        ? "bg-linear-to-br from-slate-900/90 to-slate-950/90"
+                                                        : isWatched
+                                                            ? "bg-linear-to-br from-emerald-950/60 via-emerald-900/30 to-slate-950/80"
+                                                            : "bg-linear-to-br from-slate-900/90 via-slate-800/70 to-slate-950/90"
+                                                )} />
+                                            </div>
+
+                                            <h4 className={cn(
+                                                "relative font-semibold text-start text-base leading-tight mb-3 line-clamp-2 transition-colors duration-500",
+                                                isVideoLocked
+                                                    ? "text-slate-500"
+                                                    : isWatched
+                                                        ? "text-emerald-200 group-hover:text-emerald-100"
+                                                        : "text-white group-hover:text-cyan-50"
+                                            )}>
+                                                {video.title}
+                                            </h4>
+
+                                            <Separator className="mb-3 relative" />
+
+                                            <div className="relative flex items-center justify-between text-sm">
+                                                <span className="flex items-center gap-2 text-amber-400 font-semibold">
+                                                    <HeaderCoin className="h-4 w-4" />
+                                                    {video.xp} Coins
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Corner Accents */}
+                                        {!isVideoLocked && (
                                             <>
                                                 <motion.div
                                                     className={cn(
-                                                        "absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 transition-colors duration-500",
+                                                        "absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 transition-colors duration-500 z-20",
                                                         isWatched
                                                             ? "border-emerald-400/60 group-hover:border-emerald-300"
                                                             : "border-cyan-400/40 group-hover:border-cyan-300"
@@ -453,7 +528,7 @@ export const ModuleContentPanel = () => {
                                                 />
                                                 <motion.div
                                                     className={cn(
-                                                        "absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 transition-colors duration-500",
+                                                        "absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 transition-colors duration-500 z-20",
                                                         isWatched
                                                             ? "border-emerald-400/60 group-hover:border-emerald-300"
                                                             : "border-cyan-400/40 group-hover:border-cyan-300"
@@ -470,7 +545,6 @@ export const ModuleContentPanel = () => {
                         </motion.div>
                     </motion.div>
                 )}
-
                 {/* Quizzes Section */}
                 {content.quizzes.length > 0 && (
                     <motion.section
@@ -479,173 +553,153 @@ export const ModuleContentPanel = () => {
                         transition={{ delay: 0.3 }}
                         className="mb-12"
                     >
-                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-amber-400 ">
+                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-amber-300">
                             <div className="p-3 bg-amber-400/10 border border-amber-400/30 ">
                                 <BookCheck className="h-5 w-5" />
                             </div>
                             <span className="italic">
-                                Test Your Knowledge • Earn Your Coins ({content.quizzes.length})
+                                Academy Challenges ({content.quizzes.length})
                             </span>
                         </h3>
 
                         <motion.div
                             variants={{
-                                visible: { transition: { staggerChildren: 0.08 } }
+                                visible: { transition: { staggerChildren: 0.1 } }
                             }}
                             initial="hidden"
                             animate="visible"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 "
+                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6"
                         >
                             {content.quizzes.map((quiz, index) => {
                                 const isCompleted = isQuizCompleted(moduleId, quiz.id);
                                 const isClicked = clickedId === quiz.id;
 
+                                // Sequential logic for quizzes:
+                                // 1. All videos in module must be watched
+                                // 2. Quizzes must be completed in order
+                                const allVideosWatched = content.videos.every(v => isVideoWatched(moduleId, v.id));
+                                const previousQuizzesCompleted = index === 0 || isQuizCompleted(moduleId, content.quizzes[index - 1].id);
+                                const isQuizLocked = moduleStatus === "locked" || !allVideosWatched || !previousQuizzesCompleted;
+                                const isQuizActive = !isQuizLocked && !isCompleted;
+
                                 return (
-                                    <motion.button
+                                    <motion.div
                                         key={quiz.id}
                                         variants={cardVariants}
-                                        whileHover={!isLocked ? { y: -8 } : {}}
-                                        whileTap={!isLocked ? { scale: 0.97 } : {}}
-                                        onClick={(e) => handleItemClick(e, quiz.id, isLocked, () => openQuizModal(quiz))}
-                                        disabled={isLocked}
                                         className={cn(
-                                            "relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/50  overflow-hidden",
-                                            "transition-all duration-500",
+                                            "relative flex flex-col w-full group overflow-hidden border border-cyan-500/30 bg-slate-900/60 transition-all duration-500",
                                             shakingId === quiz.id && "animate-shake",
-                                            isClicked && "scale-95",
-                                            isLocked && "cursor-not-allowed opacity-70"
+                                            isClicked && "scale-[0.99]",
+                                            isQuizLocked && "opacity-60 grayscale-[0.5]"
                                         )}
-                                        aria-label={`${isLocked ? 'Locked' : isCompleted ? 'Completed' : 'Start'} quiz: ${quiz.title}`}
                                     >
-                                        {/* Background */}
-                                        <div className="absolute inset-0">
-                                            <div className={cn(
-                                                "absolute inset-0 transition-all duration-700",
-                                                isLocked
-                                                    ? "bg-linear-to-br from-slate-900/90 to-slate-950/90"
-                                                    : isCompleted
-                                                        ? "bg-linear-to-br from-amber-950/70 via-orange-900/40 to-slate-950/80"
-                                                        : "bg-linear-to-br from-slate-900/90 via-purple-900/30 to-slate-950/90"
-                                            )} />
-
-                                            {/* Subtle hover glow */}
-                                            {!isLocked && (
-                                                <motion.div
-                                                    className="absolute inset-0 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"
-                                                    style={{ background: isCompleted ? "rgba(251, 146, 60, 0.25)" : "rgba(168, 85, 247, 0.2)" }}
+                                        <div className="flex flex-col sm:flex-row p-4 gap-6">
+                                            {/* Left Icon Panel */}
+                                            <div className="flex items-center justify-center bg-indigo-900/40 border border-indigo-400/30 p-4 min-h-[120px] sm:min-h-auto sm:w-40 relative overflow-hidden group/icon shrink-0">
+                                                <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 to-transparent group-hover/icon:opacity-100 transition-opacity" />
+                                                <img
+                                                    src="/assets/images/quiz.png"
+                                                    alt=""
+                                                    className="z-10 w-full h-full object-contain transition-all duration-500 group-hover/icon:scale-110 group-hover/icon:rotate-3 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]"
                                                 />
-                                            )}
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="relative p-6 flex flex-col h-full border border-amber-400/20 border-b-0 rounded-b-sm">
-                                            <div className="flex items-start justify-between mb-5">
-                                                {/* Status Badge */}
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-12 w-12 items-center justify-center backdrop-blur-md font-bold",
-                                                        "border transition-all duration-500 shadow-lg",
-                                                        isLocked
-                                                            ? "bg-slate-800/70 border-slate-700/50 text-slate-500"
-                                                            : isCompleted
-                                                                ? "bg-linear-to-br from-amber-500 to-orange-500 text-black border-amber-500/50 shadow-amber-500/30"
-                                                                : "bg-linear-to-br from-purple-500/20 to-amber-500/15 border-amber-500/30 text-amber-300 group-hover:border-amber-400/60"
-                                                    )}
-                                                    whileHover={!isLocked ? { scale: 1.1, rotate: -6 } : {}}
-                                                >
-                                                    {isLocked ? (
-                                                        <Lock className="h-5 w-5" />
-                                                    ) : isCompleted ? (
-                                                        <CheckCircle2 className="h-6 w-6" />
-                                                    ) : (
-                                                        <BookCheck className="h-6 w-6" />
-                                                    )}
-                                                </motion.div>
-
-                                                {/* Action Arrow */}
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-14 w-14 items-center justify-center backdrop-blur-md shadow-lg",
-                                                        "transition-all duration-500",
-                                                        isLocked
-                                                            ? "bg-slate-800/60 text-slate-600"
-                                                            : isCompleted
-                                                                ? "bg-amber-500/25 text-amber-300 border border-amber-500/40 group-hover:bg-amber-500/35"
-                                                                : "bg-purple-500/15 text-purple-300 border border-purple-500/30 group-hover:bg-amber-500/20 group-hover:text-amber-300 group-hover:scale-110"
-                                                    )}
-                                                    whileHover={!isLocked ? { x: 6, rotate: 12 } : {}}
-                                                    whileTap={!isLocked ? { scale: 0.9 } : {}}
-                                                >
-                                                    {isLocked ? <Lock className="h-5 w-5" /> : <ChevronRight className="h-7 w-7" />}
-                                                </motion.div>
                                             </div>
 
-                                            <h4 className={cn(
-                                                "font-semibold text-lg text-start leading-tight mb-2 uppercase tracking-wider line-clamp-2 transition-colors duration-500",
-                                                isLocked
-                                                    ? "text-slate-500"
-                                                    : isCompleted
-                                                        ? "text-amber-200 group-hover:text-amber-100"
-                                                        : "text-white group-hover:text-amber-50"
-                                            )}>
-                                                {quiz.title}
-                                            </h4>
-                                            <Separator className="mb-2 bg-amber-200" />
+                                            {/* Info Section */}
+                                            <div className="flex-1 flex flex-col justify-center gap-2">
+                                                <div className="flex flex-col">
+                                                    <h4 className="text-xl font-black text-amber-400 uppercase tracking-wider leading-none italic">
+                                                        {quiz.title}
+                                                    </h4>
+                                                    <p className="text-[10px] text-cyan-300/60 font-medium uppercase tracking-widest mt-1">
+                                                        {moduleId.replace(/-/g, ' ')} Specialist Assessment
+                                                    </p>
+                                                </div>
 
-                                            <div className="mt-auto flex items-center justify-between text-sm">
-                                                <span className={cn(
-                                                    "font-medium uppercase tracking-wide",
-                                                    isLocked ? "text-slate-600" : "text-slate-400"
-                                                )}>
-                                                    {quiz.questions} Questions
-                                                </span>
-
-                                                <span className="flex items-center gap-2 text-amber-400 font-bold">
-                                                    <Zap className="h-4 w-4 fill-current" />
-                                                    {quiz.xp} Coins
-                                                </span>
+                                                <div className="mt-4 flex flex-col gap-1">
+                                                    <span className="text-2xl font-normal font-mono text-white tracking-wider flex items-center gap-2">
+                                                        {quiz.questions} QUESTIONS
+                                                    </span>
+                                                    <div className="flex gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-normal">
+                                                        <span className="flex items-center gap-1.5">
+                                                            <div className="w-1 h-1 bg-cyan-400 rotate-45" />
+                                                            Topic: {moduleId.replace(/-/g, ' ')}
+                                                        </span>
+                                                        <span className="flex items-center gap-1.5">
+                                                            <div className="w-1 h-1 bg-cyan-400 rotate-45" />
+                                                            Duration: {quiz.questions * 2} Minutes
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            {/* Completion Bar */}
-                                            {isCompleted && !isLocked && (
-                                                <motion.div
-                                                    className="absolute bottom-0 left-0 right-0 h-1.5 bg-linear-to-r from-amber-500 via-orange-400 to-amber-600 rounded-b-2xl"
-                                                    initial={{ scaleX: 0 }}
-                                                    animate={{ scaleX: 1 }}
-                                                    transition={{ duration: 0.9, ease: "easeOut" }}
-                                                    style={{ originX: 0 }}
-                                                />
-                                            )}
                                         </div>
 
-                                        {/* Corner Accents */}
-                                        {!isLocked && (
-                                            <>
-                                                <motion.div
+                                        {/* Bottom Action Bar */}
+                                        <div className="mt-auto flex flex-col sm:flex-row items-stretch border-t border-cyan-500/10">
+                                            <button
+                                                onClick={(e) => handleItemClick(e, quiz.id, isQuizLocked, () => openQuizModal(quiz))}
+                                                disabled={isQuizLocked}
+                                                className={cn(
+                                                    "relative flex items-center justify-between group/btn min-w-[200px] transition-all duration-300",
+                                                    isQuizLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                                )}
+                                            >
+                                                <div
                                                     className={cn(
-                                                        "absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 rounded-tl transition-colors duration-500",
-                                                        isCompleted
-                                                            ? "border-amber-400/60 group-hover:border-amber-300"
-                                                            : "border-purple-400/40 group-hover:border-amber-300"
+                                                        "flex-1 flex items-center justify-center gap-4 px-8 py-4 font-black text-sm uppercase italic transition-all duration-300",
+                                                        isQuizLocked
+                                                            ? "bg-slate-800 text-slate-500"
+                                                            : isCompleted
+                                                                ? "bg-indigo-900/80 text-indigo-300 hover:bg-indigo-800"
+                                                                : "bg-indigo-600 text-white hover:bg-indigo-500"
                                                     )}
-                                                    initial={{ opacity: 0, scale: 0 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.2 + index * 0.05 }}
-                                                />
-                                                <motion.div
-                                                    className={cn(
-                                                        "absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 rounded-br transition-colors duration-500",
-                                                        isCompleted
-                                                            ? "border-amber-400/60 group-hover:border-amber-300"
-                                                            : "border-purple-400/40 group-hover:border-amber-300"
-                                                    )}
-                                                    initial={{ opacity: 0, scale: 0 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.3 + index * 0.05 }}
-                                                />
-                                            </>
-                                        )}
-                                    </motion.button>
+                                                    style={{
+                                                        clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)'
+                                                    }}
+                                                >
+                                                    {isCompleted ? "RETAKE TEST" : isQuizLocked ? "LINK RESTRICTED" : "START TEST"}
+                                                    {isQuizLocked && <Lock className="h-4 w-4" />}
+                                                </div>
+
+                                                {!isQuizLocked && (
+                                                    <div
+                                                        className="w-12 h-full bg-cyan-400 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-cyan-300"
+                                                        style={{
+                                                            clipPath: 'polygon(0 0, 100% 50%, 0 100%, 30% 50%)',
+                                                            marginLeft: '-12px'
+                                                        }}
+                                                    >
+                                                        <ChevronRight className="h-5 w-5 text-slate-900 ml-[-4px]" />
+                                                    </div>
+                                                )}
+                                            </button>
+
+                                            <div className="flex-1 flex items-center justify-between px-6 py-2 w-full">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                                        Points Reward
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 text-amber-400 group">
+                                                    <HeaderCoin />
+                                                    <div className="flex flex-col items-start">
+                                                        <span className="text-lg font-black leading-none">{quiz.xp}</span>
+                                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Reward</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Background Visual Accents */}
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-[60px] rounded-full -z-10" />
+                                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/5 blur-[70px] rounded-full -z-10" />
+
+                                        {/* Corners */}
+                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400/40" />
+                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-400/40" />
+                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-400/40" />
+                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400/40" />
+                                    </motion.div>
                                 );
                             })}
                         </motion.div>
@@ -660,7 +714,7 @@ export const ModuleContentPanel = () => {
                         transition={{ delay: 0.4 }}
                         className="mb-12"
                     >
-                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-emerald-400">
+                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-emerald-300">
                             <div className="p-3 bg-emerald-400/10 border border-emerald-400/30 ">
                                 <Trophy className="h-5 w-5" />
                             </div>
@@ -669,114 +723,146 @@ export const ModuleContentPanel = () => {
 
                         <motion.div
                             variants={{
-                                visible: { transition: { staggerChildren: 0.08 } }
+                                visible: { transition: { staggerChildren: 0.1 } }
                             }}
                             initial="hidden"
                             animate="visible"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                            className="flex flex-col gap-8"
                         >
                             {content.assessments.map((assessment, index) => {
+                                // For assessments, they are typically unlocked only after all other content (videos & quizzes) is done
+                                const allQuizzesCompleted = content.quizzes.every(q => isQuizCompleted(moduleId, q.id));
+                                const previousAssessmentsCompleted = index === 0 || false; // Currently no store method for assessment completion shown in viewed items, but usually there's only one.
+                                const isAssessmentLocked = moduleStatus === "locked" || !allQuizzesCompleted;
+
                                 return (
-                                    <motion.button
+                                    <motion.div
                                         key={assessment.id}
                                         variants={cardVariants}
-                                        whileHover={!isLocked ? { y: -8 } : {}}
-                                        whileTap={!isLocked ? { scale: 0.97 } : {}}
-                                        onClick={(e) => handleItemClick(e, assessment.id, isLocked, () => openAssessmentModal?.(assessment))}
-                                        disabled={isLocked}
                                         className={cn(
-                                            "relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50  overflow-hidden",
-                                            "transition-all duration-500",
+                                            "relative flex flex-col w-full group overflow-hidden border border-emerald-500/30 bg-slate-900/60 transition-all duration-500",
                                             shakingId === assessment.id && "animate-shake",
-                                            isLocked && "cursor-not-allowed opacity-70"
+                                            isAssessmentLocked && "opacity-60 grayscale-[0.5]"
                                         )}
-                                        aria-label={`${isLocked ? 'Locked' : 'Start'} final assessment: ${assessment.title}`}
                                     >
-                                        {/* Background */}
-                                        <div className="absolute inset-0">
-                                            <div className={cn(
-                                                "absolute inset-0 transition-all duration-700",
-                                                isLocked
-                                                    ? "bg-linear-to-br from-slate-900/90 to-slate-950/90"
-                                                    : "bg-linear-to-br from-slate-900/90 via-emerald-900/30 to-slate-950/90"
-                                            )} />
-
-                                            {!isLocked && (
-                                                <motion.div
-                                                    className="absolute inset-0 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-emerald-500/25"
-                                                />
-                                            )}
-                                        </div>
-
-                                        <div className="relative p-6 flex flex-col h-full">
-                                            <div className="flex items-start justify-between mb-5">
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-12 w-12 items-center justify-center backdrop-blur-md text-2xl",
-                                                        "border transition-all duration-500 shadow-lg",
-                                                        isLocked
-                                                            ? "bg-slate-800/70 border-slate-700/50 text-slate-500"
-                                                            : "bg-linear-to-br from-emerald-500/20 to-teal-500/20 border-emerald-500/40 text-emerald-300 shadow-emerald-500/20"
-                                                    )}
-                                                    whileHover={!isLocked ? { scale: 1.1, rotate: 12 } : {}}
-                                                >
-                                                    {isLocked ? <Lock className="h-5 w-5" /> : <Trophy className="h-7 w-7" />}
-                                                </motion.div>
-
-                                                <motion.div
-                                                    className={cn(
-                                                        "flex h-14 w-14 items-center justify-center  backdrop-blur-md shadow-lg",
-                                                        "transition-all duration-500",
-                                                        isLocked
-                                                            ? "bg-slate-800/60 text-slate-600"
-                                                            : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 group-hover:bg-emerald-500/30 group-hover:scale-110"
-                                                    )}
-                                                    whileHover={!isLocked ? { x: 6 } : {}}
-                                                >
-                                                    {isLocked ? <Lock className="h-5 w-5" /> : <ChevronRight className="h-7 w-7" />}
-                                                </motion.div>
-                                            </div>
-
-                                            <h4 className={cn(
-                                                "font-semibold text-lg leading-tight mb-4 uppercase tracking-wider line-clamp-2 transition-colors duration-500",
-                                                isLocked ? "text-slate-500" : "text-white group-hover:text-emerald-50"
-                                            )}>
-                                                {assessment.title}
-                                            </h4>
-
-                                            <div className="mt-auto flex items-center justify-between text-sm">
-                                                <span className={cn(
-                                                    "font-medium uppercase tracking-wide",
-                                                    isLocked ? "text-slate-600" : "text-slate-400"
-                                                )}>
-                                                    {assessment.questions} Questions
-                                                </span>
-
-                                                <span className="flex items-center gap-2 text-amber-400 font-bold">
-                                                    <Zap className="h-4 w-4 fill-current" />
-                                                    {assessment.xp} Coins
+                                        {/* Top Header Bar */}
+                                        <div className="flex items-center gap-3 bg-slate-950/80 px-4 py-1.5 border-b border-emerald-500/20">
+                                            <div className="flex items-center gap-2">
+                                                <div className="p-0.5 bg-emerald-400/20 border border-emerald-400/40 rounded">
+                                                    <Trophy className="h-3 w-3 text-emerald-400" />
+                                                </div>
+                                                <span className="text-[10px] font-bold text-emerald-400/90 uppercase tracking-widest font-mono">
+                                                    Final Certification
                                                 </span>
                                             </div>
                                         </div>
 
-                                        {/* Corner Accents */}
-                                        {!isLocked && (
-                                            <>
-                                                <motion.div
-                                                    className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-emerald-400/50 rounded-tl group-hover:border-emerald-300 transition-colors duration-500"
-                                                    initial={{ opacity: 0, scale: 0 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.2 + index * 0.05 }}
-                                                />
-                                                <motion.div
-                                                    className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-emerald-400/50 rounded-br group-hover:border-emerald-300 transition-colors duration-500"
-                                                    initial={{ opacity: 0, scale: 0 }}
-                                                    animate={{ opacity: 1, scale: 1 }}
-                                                    transition={{ delay: 0.3 + index * 0.05 }}
-                                                />
-                                            </>
-                                        )}
-                                    </motion.button>
+                                        <div className="flex flex-col sm:flex-row p-4 gap-6">
+                                            {/* Left Icon Panel */}
+                                            <div className="flex items-center justify-center bg-teal-900/40 border border-teal-400/30 p-4 sm:w-40 relative overflow-hidden group/icon shrink-0">
+                                                <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 to-transparent group-hover/icon:opacity-100 transition-opacity" />
+                                                <Trophy className="h-20 w-20 text-emerald-200/80 relative z-10 transition-transform duration-500 group-hover/icon:scale-110 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]" />
+                                            </div>
+
+                                            {/* Info Section */}
+                                            <div className="flex-1 flex flex-col justify-center gap-2">
+                                                <div className="flex flex-col">
+                                                    <h4 className="text-2xl font-black text-emerald-400 uppercase tracking-tighter leading-none italic">
+                                                        {assessment.title}
+                                                    </h4>
+                                                    <p className="text-[10px] text-teal-300/60 font-medium uppercase tracking-[0.2em] mt-1">
+                                                        {moduleId.replace(/-/g, ' ')} Final Mastery Exam
+                                                    </p>
+                                                </div>
+
+                                                {/* Progress Line */}
+                                                <div className="relative h-1.5 w-48 bg-slate-800 rounded-full mt-2 overflow-hidden border border-slate-700">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        animate={{ width: "10%" }}
+                                                        className="absolute h-full left-0 top-0 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)] rounded-full transition-all duration-1000"
+                                                    />
+                                                </div>
+
+                                                <div className="mt-4 flex flex-col gap-1">
+                                                    <span className="text-3xl font-black text-white tracking-tighter flex items-center gap-2">
+                                                        {assessment.questions} QUESTIONS
+                                                    </span>
+                                                    <div className="flex gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                                        <span className="flex items-center gap-1.5">
+                                                            <div className="w-1 h-1 bg-emerald-400 rotate-45" />
+                                                            Module: {moduleId.replace(/-/g, ' ')}
+                                                        </span>
+                                                        <span className="flex items-center gap-1.5">
+                                                            <div className="w-1 h-1 bg-emerald-400 rotate-45" />
+                                                            Difficulty: Expert
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Bottom Action Bar */}
+                                        <div className="mt-auto flex flex-col sm:flex-row items-stretch border-t border-emerald-500/20">
+                                            <button
+                                                onClick={(e) => handleItemClick(e, assessment.id, isAssessmentLocked, () => openAssessmentModal?.(assessment))}
+                                                disabled={isAssessmentLocked}
+                                                className={cn(
+                                                    "relative flex items-center justify-between group/btn min-w-[220px] transition-all duration-300",
+                                                    isAssessmentLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                                )}
+                                            >
+                                                <div
+                                                    className={cn(
+                                                        "flex-1 flex items-center justify-center gap-4 px-8 py-4 font-black text-sm uppercase italic transition-all duration-300",
+                                                        isAssessmentLocked
+                                                            ? "bg-slate-800 text-slate-500"
+                                                            : "bg-emerald-600 text-white hover:bg-emerald-500"
+                                                    )}
+                                                    style={{
+                                                        clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)'
+                                                    }}
+                                                >
+                                                    {isAssessmentLocked ? "ENCRYPTED" : "START ASSESSMENT"}
+                                                    {isAssessmentLocked && <Lock className="h-4 w-4" />}
+                                                </div>
+
+                                                {!isAssessmentLocked && (
+                                                    <div
+                                                        className="w-12 h-full bg-emerald-400 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-emerald-300"
+                                                        style={{
+                                                            clipPath: 'polygon(0 0, 100% 50%, 0 100%, 30% 50%)',
+                                                            marginLeft: '-12px'
+                                                        }}
+                                                    >
+                                                        <ChevronRight className="h-5 w-5 text-slate-900 ml-[-4px]" />
+                                                    </div>
+                                                )}
+                                            </button>
+
+                                            <div className="flex-1 flex items-center justify-between px-6 py-2 w-full">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                                        Certification Credits
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex items-center gap-2 text-amber-400 group">
+                                                    <Zap className="h-5 w-5 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
+                                                    <div className="flex flex-col items-end">
+                                                        <span className="text-lg font-black leading-none">{assessment.xp} XP</span>
+                                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Mastery Reward</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Corners */}
+                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-emerald-400/40" />
+                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-emerald-400/40" />
+                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-emerald-400/40" />
+                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-emerald-400/40" />
+                                    </motion.div>
                                 );
                             })}
                         </motion.div>

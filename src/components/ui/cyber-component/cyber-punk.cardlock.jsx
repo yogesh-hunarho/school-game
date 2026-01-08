@@ -51,7 +51,7 @@ export function CyberpunkLock({
         <div
             onMouseEnter={() => setGlitch(true)}
             onMouseLeave={() => setGlitch(false)}
-            className={`relative group h-full p-4 transition-transform duration-500 bg-slate-950/95 ${glitch ? "animate-shake" : ""}`}
+            className={`relative group h-full p-4 transition-transform duration-500 backdrop-blur-xl bg-background/10  ${glitch ? "animate-shake" : ""}`}
         >
             <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
 

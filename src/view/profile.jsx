@@ -1,351 +1,300 @@
-import { useLMSStore } from "@/store/lms-store";
-import { modules } from "@/store/level-canvas-config";
-import { calculateLevel, getXPToNextLevel } from "@/components/Header";
-import { useSound } from "@/hook/useSound";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Star,
     Zap,
     Trophy,
-    BookOpen,
     Video,
-    Award,
     Target,
     ChevronLeft,
-    CheckCircle2,
-    Lock,
     User,
     Gamepad2,
-    ArrowRight,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
-import PuzzleGame from "@/components/PuzzleGame";
-import CyberpunkButton from "@/components/ui/cyber-button";
+    Sparkles,
+    Puzzle,
+    Coins,
+    Lock,
+    TrendingUp,
+    Award,
+    Play,
+    CheckCircle2,
+    Clock,
+    Medal,
+    Gift,
+    Crown,
+    Swords,
+    MapPin
+} from 'lucide-react';
+import HeaderCoin from '@/components/HeaderCoin';
+import CyberpunkProgressBar from '@/components/ui/cyber-component/cyberpunk-progress-bar';
+import DecryptedText from '@/components/DecryptedText';
 
-// Badge definitions
+// Mock data - replace with your actual store data
+const mockPlayer = {
+    name: "CyberNinja",
+    totalXP: 1250,
+    videosWatched: 24,
+    quizzesCompleted: 18,
+    perfectScores: 5,
+    currentStreak: 7,
+    longestStreak: 12,
+    missionsCompleted: 8,
+    totalMissions: 12
+};
+
+const calculateLevel = (xp) => Math.floor(xp / 200) + 1;
+
+const getXPToNextLevel = (xp) => {
+    const level = calculateLevel(xp);
+    const xpForCurrentLevel = (level - 1) * 200;
+    const xpForNextLevel = level * 200;
+    const current = xp - xpForCurrentLevel;
+    const required = xpForNextLevel - xpForCurrentLevel;
+    return {
+        current,
+        required,
+        percentage: (current / required) * 100
+    };
+};
+
+const rankTitles = [
+    { title: "Netrunner Rookie", desc: "Just getting started", color: "from-gray-400 to-gray-600" },
+    { title: "Street Kid Hacker", desc: "Learning the ropes", color: "from-blue-400 to-cyan-500" },
+    { title: "Chrome Agent", desc: "Making progress", color: "from-cyan-400 to-teal-500" },
+    { title: "Data Samurai", desc: "Skilled operative", color: "from-purple-400 to-pink-500" },
+    { title: "Fixer Elite", desc: "Master of missions", color: "from-yellow-400 to-orange-500" },
+    { title: "Night City Legend", desc: "Ultimate champion", color: "from-red-500 to-pink-600" },
+];
+
+const getRankInfo = (level) => {
+    const index = Math.min(Math.floor((level - 1) / 2), rankTitles.length - 1);
+    return rankTitles[index];
+};
+
 const badgeDefinitions = [
-    { id: "first-steps", name: "First Steps", icon: "🚀", description: "Complete your first video", requirement: (p) => p.totalXP > 0 },
-    { id: "quick-learner", name: "Quick Learner", icon: "⚡", description: "Complete 5 videos", requirement: (p) => Object.values(p.progress).reduce((acc, m) => acc + m.watchedVideos.length, 0) >= 5 },
-    { id: "quiz-master", name: "Quiz Master", icon: "🧠", description: "Complete 3 quizzes", requirement: (p) => Object.values(p.progress).reduce((acc, m) => acc + m.completedQuizzes.length, 0) >= 3 },
-    { id: "module-complete", name: "Module Champion", icon: "🏆", description: "Complete a full module", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 1 },
-    { id: "xp-hunter", name: "Coin Hunter", icon: "💎", description: "Earn 100 Coin", requirement: (p) => p.totalXP >= 100 },
-    { id: "xp-master", name: "Coin Master", icon: "👑", description: "Earn 500 Coin", requirement: (p) => p.totalXP >= 500 },
-    { id: "dedicated", name: "Dedicated Learner", icon: "📚", description: "Complete 2 modules", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 2 },
-    { id: "pro-gamer", name: "Pro Gamer", icon: "🎮", description: "Complete 5 modules", requirement: (p) => Object.values(p.moduleStatus).filter(s => s === "completed").length >= 5 },
+    { id: "first-mission", name: "First Steps", icon: "🚀", desc: "Complete your first mission video", earned: true },
+    { id: "quiz-ace", name: "Quiz Genius", icon: "🧠", desc: "Score 100% on 3 quizzes", earned: true },
+    { id: "coin-hunter", name: "Coin Collector", icon: "💰", desc: "Collect 200 Coins", earned: true },
+    { id: "puzzle-master", name: "Puzzle Pro", icon: "🧩", desc: "Collect 10 puzzle pieces", earned: true },
+    { id: "video-binge", name: "Mission Master", icon: "🎬", desc: "Watch 20 mission videos", earned: false },
+    { id: "streak", name: "On Fire!", icon: "🔥", desc: "7 day streak", earned: true },
+    { id: "perfectionist", name: "Perfectionist", icon: "⭐", desc: "5 perfect quiz scores", earned: true },
+    { id: "legend", name: "Legend", icon: "👑", desc: "Reach Level 10", earned: false },
 ];
 
 export default function ProfilePage() {
-    const { player, getModuleProgress } = useLMSStore();
-    const { playClick } = useSound();
+    const [activeTab, setActiveTab] = useState('overview');
+    const player = mockPlayer;
 
     const level = calculateLevel(player.totalXP);
     const xpProgress = getXPToNextLevel(player.totalXP);
+    const rankInfo = getRankInfo(level);
 
-    // Calculate stats
-    const totalVideosWatched = Object.values(player.progress).reduce(
-        (acc, m) => acc + m.watchedVideos.length,
-        0
-    );
-    const totalQuizzesCompleted = Object.values(player.progress).reduce(
-        (acc, m) => acc + m.completedQuizzes.length,
-        0
-    );
-    const completedModules = Object.values(player.moduleStatus).filter(
-        (s) => s === "completed"
-    ).length;
-
-    // Get earned badges
-    const earnedBadges = badgeDefinitions.filter((b) => b.requirement(player));
+    const earnedBadges = badgeDefinitions.filter(b => b.earned);
+    const lockedBadges = badgeDefinitions.filter(b => !b.earned);
+    const puzzlePiecesCollected = 7;
+    const totalPuzzlePieces = 12;
 
     return (
-        <div className="min-h-full p-4 md:p-6 lg:p-8 relative mt-20">
-            {/* Background scanlines */}
-            <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.015] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
-
-            <div className="max-w-5xl mx-auto space-y-6 relative z-10">
+        <div className="min-h-screen py-20 text-white relative overflow-hidden ">
+            <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
                 {/* Back Button */}
-                <Link
-                    to="/"
-                    onClick={playClick}
-                    className="inline-flex items-center gap-2 text-[11px] text-cyan-400 hover:text-yellow-400 transition-colors group uppercase tracking-widest font-bold"
+                <motion.button
+                    whileHover={{ x: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 text-sm font-bold uppercase tracking-wider mb-6 group"
                 >
-                    <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                    RETURN TO MISSION
-                </Link>
+                    <ChevronLeft className="w-5 h-5" />
+                    <span>Back to Mission</span>
+                </motion.button>
 
-                {/* Profile Header Card */}
+                {/* Hero Profile Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="relative bg-slate-950/95"
+                    className="relative mb-8"
                 >
-                    {/* Main border */}
-                    <div className="absolute inset-0 border border-cyan-400/30" />
+                    <div className="absolute inset-0 bg-linear-to-r from-cyan-500/20 to-purple-500/20 blur-xl" />
+                    <div className="relative bg-linear-to-br from-gray-900/95 to-gray-950/95 backdrop-blur-xl border-2 border-cyan-400/30 p-6 sm:p-8 overflow-hidden">
+                        {/* Corner Accents */}
+                        <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-cyan-400/50 rounded-tl" />
+                        <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-purple-400/50 rounded-br" />
 
-                    {/* Corner brackets */}
-                    <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-cyan-400" />
-                    <div className="absolute top-0 left-6 w-4 h-[2px] bg-cyan-400" />
-                    <div className="absolute top-6 left-0 w-[2px] h-4 bg-cyan-400" />
+                        <div className="flex flex-col lg:flex-row items-center gap-8">
+                            {/* Avatar Section */}
+                            <div className="relative shrink-0">
+                                <div className="relative w-36 h-36 sm:w-40 sm:h-40">
+                                    {/* Rotating Ring */}
+                                    <motion.div
+                                        animate={{ rotate: 360 }}
+                                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                                        className="absolute inset-0 rounded-full border-4 border-transparent border-t-cyan-400 border-r-purple-400"
+                                    />
 
-                    <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-400" />
-                    <div className="absolute top-0 right-6 w-4 h-[2px] bg-cyan-400" />
-                    <div className="absolute top-6 right-0 w-[2px] h-4 bg-cyan-400" />
+                                    {/* Avatar */}
+                                    <div className="absolute inset-2 rounded-full bg-linear-to-br from-cyan-500/30 to-purple-500/30 border-4 border-gray-800 shadow-2xl shadow-cyan-400/30 flex items-center justify-center overflow-hidden">
+                                        <User className="w-16 h-16 text-cyan-300" />
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+                                    </div>
 
-                    <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-400" />
-                    <div className="absolute bottom-0 left-6 w-4 h-[2px] bg-cyan-400" />
-                    <div className="absolute bottom-6 left-0 w-[2px] h-4 bg-cyan-400" />
-
-                    <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-400" />
-                    <div className="absolute bottom-0 right-6 w-4 h-[2px] bg-cyan-400" />
-                    <div className="absolute bottom-6 right-0 w-[2px] h-4 bg-cyan-400" />
-
-                    <div className="relative z-10 p-6 md:p-8">
-                        <div className="flex flex-col md:flex-row items-center gap-6">
-                            {/* Avatar */}
-                            <div className="relative">
-                                <div className="relative w-24 h-24 bg-slate-900 border border-cyan-400/50 flex items-center justify-center">
-                                    <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-400" />
-                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-400" />
-                                    <User className="w-12 h-12 text-cyan-400/50" />
-                                </div>
-                                {/* Level badge */}
-                                <div className="absolute -bottom-2 -right-2 px-3 py-1 bg-yellow-400 text-slate-900 text-xs font-bold uppercase tracking-wider">
-                                    MISSION {level}
+                                    {/* Level Badge */}
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.3, type: "spring" }}
+                                        className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-2 bg-linear-to-r from-yellow-400 to-orange-500 text-black font-black text-sm rounded-full shadow-lg border-2 border-yellow-300"
+                                    >
+                                        LVL {level}
+                                    </motion.div>
                                 </div>
                             </div>
 
-                            {/* Info */}
-                            <div className="flex-1 text-center md:text-left">
-                                <h1 className="text-2xl md:text-3xl font-bold text-cyan-50 mb-1 uppercase tracking-wide">
-                                    {player.name}
-                                </h1>
-                                <p className="text-[11px] text-slate-500 mb-4 uppercase tracking-widest font-mono">
-                                    CYBER LEARNER • ACTIVE OPERATIVE
-                                </p>
-
-                                {/* Coin Progress */}
-                                <div className="flex justify-between text-[11px] font-mono uppercase tracking-wider">
-                                    <span className="text-yellow-400 font-bold flex items-center gap-1">
-                                        <Star className="w-3.5 h-3.5 fill-yellow-400" />
-                                        {player.totalXP.toLocaleString()} Coin
-                                    </span>
-                                    <span className="text-slate-500">
-                                        {Math.round(xpProgress.required - xpProgress.current)} Coin TO MISSION {level + 1}
-                                    </span>
+                            {/* Player Info */}
+                            <div className="flex-1 w-full text-center lg:text-left space-y-6">
+                                <div>
+                                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                                        <DecryptedText
+                                            text={player.name}
+                                            animateOn="view"
+                                            revealDirection="center"
+                                        />
+                                    </h2>
+                                    <motion.div
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.1 }}
+                                        className="flex items-center gap-3 mt-4 justify-center lg:justify-start flex-wrap"
+                                    >
+                                        <div className={`px-4 py-2 bg-linear-to-r ${rankInfo.color} font-bold text-sm text-white shadow-lg`}>
+                                            {rankInfo.title}
+                                        </div>
+                                        <span className="text-gray-400 text-sm">{rankInfo.desc}</span>
+                                    </motion.div>
                                 </div>
-                                <CyberpunkProgressBar
-                                    progress={xpProgress.percentage}
-                                    color={Math.min(xpProgress.percentage, 100) === 100 ? "green" : xpProgress.percentage > 0 ? "cyan" : "orange"}
-                                    hideLabel={true}
-                                />
+
+                                {/* Stats Row */}
+                                <div className="flex flex-wrap items-center gap-6 justify-center lg:justify-start">
+                                    {/* Coins */}
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        className="flex items-center gap-3 bg-linear-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 px-5 py-3"
+                                    >
+                                        <HeaderCoin />
+                                        <div>
+                                            <div className="text-3xl font-black text-yellow-400">
+                                                {player.totalXP.toLocaleString()}
+                                            </div>
+                                            <div className="text-xs text-yellow-300/70 uppercase font-bold">Coins</div>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Missions Progress */}
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        className="flex items-center gap-3 bg-linear-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 px-5 py-3"
+                                    >
+                                        <MapPin className="w-8 h-8 text-cyan-400" />
+                                        <div>
+                                            <div className="text-2xl font-black text-cyan-400">
+                                                {player.missionsCompleted}/{player.totalMissions}
+                                            </div>
+                                            <div className="text-xs text-cyan-300/70 uppercase font-bold">Missions</div>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* Puzzle Progress */}
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        className="flex items-center gap-3 bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 px-5 py-3"
+                                    >
+                                        <Puzzle className="w-8 h-8 text-purple-400" />
+                                        <div>
+                                            <div className="text-2xl font-black text-purple-400">
+                                                {puzzlePiecesCollected}/{totalPuzzlePieces}
+                                            </div>
+                                            <div className="text-xs text-purple-300/70 uppercase font-bold">Pieces</div>
+                                        </div>
+                                    </motion.div>
+                                </div>
+
+                                {/* Level Progress */}
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between text-sm mb-0">
+                                        <span className="text-gray-400 font-medium">
+                                            Progress to Level {level + 1}
+                                        </span>
+                                        <div className="text-xs text-right text-mono">
+                                            {Math.round(xpProgress.required - xpProgress.current)} coins to next level
+                                        </div>
+                                    </div>
+                                    <CyberpunkProgressBar hideLabel progress={xpProgress.percentage} />
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    {/* Bottom accent */}
-                    <div className="absolute bottom-0 left-8 right-8 h-0.5 bg-cyan-400/30" />
                 </motion.div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     {[
-                        { icon: Star, label: "TOTAL Coin", value: player.totalXP, color: "yellow" },
-                        { icon: Zap, label: "LEVEL", value: level, color: "cyan" },
-                        { icon: Video, label: "STREAMS", value: totalVideosWatched, color: "cyan" },
-                        { icon: BookOpen, label: "TESTS", value: totalQuizzesCompleted, color: "emerald" },
+                        { icon: Video, label: "Videos Watched", value: player.videosWatched, color: "cyan", gradient: "from-cyan-500 to-blue-500" },
+                        { icon: Target, label: "Quizzes Aced", value: player.quizzesCompleted, color: "pink", gradient: "from-pink-500 to-purple-500" },
+                        { icon: Award, label: "Perfect Scores", value: player.perfectScores, color: "yellow", gradient: "from-yellow-500 to-orange-500" },
+                        { icon: Trophy, label: "Badges Earned", value: earnedBadges.length, color: "purple", gradient: "from-purple-500 to-indigo-500" },
                     ].map((stat, i) => (
                         <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="relative p-4 bg-slate-950/95 border border-cyan-400/20"
+                            transition={{ delay: 0.1 * i }}
+                            whileHover={{ y: -5 }}
+                            className="relative group"
                         >
-                            {/* Corner accents */}
-                            <div className={cn(
-                                "absolute top-0 left-0 w-2 h-2 border-t border-l",
-                                stat.color === "yellow" && "border-yellow-400",
-                                stat.color === "cyan" && "border-cyan-400",
-                                stat.color === "emerald" && "border-emerald-400"
-                            )} />
-                            <div className={cn(
-                                "absolute bottom-0 right-0 w-2 h-2 border-b border-r",
-                                stat.color === "yellow" && "border-yellow-400",
-                                stat.color === "cyan" && "border-cyan-400",
-                                stat.color === "emerald" && "border-emerald-400"
-                            )} />
-
-                            <stat.icon className={cn(
-                                "w-5 h-5 mb-2",
-                                stat.color === "yellow" && "text-yellow-400",
-                                stat.color === "cyan" && "text-cyan-400",
-                                stat.color === "emerald" && "text-emerald-400"
-                            )} />
-                            <div className="text-2xl font-bold text-cyan-50">{stat.value}</div>
-                            <div className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">{stat.label}</div>
+                            <div className={`absolute inset-0 bg-linear-to-br ${stat.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity`} />
+                            <div className="relative bg-linear-to-br from-gray-900/90 to-gray-950/90 backdrop-blur border border-gray-700/50 group-hover:border-gray-600 p-6 text-center transition-all">
+                                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full bg-linear-to-br ${stat.gradient} mb-4 shadow-lg`}>
+                                    <stat.icon className="w-7 h-7 text-white" />
+                                </div>
+                                <div className="text-3xl sm:text-4xl font-black text-white mb-2">{stat.value}</div>
+                                <div className="text-xs uppercase tracking-wider text-gray-400 font-bold">{stat.label}</div>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
 
-                {/* <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="relative bg-slate-950/95 border border-cyan-400/20"
-                >
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-400" />
-                    <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-cyan-400" />
-                    <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-cyan-400" />
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-400" />
 
-                    <div className="p-6">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
-                            <div>
-                                <h2 className="text-sm font-bold text-cyan-400 mb-6 flex items-center gap-2 uppercase tracking-widest">
-                                    <Target className="w-4 h-4 animate-pulse" />
-                                    MODULE PROGRESSION STATUS
-                                </h2>
-                                <div className="flex items-center gap-6">
-                                    <div className="relative group">
-                                        <div className="absolute -inset-2 bg-yellow-400/20 blur-md rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        <div className="relative text-5xl font-black text-yellow-400 leading-none">
-                                            {completedModules}
-                                            <span className="text-xs text-slate-500 font-sans absolute -top-1 -right-4">/{modules.length}</span>
-                                        </div>
-                                    </div>
-                                    <div className="h-10 w-px bg-slate-800 hidden md:block" />
-                                    <div>
-                                        <div className="text-[10px] text-slate-500 uppercase tracking-[0.2em] mb-1 font-mono">
-                                            SYNERGY_COEFFICIENT
-                                        </div>
-                                        <div className="text-xl font-mono text-cyan-400">
-                                            {Math.round((completedModules / modules.length) * 100)}%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex-1 max-w-md">
-                                <div className="flex justify-between items-end mb-2">
-                                    <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono">SYSTEM_COMPLETION</span>
-                                    <span className="text-[10px] text-slate-500 font-mono">PHASE_0{completedModules + 1}</span>
-                                </div>
-                                <CyberpunkProgressBar
-                                    progress={(completedModules / modules.length) * 100}
-                                    color={Math.min((completedModules / modules.length) * 100, 100) === 100 ? "green" : (completedModules / modules.length) * 100 > 0 ? "cyan" : "orange"}
-                                    hideLabel={true}
-                                />
+                {/* CTA Buttons */}
+                {/* <div className="grid sm:grid-cols-2 gap-4">
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="relative group overflow-hidden p-1"
+                    >
+                        <div className="absolute inset-0 bg-linear-to-r from-cyan-500 via-blue-500 to-purple-500 animate-gradient" />
+                        <div className="relative bg-gray-900 px-8 py-6 flex items-center justify-center gap-3">
+                            <Puzzle className="w-8 h-8 text-cyan-400 group-hover:rotate-12 transition-transform" />
+                            <div className="text-left">
+                                <div className="text-xl font-black text-white">Complete Your Puzzle</div>
+                                <div className="text-sm text-gray-400">Collect all pieces for rewards!</div>
                             </div>
                         </div>
+                    </motion.button>
 
-                        <div className="relative">
-                            <motion.div
-                                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3"
-                                initial="hidden"
-                                animate="visible"
-                                variants={{
-                                    visible: {
-                                        transition: {
-                                            staggerChildren: 0.05
-                                        }
-                                    }
-                                }}
-                            >
-                                {modules.map((module) => {
-                                    const status = player.moduleStatus[module.id] || "locked";
-                                    const progress = getModuleProgress(module.id);
-                                    const isCompleted = status === "completed";
-                                    const isLocked = status === "locked";
-
-                                    return (
-                                        <motion.div
-                                            key={module.id}
-                                            variants={{
-                                                hidden: { opacity: 0, x: -10 },
-                                                visible: { opacity: 1, x: 0 }
-                                            }}
-                                            whileHover={{ scale: isLocked ? 1 : 1.02, x: isLocked ? 0 : 4 }}
-                                            onClick={() => !isLocked && playClick()}
-                                            className={cn(
-                                                "group relative p-4 flex items-center gap-4 transition-all duration-300",
-                                                isCompleted && "bg-emerald-400/5 border border-emerald-400/30",
-                                                isLocked && "bg-slate-900/40 border border-slate-800 opacity-60",
-                                                !isCompleted && !isLocked && "bg-cyan-400/5 border border-cyan-400/30 hover:bg-cyan-400/10"
-                                            )}
-                                        >
-                                            <div className={cn(
-                                                "absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 opacity-0 group-hover:opacity-100 transition-opacity",
-                                                isCompleted ? "border-emerald-400" : "border-cyan-400"
-                                            )} />
-                                            <div className={cn(
-                                                "absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 opacity-0 group-hover:opacity-100 transition-opacity",
-                                                isCompleted ? "border-emerald-400" : "border-cyan-400"
-                                            )} />
-
-                                            <div className={cn(
-                                                "relative w-10 h-10 flex items-center justify-center text-xl transition-all duration-300",
-                                                isCompleted && "bg-emerald-400/20 text-emerald-400",
-                                                isLocked && "bg-slate-800 text-slate-600",
-                                                !isCompleted && !isLocked && "bg-cyan-400/20 text-cyan-400 group-hover:scale-110"
-                                            )}>
-                                                {isLocked ? <Lock className="w-4 h-4" /> : module.icon}
-                                                {!isLocked && !isCompleted && (
-                                                    <div className="absolute -inset-1 border border-cyan-400/30 animate-pulse" />
-                                                )}
-                                            </div>
-
-                                            <div className="flex-1 min-w-0">
-                                                <div className={cn(
-                                                    "text-[11px] font-bold truncate uppercase tracking-wider mb-1",
-                                                    isLocked ? "text-slate-500" : "text-cyan-50"
-                                                )}>
-                                                    {module.name}
-                                                </div>
-
-                                                <div className="space-y-1">
-                                                    <div className="h-1 bg-slate-800/50 rounded-full overflow-hidden">
-                                                        <motion.div
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: `${progress}%` }}
-                                                            className={cn(
-                                                                "h-full relative",
-                                                                isCompleted ? "bg-emerald-400" : "bg-cyan-400"
-                                                            )}
-                                                        >
-                                                            {!isLocked && !isCompleted && (
-                                                                <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.4)_50%,transparent_100%)] animate-[scan_2s_linear_infinite] w-8" />
-                                                            )}
-                                                        </motion.div>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-[9px] text-slate-500 font-mono uppercase tracking-tighter">
-                                                            {isLocked ? "ACCESS_RESTRICTED" : isCompleted ? "VERIFIED" : "IN_PROGRESS"}
-                                                        </span>
-                                                        <span className="text-[9px] text-slate-400 font-mono">{progress}%</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {isCompleted && (
-                                                <motion.div
-                                                    initial={{ scale: 0 }}
-                                                    animate={{ scale: 1 }}
-                                                    className="bg-emerald-400/20 p-1 rounded-full"
-                                                >
-                                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                                                </motion.div>
-                                            )}
-                                        </motion.div>
-                                    );
-                                })}
-                            </motion.div>
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="relative group overflow-hidden p-1"
+                    >
+                        <div className="absolute inset-0 bg-linear-to-r from-yellow-500 via-orange-500 to-red-500 animate-gradient" />
+                        <div className="relative bg-gray-900 px-8 py-6 flex items-center justify-center gap-3">
+                            <Gamepad2 className="w-8 h-8 text-yellow-400 group-hover:rotate-12 transition-transform" />
+                            <div className="text-left">
+                                <div className="text-xl font-black text-white">Spin to Win!</div>
+                                <div className="text-sm text-gray-400">Use your coins for big rewards</div>
+                            </div>
+                            <Gift className="w-6 h-6 text-pink-400 animate-bounce" />
                         </div>
-                    </div>
-                </motion.div> */}
-
-
+                    </motion.button>
+                </div> */}
             </div>
         </div>
     );
