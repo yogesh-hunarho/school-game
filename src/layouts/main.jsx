@@ -84,10 +84,10 @@ export default function MainLayout() {
 
                     <div className="space-y-2">
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-black uppercase leading-none">
-                            <span className="text-foreground">Ready to be a </span>
+                            <span className="text-foreground">Ready to be </span>
                             <RotatingText
-                                texts={['CHAMPION?', 'EXPERT?', 'SKILLED?', 'WIZARD?']}
-                                mainClassName="text-secondary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
+                                texts={['a DESIGN THINKER?', 'a PROBLEM SOLVER?', 'a CREATIVE MIND?', 'a FUTURE READY?', "an AI EXPLORER?", "a Young Financial Thinker?",]}
+                                mainClassName="text-3xl text-secondary overflow-hidden py-0.5 sm:py-1 md:py-2 justify-start rounded-lg"
                                 staggerFrom={"first"}
                                 initial={{ y: "100%" }}
                                 animate={{ y: 0 }}
@@ -152,13 +152,14 @@ export default function MainLayout() {
                         {/* Mission description */}
                         <div className="text-sm md:text-lg text-white font-mono leading-relaxed">
                             <TypeWriter
-                                text="Hey Champion! 👋 Get ready to learn awesome stuff about ROBOTS! Complete missions, earn coins, and become a tech superhero! 🦸‍♂️"
+                                text="Hey Innovator! 🚀 Dive into exciting projects like Robots, Tetris, and Aqua Bridges! Complete missions, earn coins, and become a tech superhero! 🦸‍♂️ Unlock new challenges and show off your skills to the world! 🌟"
                                 delay={30}
                             />
+
                         </div>
 
                         {/* Stats grid */}
-                        <div className="grid grid-cols-4 gap-3 mb-0">
+                        <div className="grid grid-cols-3 gap-3 mb-0">
                             <motion.div
                                 className="text-center p-2 bg-green-400/20 backdrop-blur-xl rounded-lg border border-green-500/30"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
@@ -183,21 +184,21 @@ export default function MainLayout() {
                                     Level 🎯
                                 </div> */}
 
-                            <Link to="/spin-and-win">
+                            {/* <Link to="/spin-and-win">
                                 <motion.div
-                                    className="text-center p-2 bg-pink-500/10 rounded-lg border border-pink-500/30 cursor-pointer h-full flex flex-col justify-center"
-                                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(236,72,153,0.2)' }}
+                                    className="text-center p-2 bg-pink-400/20 backdrop-blur-xl rounded-lg border border-pink-500/30 cursor-pointer h-full flex flex-col justify-center"
+                                    whileHover={{ scale: 1.05, }}
                                     whileTap={{ scale: 0.95 }}
                                 >
-                                    <div className="flex items-center justify-center gap-1 text-pink-400">
-                                        <Sparkles className="w-4 h-4 animate-spin-slow" />
+                                    <div className="flex items-center justify-center gap-1 text-pink-400 group">
+                                        <Sparkles className="w-4 h-4 animate-spin-slow hover:rotate-360" />
                                         <span className="font-bold text-base sm:text-lg">SPIN</span>
                                     </div>
                                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
                                         WIN PRIZES!
                                     </div>
                                 </motion.div>
-                            </Link>
+                            </Link> */}
                         </div>
                         <BorderBeam duration={8} size={100} />
                     </motion.div>

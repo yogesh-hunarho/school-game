@@ -88,7 +88,7 @@ export default function SpinAndWin() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0f0f13] text-white overflow-hidden relative font-sans flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen text-white overflow-hidden relative font-sans flex flex-col items-center justify-center p-4">
 
             {/* Background Effects */}
             <div className="absolute inset-0 z-0 opacity-30">
