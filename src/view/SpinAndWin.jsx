@@ -88,17 +88,12 @@ export default function SpinAndWin() {
     };
 
     return (
-        <div className="min-h-screen text-white overflow-hidden relative font-sans flex flex-col items-center justify-center p-4">
+        <div className="pt-5 max-w-7xl min-h-screen  overflow-hidden pb-20 mx-auto mt-20">
 
-            {/* Background Effects */}
-            <div className="absolute inset-0 z-0 opacity-30">
-                <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(18,18,23,0)_2px,transparent_2px),linear-gradient(90deg,rgba(18,18,23,0)_2px,transparent_2px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" style={{ backgroundImage: 'radial-gradient(#1f2937 1px, transparent 1px)' }} />
-            </div>
+
 
             {/* Content */}
-            <div className="relative z-10 flex flex-col items-center w-full max-w-4xl">
+            <div className="relative z-10 flex flex-col items-center w-full max-w-7xl">
 
                 {/* Header */}
                 <header className="flex w-full items-center justify-between mb-8">
@@ -120,7 +115,7 @@ export default function SpinAndWin() {
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="flex flex-col md:flex-row items-center gap-12 w-full"
+                    className="flex flex-col md:flex-row items-center gap-10 justify-center w-full border"
                 >
                     {/* Wheel Section */}
                     <div className="relative group">

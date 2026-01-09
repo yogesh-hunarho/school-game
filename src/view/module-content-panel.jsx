@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck, Clock, Sparkles } from "lucide-react";
+import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck, Clock, Sparkles, ShieldQuestionMark, Trophy } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
 import useSound from "@/hook/useSound";
@@ -11,6 +11,7 @@ import DecryptedText from "@/components/DecryptedText";
 import HeaderCoin from "@/components/HeaderCoin";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import CyberpunkButton from "@/components/ui/cyber-button";
 
 const cardVariants = {
     hidden: {
@@ -57,6 +58,7 @@ const borderGradientVariants = {
 export const ModuleContentPanel = () => {
     const [shakingId, setShakingId] = useState(null);
     const [clickedId, setClickedId] = useState(null);
+    const [glitch, setGlitch] = useState(false)
     const {
         player,
         getCurrentModuleContent,
@@ -192,7 +194,7 @@ export const ModuleContentPanel = () => {
                             ) : (
                                 <>
                                     <Sparkles className="h-3 w-3 text-cyan-400" />
-                                    SYNC: {progress}%
+                                    Progress: {progress}%
                                 </>
                             )}
                         </p>
@@ -323,15 +325,16 @@ export const ModuleContentPanel = () => {
                                 let badgeText = "Locked";
 
                                 if (isWatched) {
-                                    color = "red-500";
+                                    color = "emerald-500";
                                     badgeText = "Finished";
                                 } else if (isActive) {
-                                    color = "red-500";
+                                    color = "green-600";
                                     badgeText = "Currently Playing";
                                 } else if (isVideoLocked) {
                                     color = "red-500";
                                     badgeText = "Pending";
                                 }
+
 
                                 return (
                                     <motion.button
@@ -361,6 +364,7 @@ export const ModuleContentPanel = () => {
                                                 className={cn(
                                                     "w-full h-full object-cover transition-all duration-700",
                                                     isVideoLocked && "grayscale",
+                                                    isActive && "animate-pulse",
                                                     !isVideoLocked && "group-hover:scale-110"
                                                 )}
                                             />
@@ -548,18 +552,18 @@ export const ModuleContentPanel = () => {
                 {/* Quizzes Section */}
                 {content.quizzes.length > 0 && (
                     <motion.section
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="mb-12"
+                        className={"mb-12"}
                     >
-                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-amber-300">
-                            <div className="p-3 bg-amber-400/10 border border-amber-400/30 ">
-                                <BookCheck className="h-5 w-5" />
+                        <h3 className={cn("mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-lime-300")}>
+                            <div className="p-3 bg-lime-400/10 border border-lime-400/30 ">
+                                <ShieldQuestionMark className="h-5 w-5" />
                             </div>
-                            <span className="italic">
-                                Academy Challenges ({content.quizzes.length})
-                            </span>
+                            <div className="italic text-lime-300">
+                                <TypeWriter
+                                    text={`Test Your Knowledge, Collect Your Coins (${content.quizzes.length})`}
+                                    delay={30}
+                                />
+                            </div>
                         </h3>
 
                         <motion.div
@@ -568,7 +572,7 @@ export const ModuleContentPanel = () => {
                             }}
                             initial="hidden"
                             animate="visible"
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6"
+                            className={cn("grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6", glitch && "animate-glitch")}
                         >
                             {content.quizzes.map((quiz, index) => {
                                 const isCompleted = isQuizCompleted(moduleId, quiz.id);
@@ -586,120 +590,115 @@ export const ModuleContentPanel = () => {
                                     <motion.div
                                         key={quiz.id}
                                         variants={cardVariants}
+                                        onMouseEnter={() => setGlitch(true)}
+                                        onMouseLeave={() => setGlitch(false)}
                                         className={cn(
-                                            "relative flex flex-col w-full group overflow-hidden border border-cyan-500/30 bg-slate-900/60 transition-all duration-500",
+                                            "relative flex flex-col w-full group overflow-hidden border border-cyan-500/20 bg-slate-900/40 backdrop-blur-md transition-all duration-500",
                                             shakingId === quiz.id && "animate-shake",
-                                            isClicked && "scale-[0.99]",
-                                            isQuizLocked && "opacity-60 grayscale-[0.5]"
+                                            isClicked && "scale-[0.98]",
+                                            isQuizLocked && "opacity-60 grayscale-[0.8]",
+                                            !isQuizLocked && "hover:border-cyan-400/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.1)]"
                                         )}
                                     >
-                                        <div className="flex flex-col sm:flex-row p-4 gap-6">
-                                            {/* Left Icon Panel */}
-                                            <div className="flex items-center justify-center bg-indigo-900/40 border border-indigo-400/30 p-4 min-h-[120px] sm:min-h-auto sm:w-40 relative overflow-hidden group/icon shrink-0">
-                                                <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 to-transparent group-hover/icon:opacity-100 transition-opacity" />
-                                                <img
-                                                    src="/assets/images/quiz.png"
+                                        {/* Image Header Area */}
+                                        <div className="relative aspect-video w-full overflow-hidden bg-slate-950/50">
+                                            {/* Top Gradient Overlay */}
+                                            <div className="absolute inset-0 bg-linear-to-b from-slate-950/60 via-transparent to-transparent z-10" />
+
+                                            {/* Quiz Icon/Character */}
+                                            <div className="absolute inset-0 w-full">
+                                                <motion.img
+                                                    src={`/assets/icon/question-${index + 1}.png`}
                                                     alt=""
-                                                    className="z-10 w-full h-full object-contain transition-all duration-500 group-hover/icon:scale-110 group-hover/icon:rotate-3 drop-shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                                                    className="z-10 h-72 w-full transition-all duration-700 animate-pulse"
+
                                                 />
                                             </div>
 
-                                            {/* Info Section */}
-                                            <div className="flex-1 flex flex-col justify-center gap-2">
-                                                <div className="flex flex-col">
-                                                    <h4 className="text-xl font-black text-amber-400 uppercase tracking-wider leading-none italic">
-                                                        {quiz.title}
-                                                    </h4>
-                                                    <p className="text-[10px] text-cyan-300/60 font-medium uppercase tracking-widest mt-1">
-                                                        {moduleId.replace(/-/g, ' ')} Specialist Assessment
-                                                    </p>
-                                                </div>
+                                            {/* Grid Background Effect */}
+                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.05)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
 
-                                                <div className="mt-4 flex flex-col gap-1">
-                                                    <span className="text-2xl font-normal font-mono text-white tracking-wider flex items-center gap-2">
-                                                        {quiz.questions} QUESTIONS
-                                                    </span>
-                                                    <div className="flex gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-normal">
-                                                        <span className="flex items-center gap-1.5">
-                                                            <div className="w-1 h-1 bg-cyan-400 rotate-45" />
-                                                            Topic: {moduleId.replace(/-/g, ' ')}
-                                                        </span>
-                                                        <span className="flex items-center gap-1.5">
-                                                            <div className="w-1 h-1 bg-cyan-400 rotate-45" />
-                                                            Duration: {quiz.questions * 2} Minutes
-                                                        </span>
-                                                    </div>
+                                            {/* Status Badge */}
+                                            <div className="absolute top-3 left-3 z-20">
+                                                <div className={cn(
+                                                    "px-3 py-1 text-[10px] font-bold uppercase tracking-widest border backdrop-blur-md",
+                                                    isCompleted
+                                                        ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                                                        : isQuizLocked
+                                                            ? "border-slate-500/50 bg-slate-500/10 text-slate-400"
+                                                            : "border-cyan-500/50 bg-cyan-500/10 text-cyan-400"
+                                                )}>
+                                                    {isCompleted ? "Completed" : isQuizLocked ? "Locked" : "Available"}
+                                                </div>
+                                            </div>
+
+                                            {/* Questions Count Badge */}
+                                            <div className="absolute bottom-3 right-3 z-20">
+                                                <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border rounded-md border-emerald-500/50 text-[10px] font-mono text-emerald-400">
+                                                    <HeaderCoin />
+                                                    <span className="text-xl font-black leading-none">{quiz.xp}</span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Bottom Action Bar */}
-                                        <div className="mt-auto flex flex-col sm:flex-row items-stretch border-t border-cyan-500/10">
-                                            <button
+                                        {/* Info Row (Title & Coins) */}
+                                        <div className="p-5 flex items-center justify-between border-t border-cyan-500/10">
+                                            <div className="flex-1 pr-4">
+                                                <h4 className="text-lg font-black text-white uppercase tracking-wider leading-tight italic truncate">
+                                                    {quiz.title}
+                                                </h4>
+                                            </div>
+                                        </div>
+
+                                        {/* Action Button Section */}
+                                        <div className="mt-auto p-4 pt-0">
+                                            <motion.button
                                                 onClick={(e) => handleItemClick(e, quiz.id, isQuizLocked, () => openQuizModal(quiz))}
                                                 disabled={isQuizLocked}
+                                                whileHover={!isQuizLocked ? { scale: 1.02 } : {}}
+                                                whileTap={!isQuizLocked ? { scale: 0.98 } : {}}
                                                 className={cn(
-                                                    "relative flex items-center justify-between group/btn min-w-[200px] transition-all duration-300",
+                                                    "w-full relative group/btn h-12 overflow-hidden transition-all duration-300",
                                                     isQuizLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
                                                 )}
                                             >
-                                                <div
-                                                    className={cn(
-                                                        "flex-1 flex items-center justify-center gap-4 px-8 py-4 font-black text-sm uppercase italic transition-all duration-300",
-                                                        isQuizLocked
-                                                            ? "bg-slate-800 text-slate-500"
-                                                            : isCompleted
-                                                                ? "bg-indigo-900/80 text-indigo-300 hover:bg-indigo-800"
-                                                                : "bg-indigo-600 text-white hover:bg-indigo-500"
-                                                    )}
-                                                    style={{
-                                                        clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)'
-                                                    }}
+                                                <CyberpunkButton
+                                                    variant={isQuizLocked ? "danger" : "secondary"}
+                                                    className="w-full text-center relative group/btn overflow-hidden"
                                                 >
-                                                    {isCompleted ? "RETAKE TEST" : isQuizLocked ? "LINK RESTRICTED" : "START TEST"}
-                                                    {isQuizLocked && <Lock className="h-4 w-4" />}
-                                                </div>
-
-                                                {!isQuizLocked && (
-                                                    <div
-                                                        className="w-12 h-full bg-cyan-400 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-cyan-300"
-                                                        style={{
-                                                            clipPath: 'polygon(0 0, 100% 50%, 0 100%, 30% 50%)',
-                                                            marginLeft: '-12px'
-                                                        }}
-                                                    >
-                                                        <ChevronRight className="h-5 w-5 text-slate-900 ml-[-4px]" />
-                                                    </div>
-                                                )}
-                                            </button>
-
-                                            <div className="flex-1 flex items-center justify-between px-6 py-2 w-full">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                                        Points Reward
+                                                    <span className={cn(
+                                                        "text-xs font-black font-mono",
+                                                        isQuizLocked ? "text-slate-500" : "text-white"
+                                                    )}>
+                                                        {isCompleted ? "RETAKE QUIZ" : isQuizLocked ? "ACCESS DENIED" : "START QUIZ"}
                                                     </span>
-                                                </div>
+                                                    {!isQuizLocked && (
+                                                        <ChevronRight className={cn(
+                                                            "h-4 w-4 transition-transform group-hover/btn:translate-x-1",
+                                                            isCompleted ? "text-indigo-400" : "text-cyan-400"
+                                                        )} />
+                                                    )}
+                                                    {isQuizLocked && <Lock className="h-3.5 w-3.5 text-slate-600" />}
+                                                </CyberpunkButton>
 
-                                                <div className="flex items-center gap-2 text-amber-400 group">
-                                                    <HeaderCoin />
-                                                    <div className="flex flex-col items-start">
-                                                        <span className="text-lg font-black leading-none">{quiz.xp}</span>
-                                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Reward</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                {/* Hover Glow */}
+                                                {!isQuizLocked && (
+                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer" />
+                                                )}
+                                            </motion.button>
                                         </div>
 
-                                        {/* Background Visual Accents */}
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-[60px] rounded-full -z-10" />
-                                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/5 blur-[70px] rounded-full -z-10" />
-
-                                        {/* Corners */}
-                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400/40" />
-                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-400/40" />
-                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-400/40" />
-                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400/40" />
+                                        {/* Corner Accents */}
+                                        {!isQuizLocked && (
+                                            <>
+                                                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-400/40" />
+                                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-cyan-400/40" />
+                                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-cyan-400/40" />
+                                                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-400/40" />
+                                            </>
+                                        )}
                                     </motion.div>
+
                                 );
                             })}
                         </motion.div>

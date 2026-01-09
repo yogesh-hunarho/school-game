@@ -55,7 +55,7 @@ export const CyberpunkDashboard = () => {
 
 
     return (
-        <div className="relative min-h-screen  overflow-hidden pb-20 mt-14 md:mt-20">
+        <div className="relative min-h-screen  overflow-hidden pb-20 mt-14 md:mt-20 p-4 md:p-0 mb-20">
             {/* Cyberpunk Global Background Effects */}
             <div className="absolute inset-0 pointer-events-none">
                 {/* Horizontal Scanline */}
@@ -94,7 +94,7 @@ export const CyberpunkDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col md:flex-row md:items-center items-start gap-6 bg-slate-900/50 backdrop-blur-md border border-emerald-500/50 p-4">
+                        <div className="flex flex-col md:flex-row md:items-center items-start gap-6 bg-slate-900/50 backdrop-blur-sm border border-emerald-500/50 p-4">
                             <div className="flex gap-5 w-full items-center justify-between md:items-end px-4 md:border-r border-emerald-500/10">
                                 <span className="text-[10px] font-mono  uppercase tracking-widest">Completed</span>
                                 <span className="text-4xl font-black text-emerald-400">{completedCount}<span className="text-xl italic ml-1">/9</span></span>
@@ -116,7 +116,7 @@ export const CyberpunkDashboard = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {modules.map((module, index) => {
                         const status = player.moduleStatus[module.id] || "locked";
                         const isLocked = status === "locked";

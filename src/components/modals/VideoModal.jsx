@@ -246,7 +246,7 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                         <div className="space-y-4">
                                             <div>
                                                 <h4 className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">DESCRIPTION</h4>
-                                                <p className="text-xs text-slate-400 leading-relaxed">
+                                                <p className="text-xs font-mono text-white leading-relaxed">
                                                     Learn about the core concepts presented in this module.
                                                     This video covers the fundamental principles and provides examples
                                                     to help you understand the topic better.
@@ -254,9 +254,9 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                             </div>
                                             <div>
                                                 <h4 className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-2">KEY TAKEAWAYS</h4>
-                                                <div className="space-y-2">
+                                                <div className="space-y-2 font-mono text-white">
                                                     {["Understanding the basics", "Real-world applications", "Problem-solving techniques"].map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 text-xs text-slate-400">
+                                                        <div key={i} className="flex items-center gap-2 text-xs ">
                                                             <div className="w-1 h-1 bg-cyan-400" />
                                                             {item}
                                                         </div>

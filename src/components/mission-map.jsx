@@ -69,9 +69,9 @@ const MissionCard = ({ node, content, onClick, side }) => (
         className={`
             group relative p-4 md:p-5 rounded-2xl border transition-all duration-300 cursor-pointer w-full max-w-[240px] overflow-hidden
             ${node.isLocked
-                ? "bg-slate-900/30 border-white/5 text-slate-600 grayscale backdrop-blur-sm"
+                ? "bg-slate-600/30 border-white/5 text-black backdrop-blur-sm"
                 : node.isCurrent
-                    ? "bg-white/10 border-cyan-500 border-2 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md"
+                    ? "bg-white/30 border-cyan-500/30 border-2 shadow-[0_0_30px_rgba(6,182,212,0.15)] backdrop-blur-md"
                     : "bg-white/5 border-white/10 hover:border-purple-500/30 hover:bg-white/10 backdrop-blur-md"
             }
         `}
@@ -83,17 +83,17 @@ const MissionCard = ({ node, content, onClick, side }) => (
 
         <div className={`flex flex-col ${side === "right" ? "text-right" : "text-left"}`}>
             <span className={`font-mono text-[10px] uppercase tracking-[0.2em] mb-1.5 
-                ${node.isCurrent ? "text-cyan-400 animate-pulse" : "text-white/30"}`}>
+                ${node.isCurrent ? "text-cyan-400 animate-pulse" : "text-slate-300"}`}>
                 Mission {node.index.toString().padStart(2, "0")}
             </span>
             <h3 className={`font-bold uppercase tracking-tight text-sm md:text-base leading-tight mb-2
-                ${node.isLocked ? "text-slate-600" : "text-white group-hover:text-cyan-400 transition-colors"}`}>
+                ${node.isLocked ? "text-slate-400" : "text-white group-hover:text-cyan-400 transition-colors"}`}>
                 {node.title.replace(/-/g, " ")}
             </h3>
 
             {!node.isLocked && (
                 <div className={`flex items-center gap-2 mt-2 ${side === "right" ? "justify-end" : "justify-start"}`}>
-                    <div className="px-2 py-0.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-[10px] font-bold text-yellow-500 flex items-center gap-1">
+                    <div className="px-2 py-0.5 rounded-full bg-yellow-100 border border-yellow-500/20 text-[10px] font-bold text-yellow-600 flex items-center gap-1">
                         <HeaderCoin className="" size={15} />
                         {content?.nextModule?.xp || 50} Coin
                     </div>
@@ -200,7 +200,7 @@ const MissionMap = ({ }) => {
                 side="bottom"
                 align="center"
                 sideOffset={10}
-                className="relative overflow-hidden w-[99vw] md:w-[600px] h-[90vh] p-0 border border-cyan-500/20 bg-slate-950/95 backdrop-blur-2xl z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                className="relative overflow-hidden w-[99vw] md:w-[600px] h-[90vh] p-0 border border-cyan-500/20 bg-background backdrop-blur-md z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
             >
                 <AnimatedBackground
                     variant="warp"
@@ -212,7 +212,7 @@ const MissionMap = ({ }) => {
                     {/* Header Info */}
                     <div className="hidden p-3 border-b border-white/5 bg-white/5 backdrop-blur-md md:flex items-center justify-between shrink-0">
                         <div>
-                            <h2 className="text-xl font-bold text-cyan-300 tracking-tight flex items-center gap-2">
+                            <h2 className="text-xl font-bold text-emerald-300 tracking-tight flex items-center gap-2">
                                 Mission Map
                             </h2>
                             <p className="text-xs text-emerald-300 mt-1">

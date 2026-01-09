@@ -39,7 +39,7 @@ const CyberpunkProgressBar = ({ progress = 0, label = "LOADING", color = "cyan",
     return (
         <div className="w-full font-mono select-none overflow-hidden p-1">
             <div className="flex justify-between items-end mb-2 px-1">
-                {!hideLabel && <motion.div className={`text-[10px] font-black tracking-widest ${scheme.text} flex items-center gap-2.5`}>
+                {!hideLabel && <motion.div className={`text-xs font-normal tracking-wider ${scheme.text} flex items-center gap-2.5`}>
                     <motion.div
                         animate={{
                             scale: [1, 1.3, 1],

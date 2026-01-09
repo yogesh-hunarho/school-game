@@ -79,17 +79,17 @@ export default function ProtectedLayout() {
                 <main className={cn("relative flex-1 z-10 mb-16")}>
                     <div className="absolute inset-0 ">
                         <img
-                            src="/assets/images/bg.png"
+                            src="/assets/images/bg-2.png"
                             alt="Background"
                             className="w-full h-full object-cover opacity-40"
                         />
                     </div>
                     <div className="relative z-10">
-                        <>
+                        {/* <>
                             <ShootingStars starCount={20} className="pointer-events-none z-0" />
                             <StarsBackground className="pointer-events-none z-0" />
                             <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
-                        </>
+                        </> */}
                         <Outlet />
                     </div>
                 </main>

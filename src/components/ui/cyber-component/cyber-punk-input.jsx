@@ -18,7 +18,7 @@ const CyberpunkInput = ({
             {label && (
                 <label className={`
                     absolute -top-6 left-0 text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300
-                    ${isFocused ? 'text-cyan-400' : 'text-slate-500'}
+                    ${isFocused ? 'text-emerald-400' : 'text-slate-500'}
                 `}>
                     {label}
                 </label>
@@ -34,14 +34,14 @@ const CyberpunkInput = ({
                         w-full bg-slate-950/50 border-b-2 text-white px-4 py-3 outline-none transition-all duration-300
                         placeholder:text-slate-600
                         ${isFocused
-                            ? 'border-cyan-500 shadow-[0_4px_20px_-5px_rgba(6,182,212,0.3)] bg-slate-900/80'
+                            ? 'border-emerald-500 shadow-[0_4px_20px_-5px_rgba(6,182,212,0.3)] bg-slate-900/80'
                             : 'border-slate-700 hover:border-slate-500'}
                     `}
                     {...props}
                 />
 
                 {Icon && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 text-cyan-600 opacity-50">
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-8 text-emerald-600 opacity-50">
                         <Icon size={16} />
                     </div>
                 )}
@@ -50,15 +50,15 @@ const CyberpunkInput = ({
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-cyan-400 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 hover:text-emerald-400 transition-colors"
                     >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                 )}
 
                 <div className={`
-                    absolute bottom-0 left-0 h-[2px] bg-cyan-400 transition-all duration-500 ease-out
-                    ${isFocused ? 'w-full shadow-[0_0_10px_cyan]' : 'w-0'}
+                    absolute bottom-0 left-0 h-[2px] bg-emerald-400 transition-all duration-500 ease-out
+                    ${isFocused ? 'w-full shadow-[0_0_10px_emerald]' : 'w-0'}
                 `} />
             </div>
 

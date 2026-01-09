@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils"
-import { Lock, ShieldAlert, Wifi, Cpu, Zap, Star } from "lucide-react"
+import { Lock, ShieldAlert, Wifi, Cpu, Zap, Star, Info, FileQuestionMark, Video } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import useSound from "@/hook/useSound"
 import CyberpunkButton from "../cyber-button"
+import HeaderCoin from "@/components/HeaderCoin"
 
 export function CyberpunkLock({
     module,
@@ -48,11 +49,7 @@ export function CyberpunkLock({
 
 
     return (
-        <div
-            onMouseEnter={() => setGlitch(true)}
-            onMouseLeave={() => setGlitch(false)}
-            className={`relative group h-full p-4 transition-transform duration-500 backdrop-blur-xl bg-background/10  ${glitch ? "animate-shake" : ""}`}
-        >
+        <div className={`relative group h-full p-4 transition-transform duration-500 backdrop-blur-xl bg-background/10`}>
             <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
 
             {/* Corner Decoration Brackets */}
@@ -69,7 +66,7 @@ export function CyberpunkLock({
 
             <div className="relative z-10 flex flex-col items-center justify-between overflow-hidden">
 
-                <div className="mt-10">
+                <div className="mt-6">
                     <div className="relative mt-5">
                         {/* Animated rings around the lock */}
                         <div className="absolute inset-0 -m-8 border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite]" />
@@ -101,41 +98,67 @@ export function CyberpunkLock({
                     >
                         {module.name}
                     </motion.h3>
-                    <p className="text-slate-400 text-xs leading-relaxed h-12 line-clamp-2 italic font-medium mb-4">
+                    <p className="text-slate-400 text-mono text-xs line-clamp-2 italic font-wider mb-2">
                         {module.description || "Initializing module protocols for advanced neural development and engineering training."}
                     </p>
                 </div>
 
             </div>
-            <div className="grid grid-cols-2 gap-3 mb-5">
-                <div className="group/metric relative p-2.5 bg-slate-900 border border-white/5 hover:border-cyan-400/30 transition-colors">
-                    <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-yellow-500/10 rounded-sm">
-                            <Star className="w-4 h-4 text-yellow-500" />
-                        </div>
-                        <div className="font-mono">
-                            <p className="font-bold text-[8px] text-white uppercase tracking-tighter">REWARD_XP</p>
-                            <p className="font-black text-sm text-white">{module.totalStars * 100}</p>
-                        </div>
+            <div className="grid grid-cols-3 gap-2 mb-5 mt-5">
+                {/* COINS */}
+                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                    <div className="p-1 bg-yellow-500/10">
+                        <HeaderCoin />
                     </div>
-                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-cyan-400/0 group-hover/metric:border-cyan-400/50 transition-all" />
+                    <div className="font-mono">
+                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                            COIN EARN
+                        </p>
+                        <p className="font-black text-sm text-white">
+                            {module.totalStars * 100}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="group/metric relative p-2.5 bg-slate-900 border border-white/5 hover:border-cyan-400/30 transition-colors">
-                    <div className="flex items-center gap-3">
-                        <div className="p-1.5 bg-cyan-500/10 rounded-sm">
-                            <Zap className="w-4 h-4 text-cyan-400" />
-                        </div>
-                        <div className="font-mono">
-                            <p className="font-bold text-[8px] text-white uppercase tracking-tighter">TOTAL_SEQ</p>
-                            <p className="font-black text-sm text-white">{module.videos + module.quizzes}</p>
-                        </div>
+                {/* VIDEOS */}
+                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                    <div className="p-1.5 bg-yellow-500/10">
+                        <Video className="w-4 h-4 text-cyan-400 animate-pulse" />
                     </div>
-                    <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-cyan-400/0 group-hover/metric:border-cyan-400/50 transition-all" />
+                    <div className="font-mono text-cyan-400">
+                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                            VIDEO
+                        </p>
+                        <p className="font-black text-sm text-white">
+                            {module.videos}
+                        </p>
+                    </div>
+                </div>
+
+                {/* QUIZZES */}
+                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                    <div className="p-1.5 bg-yellow-500/10">
+                        <FileQuestionMark className="w-4 h-4 text-cyan-400 animate-pulse" />
+                    </div>
+                    <div className="font-mono">
+                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                            QUIZZES
+                        </p>
+                        <p className="font-black text-sm text-white">
+                            {module.quizzes}
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <CyberpunkButton variant="danger" onClick={() => playSound("disabled")} className="w-full">
+
+            <CyberpunkButton
+                variant="danger"
+                onMouseEnter={() => setGlitch(true)}
+                onMouseLeave={() => setGlitch(false)}
+                onClick={() => playSound("disabled")}
+                className={cn("w-full", glitch ? "animate-shake" : "")}
+            >
                 <div className="flex items-center gap-2">
                     <Lock size={16} />
                     <span>ACCESS_DENIED</span>

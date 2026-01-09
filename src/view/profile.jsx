@@ -22,8 +22,10 @@ import {
     Gift,
     Crown,
     Swords,
-    MapPin
+    MapPin,
+    ArrowLeft
 } from 'lucide-react';
+import { useLMSStore } from '@/store/lms-store';
 import HeaderCoin from '@/components/HeaderCoin';
 import CyberpunkProgressBar from '@/components/ui/cyber-component/cyberpunk-progress-bar';
 import DecryptedText from '@/components/DecryptedText';
@@ -83,7 +85,17 @@ const badgeDefinitions = [
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = useState('overview');
-    const player = mockPlayer;
+    const storePlayer = useLMSStore((state) => state.player);
+    const getModuleProgress = useLMSStore((state) => state.getModuleProgress);
+
+    // Merge mock statistics with real player data
+    const player = {
+        ...mockPlayer,
+        name: storePlayer.name,
+        totalXP: storePlayer.totalXP,
+        profileImage: storePlayer.profileImage,
+        missionsCompleted: Object.keys(storePlayer.progress).filter(id => getModuleProgress(id) === 100).length,
+    };
 
     const level = calculateLevel(player.totalXP);
     const xpProgress = getXPToNextLevel(player.totalXP);
@@ -91,21 +103,29 @@ export default function ProfilePage() {
 
     const earnedBadges = badgeDefinitions.filter(b => b.earned);
     const lockedBadges = badgeDefinitions.filter(b => !b.earned);
-    const puzzlePiecesCollected = 7;
-    const totalPuzzlePieces = 12;
+    const puzzlePiecesCollected = storePlayer.unlockedPuzzleCount;
+    const totalPuzzlePieces = 9;
+
+    const handleBack = () => {
+        window.history.back();
+    };
 
     return (
         <div className="min-h-screen py-20 text-white relative overflow-hidden ">
-            <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
-                {/* Back Button */}
-                <motion.button
-                    whileHover={{ x: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 text-sm font-bold uppercase tracking-wider mb-6 group"
-                >
-                    <ChevronLeft className="w-5 h-5" />
-                    <span>Back to Mission</span>
-                </motion.button>
+            <div className="relative z-10 max-w-7xl mx-auto">
+                <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6 bg-black/40 backdrop-blur-xl p-4 md:p-6 border border-white/5 shadow-2xl">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={handleBack}
+                            className="p-2 hover:bg-white/10 rounded-xl transition-colors text-zinc-400 hover:text-white"
+                        >
+                            <ArrowLeft className="w-6 h-6" />
+                        </button>
+                        <h1 className="text-2xl md:text-3xl font-black tracking-tighter italic uppercase text-white">
+                            PROFILE
+                        </h1>
+                    </div>
+                </header>
 
                 {/* Hero Profile Card */}
                 <motion.div
@@ -113,8 +133,8 @@ export default function ProfilePage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="relative mb-8"
                 >
-                    <div className="absolute inset-0 bg-linear-to-r from-cyan-500/20 to-purple-500/20 blur-xl" />
-                    <div className="relative bg-linear-to-br from-gray-900/95 to-gray-950/95 backdrop-blur-xl border-2 border-cyan-400/30 p-6 sm:p-8 overflow-hidden">
+                    {/* <div className="absolute inset-0 bg-linear-to-r from-cyan-500/20 to-purple-500/20 blur-xl" /> */}
+                    <div className="relative bg-linear-to-br bg-transparent backdrop-blur-sm border-2 border-cyan-400/30 p-6 sm:p-8 overflow-hidden">
                         {/* Corner Accents */}
                         <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-cyan-400/50 rounded-tl" />
                         <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-purple-400/50 rounded-br" />
@@ -132,7 +152,11 @@ export default function ProfilePage() {
 
                                     {/* Avatar */}
                                     <div className="absolute inset-2 rounded-full bg-linear-to-br from-cyan-500/30 to-purple-500/30 border-4 border-gray-800 shadow-2xl shadow-cyan-400/30 flex items-center justify-center overflow-hidden">
-                                        <User className="w-16 h-16 text-cyan-300" />
+                                        {player.profileImage ? (
+                                            <img src={player.profileImage} alt="Avatar" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <User className="w-16 h-16 text-cyan-300" />
+                                        )}
                                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
                                     </div>
 
@@ -249,8 +273,8 @@ export default function ProfilePage() {
                             whileHover={{ y: -5 }}
                             className="relative group"
                         >
-                            <div className={`absolute inset-0 bg-linear-to-br ${stat.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity`} />
-                            <div className="relative bg-linear-to-br from-gray-900/90 to-gray-950/90 backdrop-blur border border-gray-700/50 group-hover:border-gray-600 p-6 text-center transition-all">
+                            {/* <div className={`absolute inset-0 bg-linear-to-br ${stat.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity`} /> */}
+                            <div className="relative  backdrop-blur border-2 border-cyan-500/30 group-hover:border-cyan-600 p-6 text-center transition-all">
                                 <div className={`inline-flex items-center justify-center w-14 h-14 rounded-full bg-linear-to-br ${stat.gradient} mb-4 shadow-lg`}>
                                     <stat.icon className="w-7 h-7 text-white" />
                                 </div>
@@ -260,41 +284,6 @@ export default function ProfilePage() {
                         </motion.div>
                     ))}
                 </div>
-
-
-                {/* CTA Buttons */}
-                {/* <div className="grid sm:grid-cols-2 gap-4">
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="relative group overflow-hidden p-1"
-                    >
-                        <div className="absolute inset-0 bg-linear-to-r from-cyan-500 via-blue-500 to-purple-500 animate-gradient" />
-                        <div className="relative bg-gray-900 px-8 py-6 flex items-center justify-center gap-3">
-                            <Puzzle className="w-8 h-8 text-cyan-400 group-hover:rotate-12 transition-transform" />
-                            <div className="text-left">
-                                <div className="text-xl font-black text-white">Complete Your Puzzle</div>
-                                <div className="text-sm text-gray-400">Collect all pieces for rewards!</div>
-                            </div>
-                        </div>
-                    </motion.button>
-
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="relative group overflow-hidden p-1"
-                    >
-                        <div className="absolute inset-0 bg-linear-to-r from-yellow-500 via-orange-500 to-red-500 animate-gradient" />
-                        <div className="relative bg-gray-900 px-8 py-6 flex items-center justify-center gap-3">
-                            <Gamepad2 className="w-8 h-8 text-yellow-400 group-hover:rotate-12 transition-transform" />
-                            <div className="text-left">
-                                <div className="text-xl font-black text-white">Spin to Win!</div>
-                                <div className="text-sm text-gray-400">Use your coins for big rewards</div>
-                            </div>
-                            <Gift className="w-6 h-6 text-pink-400 animate-bounce" />
-                        </div>
-                    </motion.button>
-                </div> */}
             </div>
         </div>
     );

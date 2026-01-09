@@ -206,6 +206,8 @@ const initialPlayerState = {
     unlockedPuzzleCount: 0,
     coins: 1000, // Initial coins for testing
     spinHistory: [], // Array of { id, date, reward, type }
+    profileImage: "/src/assets/achievements/badge1.png", // Default avatar
+    collectedAchievements: [], // Array of achievement IDs that have been collected
 };
 
 // Module order for unlocking
@@ -417,6 +419,20 @@ export const useLMSStore = create(
                 }
             })),
 
+            setProfileImage: (image) => set((state) => ({
+                player: {
+                    ...state.player,
+                    profileImage: image
+                }
+            })),
+
+            collectAchievement: (achievementId) => set((state) => ({
+                player: {
+                    ...state.player,
+                    collectedAchievements: [...state.player.collectedAchievements, achievementId]
+                }
+            })),
+
             addSpinResult: (result) => set((state) => ({
                 player: {
                     ...state.player,
@@ -468,14 +484,6 @@ export const useLMSStore = create(
                 soundEnabled: state.soundEnabled,
             }),
         }
-
-        // {
-        //     name: "hunarho-lms-storage",
-        //     partial: (state) => ({
-        //         player: state.player,
-        //         soundEnabled: state.soundEnabled,
-        //     }),
-        // }
     )
 );
 

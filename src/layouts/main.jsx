@@ -160,7 +160,7 @@ export default function MainLayout() {
 
                         {/* Stats grid */}
                         <div className="grid grid-cols-3 gap-3 mb-0">
-                            <motion.div
+                            {/* <motion.div
                                 className="text-center p-2 bg-green-400/20 backdrop-blur-xl rounded-lg border border-green-500/30"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
                             >
@@ -170,19 +170,8 @@ export default function MainLayout() {
                                         <AnimatedCounter value={1000} />
                                     </span>
                                 </div>
-                            </motion.div>
+                            </motion.div> */}
 
-                            {/* <motion.div
-                                className="text-center p-2 bg-green-500/10 rounded-lg border border-green-500/30"
-                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(34,197,94,0.2)' }}
-                            >
-                                <div className="flex items-center justify-center gap-1 text-green-400">
-                                    <span className="text-2xl animate-pulse">🎯</span>
-                                    <span className="font-bold text-base sm:text-lg">EASY</span>
-                                </div>
-                                {/* <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">
-                                    Level 🎯
-                                </div> */}
 
                             {/* <Link to="/spin-and-win">
                                 <motion.div
@@ -193,9 +182,6 @@ export default function MainLayout() {
                                     <div className="flex items-center justify-center gap-1 text-pink-400 group">
                                         <Sparkles className="w-4 h-4 animate-spin-slow hover:rotate-360" />
                                         <span className="font-bold text-base sm:text-lg">SPIN</span>
-                                    </div>
-                                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-0.5">
-                                        WIN PRIZES!
                                     </div>
                                 </motion.div>
                             </Link> */}
@@ -221,7 +207,7 @@ export default function MainLayout() {
                                 >
                                     🚀
                                 </motion.span>
-                                Start Your Adventure!
+                                Start Your Mission!
                                 <motion.span
                                     animate={{ x: [0, 5, 0] }}
                                     transition={{ duration: 1, repeat: Infinity }}

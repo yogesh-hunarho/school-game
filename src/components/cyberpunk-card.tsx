@@ -1,11 +1,15 @@
-import { Lock, CheckCircle2, Info } from "lucide-react"
+import { Lock, CheckCircle2, Video, FileQuestionMark } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
-import { useEffect, useRef, useState, } from "react"
 import useSound from "@/hook/useSound";
 import CyberpunkButton from "./ui/cyber-button";
 import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
 import HeaderCoin from "./HeaderCoin";
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 interface Module {
     id: string;
@@ -37,16 +41,6 @@ export function CyberpunkCard({
     handleModuleSelect
 }: CyberpunkCardProps) {
     const { playSound } = useSound()
-    const [expanded, setExpanded] = useState(false);
-    const [isOverflowing, setIsOverflowing] = useState(false);
-    const descRef = useRef<HTMLParagraphElement>(null);
-
-    useEffect(() => {
-        if (!descRef.current) return;
-
-        const el = descRef.current;
-        setIsOverflowing(el.scrollHeight > el.clientHeight);
-    }, [module.description]);
 
     // Color scheme based on state
     const getColors = () => {
@@ -176,71 +170,69 @@ export function CyberpunkCard({
                             <div className={cn("h-0.5 w-8 animate-pulse", colors.bg)} />
                         </div>
                     </div>
-                    <motion.div
-                        initial={false}
-                        animate={{ height: expanded ? "auto" : "2.3rem" }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="relative overflow-hidden mb-1"
-                    >
-                        <div className="relative">
-                            <p
-                                ref={descRef}
-                                className={cn(
-                                    "text-slate-400 text-xs leading-relaxed italic font-mono font-medium pr-0",
-                                    !expanded && "line-clamp-2 pr-10",
-                                )}
-                            >
-                                {module.description ||
-                                    "Initializing module protocols for advanced neural development and engineering training."}
-                            </p>
+                    <HoverCard>
+                        <HoverCardTrigger className=" text-sm font-mono tracking-tight line-clamp-2 cursor-pointer mb-2">
+                            {module.description ||
+                                "Initializing module protocols for advanced neural development and engineering training."}
+                        </HoverCardTrigger>
 
-                            {isOverflowing && (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setExpanded((prev) => !prev);
-                                    }}
-                                    className="absolute bottom-0 right-0 text-[10px] font-mono uppercase text-cyan-400 hover:text-cyan-300 transition"
-                                >
-                                    {expanded ? "LESS ▲" : "MORE ▼"}
-                                </button>
-                            )}
-                        </div>
-                    </motion.div>
+                        <HoverCardContent className="w-96 text-sm leading-relaxed font-mono bg-slate-600">
+                            {module.description ||
+                                "Initializing module protocols for advanced neural development and engineering training."}
+                        </HoverCardContent>
+                    </HoverCard>
 
-                    <div className="grid grid-cols-2 gap-2 mb-5 mt-5">
-                        <div className="group/metric relative p-2.5 bg-slate-900/60 border border-white/5 hover:border-cyan-400/30 transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-yellow-500/10 rounded-sm">
-                                    <HeaderCoin />
-                                </div>
-                                <div className="font-mono">
-                                    <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">REWARD_COINS</p>
-                                    <p className="font-black text-sm text-white">{module.totalStars * 100}</p>
-                                </div>
+                    <div className="grid grid-cols-3 gap-2 mb-5 mt-5">
+                        {/* COINS */}
+                        <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                            <div className="p-1 bg-yellow-500/10">
+                                <HeaderCoin />
                             </div>
-                            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-cyan-400/0 group-hover/metric:border-cyan-400/50 transition-all" />
+                            <div className="font-mono">
+                                <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                                    COIN EARN
+                                </p>
+                                <p className="font-black text-sm text-white">
+                                    {module.totalStars * 100}
+                                </p>
+                            </div>
                         </div>
 
-                        <div className="group/metric relative p-2.5 bg-slate-900/60 border border-white/5 hover:border-cyan-400/30 transition-colors">
-                            <div className="flex items-center gap-3">
-                                <div className="p-1.5 bg-cyan-500/10 rounded-sm">
-                                    <Info className="w-6 h-6 text-cyan-400 animate-pulse" />
-                                </div>
-                                <div className="font-mono">
-                                    <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">TOTAL_VIDEOS_QUIZ</p>
-                                    <p className="font-black text-sm text-white">{module.videos + module.quizzes}</p>
-                                </div>
+                        {/* VIDEOS */}
+                        <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                            <div className="p-1.5 bg-yellow-500/10">
+                                <Video className="w-4 h-4 text-cyan-400 animate-pulse" />
                             </div>
-                            <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-cyan-400/0 group-hover/metric:border-cyan-400/50 transition-all" />
+                            <div className="font-mono">
+                                <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                                    VIDEOS
+                                </p>
+                                <p className="font-black text-sm text-white">
+                                    {module.videos}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* QUIZZES */}
+                        <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
+                            <div className="p-1.5 bg-yellow-500/10">
+                                <FileQuestionMark className="w-4 h-4 text-cyan-400 animate-pulse" />
+                            </div>
+                            <div className="font-mono">
+                                <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
+                                    QUIZZES
+                                </p>
+                                <p className="font-black text-sm text-white">
+                                    {module.quizzes}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     <div className="mb-6">
-
                         <CyberpunkProgressBar
                             progress={progress}
-                            label="SYNC_READY"
+                            label="Progress"
                             color={progress === 100 ? "green" : isActive ? "cyan" : "orange"}
                         />
                     </div>

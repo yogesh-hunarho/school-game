@@ -8,7 +8,6 @@ import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Z
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
-import AnimatedBackground from "./animated-background";
 import { calculateLevel, getXPToNextLevel } from "./Header";
 import {
     DropdownMenu,
@@ -150,7 +149,11 @@ export const HeroHeader = () => {
                                                     <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 transition group-hover:opacity-100" />
 
                                                     <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-500/50 bg-slate-900 transition group-hover:border-cyan-400">
-                                                        <User className="h-5 w-5 text-cyan-400" />
+                                                        {player.profileImage ? (
+                                                            <img src={player.profileImage} alt="Avatar" className="h-full w-full object-cover" />
+                                                        ) : (
+                                                            <User className="h-5 w-5 text-cyan-400" />
+                                                        )}
                                                     </div>
 
                                                     <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-slate-950 bg-green-500" />
