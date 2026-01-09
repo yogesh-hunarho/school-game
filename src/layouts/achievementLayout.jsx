@@ -133,7 +133,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 1",
         title: "Video Pioneer",
         description: "Start your learning journey by watching your very first video.",
-        image: "/src/assets/achievements/badge1.png",
+        image: "/assets/achievements/badge1.png",
         category: "Learning",
         check: (player) => Object.values(player.progress).some(p => p.watchedVideos.length > 0),
         getProgress: (player) => {
@@ -146,7 +146,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 2",
         title: "Quiz Rookie",
         description: "Take your first quiz and put your knowledge to the test.",
-        image: "/src/assets/achievements/badge2.png",
+        image: "/assets/achievements/badge2.png",
         category: "Learning",
         check: (player) => Object.values(player.progress).some(p => p.completedQuizzes.length > 0),
         getProgress: (player) => {
@@ -159,7 +159,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 3",
         title: "Module Master",
         description: "Fully complete any one mission from start to finish.",
-        image: "/src/assets/achievements/badge3.png",
+        image: "/assets/achievements/badge3.png",
         category: "Mastery",
         check: (player, getModuleProgress) =>
             Object.keys(player.progress).some(id => getModuleProgress(id) === 100),
@@ -173,7 +173,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 4",
         title: "Quad Specialist",
         description: "Complete four different missions and prove your growing expertise.",
-        image: "/src/assets/achievements/badge4.png",
+        image: "/assets/achievements/badge4.png",
         category: "Mastery",
         check: (player, getModuleProgress) =>
             Object.keys(player.progress).filter(id => getModuleProgress(id) === 100).length >= 4,
@@ -187,7 +187,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 5",
         title: "Wealth Seeker",
         description: "Earn 400 coins through learning activities and achievements.",
-        image: "/src/assets/achievements/badge5.png",
+        image: "/assets/achievements/badge5.png",
         category: "Rewards",
         check: (player) => player.coins >= 400,
         getProgress: (player) => ({ current: player.coins, total: 400 })
@@ -197,7 +197,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 6",
         title: "Consistent Learner",
         description: "Maintain a 7-day learning streak without missing a day.",
-        image: "/src/assets/achievements/badge6.png",
+        image: "/assets/achievements/badge6.png",
         category: "Consistency",
         check: (player) => player.streak >= 7,
         getProgress: (player) => ({ current: player.streak, total: 7 })
@@ -207,7 +207,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 7",
         title: "Coin Tycoon",
         description: "Collect over 1000 coins and become a top rewards earner.",
-        image: "/src/assets/achievements/badge7.png",
+        image: "/assets/achievements/badge7.png",
         category: "Rewards",
         check: (player) => player.coins >= 1000,
         getProgress: (player) => ({ current: player.coins, total: 1000 })
@@ -217,7 +217,7 @@ const ACHIEVEMENT_DEFINITIONS = [
         badge: "Badge 8",
         title: "Ultimate Scholar",
         description: "Complete every mission and master the entire learning path.",
-        image: "/src/assets/achievements/badge8.png",
+        image: "/assets/achievements/badge8.png",
         category: "Mastery",
         check: (player, getModuleProgress) => {
             const moduleIds = Object.keys(player.moduleStatus).filter(id => id !== 'final-assessment');
