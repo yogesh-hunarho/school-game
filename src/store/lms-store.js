@@ -206,7 +206,7 @@ const initialPlayerState = {
     unlockedPuzzleCount: 0,
     coins: 1000, // Initial coins for testing
     spinHistory: [], // Array of { id, date, reward, type }
-    profileImage: "/src/assets/achievements/badge1.png", // Default avatar
+    profileImage: "/assets/achievements/badge1.png", // Default avatar
     collectedAchievements: [], // Array of achievement IDs that have been collected
 };
 

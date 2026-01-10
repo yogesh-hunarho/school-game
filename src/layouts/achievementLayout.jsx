@@ -22,110 +22,7 @@ import CyberpunkButton from "@/components/ui/cyber-button";
 import { useNavigate } from "react-router-dom";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 import AchievementCollectionModal from "@/components/modals/AchievementCollectionModal";
-
-
-// const ACHIEVEMENT_DEFINITIONS = [
-//     {
-//         id: "first-video",
-//         badge: "Badge 1",
-//         title: "Video Pioneer",
-//         description: "Watch the first video",
-//         image: "/src/assets/achievements/badge1.png",
-//         category: "Learning",
-//         check: (player) => Object.values(player.progress).some(p => p.watchedVideos.length > 0),
-//         getProgress: (player) => {
-//             const count = Object.values(player.progress).reduce((acc, p) => acc + p.watchedVideos.length, 0);
-//             return { current: Math.min(count, 1), total: 1 };
-//         }
-//     },
-//     {
-//         id: "first-quiz",
-//         badge: "Badge 2",
-//         title: "Quiz Rookie",
-//         description: "Attempt the quiz",
-//         image: "/src/assets/achievements/badge2.png",
-//         category: "Learning",
-//         check: (player) => Object.values(player.progress).some(p => p.completedQuizzes.length > 0),
-//         getProgress: (player) => {
-//             const count = Object.values(player.progress).reduce((acc, p) => acc + p.completedQuizzes.length, 0);
-//             return { current: Math.min(count, 1), total: 1 };
-//         }
-//     },
-//     {
-//         id: "module-master",
-//         badge: "Badge 3",
-//         title: "Module Master",
-//         description: "Complete any 1 mission",
-//         image: "/src/assets/achievements/badge3.png",
-//         category: "Mastery",
-//         check: (player, getModuleProgress) => Object.keys(player.progress).some(id => getModuleProgress(id) === 100),
-//         getProgress: (player, getModuleProgress) => {
-//             const max = Math.max(0, ...Object.keys(player.progress).map(id => getModuleProgress(id)));
-//             return { current: max, total: 100, isPercent: true };
-//         }
-//     },
-//     {
-//         id: "module-4",
-//         badge: "Badge 4",
-//         title: "Quad Specialist",
-//         description: "Complete any 4 missions",
-//         image: "/src/assets/achievements/badge4.png",
-//         category: "Mastery",
-//         check: (player, getModuleProgress) =>
-//             Object.keys(player.progress).filter(id => getModuleProgress(id) === 100).length >= 4,
-//         getProgress: (player, getModuleProgress) => {
-//             const count = Object.keys(player.progress).filter(id => getModuleProgress(id) === 100).length;
-//             return { current: count, total: 4 };
-//         }
-//     },
-//     {
-//         id: "coin-500",
-//         badge: "Badge 5",
-//         title: "Wealth Seeker",
-//         description: "Earn 400 coins",
-//         image: "/src/assets/achievements/badge5.png",
-//         category: "Rewards",
-//         check: (player) => player.coins >= 400,
-//         getProgress: (player) => ({ current: player.coins, total: 400 })
-//     },
-//     {
-//         id: "streak-7",
-//         badge: "Badge 6",
-//         title: "Consistent Learner",
-//         description: "7 days streak",
-//         image: "/src/assets/achievements/badge6.png",
-//         category: "Consistency",
-//         check: (player) => player.streak >= 7,
-//         getProgress: (player) => ({ current: player.streak, total: 7 })
-//     },
-//     {
-//         id: "coin-1000",
-//         badge: "Badge 7",
-//         title: "Coin Tycoon",
-//         description: "Collect 1000+ coins",
-//         image: "/src/assets/achievements/badge7.png",
-//         category: "Rewards",
-//         check: (player) => player.coins >= 1000,
-//         getProgress: (player) => ({ current: player.coins, total: 1000 })
-//     },
-//     {
-//         id: "all-modules",
-//         badge: "Badge 8",
-//         title: "Ultimate Scholar",
-//         description: "Complete all missions",
-//         image: "/src/assets/achievements/badge8.png",
-//         category: "Mastery",
-//         check: (player, getModuleProgress) => {
-//             const moduleIds = Object.keys(player.moduleStatus).filter(id => id !== 'final-assessment');
-//             return moduleIds.length > 0 && moduleIds.every(id => getModuleProgress(id) === 100);
-//         },
-//         getProgress: (player, getModuleProgress) => {
-//             const moduleIds = Object.keys(player.moduleStatus).filter(id => id !== 'final-assessment');
-//             const completedCount = moduleIds.filter(id => getModuleProgress(id) === 100).length;
-//             return { current: completedCount, total: moduleIds.length };
-//         }
-//     }
-// ];
+import useSound from "@/hook/useSound";
 
 const ACHIEVEMENT_DEFINITIONS = [
     {
@@ -239,6 +136,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
     const isCurrentAvatar = currentPlayerImage === achievement.image;
     const isCollected = collectedAchievements.includes(achievement.id);
     const showCollectButton = isUnlocked && !isCollected;
+    const { playSound } = useSound();
 
     return (
         <motion.div
@@ -258,7 +156,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                 "absolute transition-all duration-500 ease-in-out z-10",
                 "inset-[3px] group-hover:inset-[10px] group-hover:w-20 group-hover:h-20 group-hover:rounded-full group-hover:border-4 group-hover:border-yellow-500 group-hover:shadow-[0_5px_5px_rgba(96,75,74,0.18)] group-hover:z-30",
                 "rounded-[29px]",
-                !isUnlocked && "grayscale opacity-40 brightness-50"
+                !isUnlocked && "opacity-90"
             )}>
                 <img
                     src={achievement.image}
@@ -287,26 +185,28 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
             </div>
 
             {/* Expanding Bottom Panel */}
-            <div className={cn(
-                "absolute left-[3px] right-[3px] bottom-[3px] z-20 transition-all duration-500 cubic-bezier(0.645, 0.045, 0.355, 1)",
-                "top-[80%] group-hover:top-[20%] group-hover:rounded-[80px_0px_0px_0px] overflow-hidden shadow-[inset_0_5px_5px_rgba(96,75,74,0.18)]",
-                isUnlocked ? "bg-emerald-500/40 group-hover:bg-emerald-300/40 backdrop-blur-sm group-hover:backdrop-blur-xl" : "bg-slate-850"
-            )}>
+            <div
+                onMouseEnter={() => playSound("zoom")}
+                className={cn(
+                    "absolute left-[3px] right-[3px] bottom-[3px] z-20 transition-all duration-500 cubic-bezier(0.645, 0.045, 0.355, 1)",
+                    "top-[80%] group-hover:top-[20%] group-hover:rounded-[80px_0px_0px_0px] overflow-hidden shadow-[inset_0_5px_5px_rgba(96,75,74,0.18)]",
+                    isUnlocked ? "bg-emerald-500/40 group-hover:bg-emerald-300/40 backdrop-blur-sm group-hover:backdrop-blur-xl" : "bg-slate-800/70"
+                )}>
                 {/* Content Container */}
-                <div className="absolute top-0 left-0 right-0 bottom-0 p-6 pt-1 flex flex-col">
+                <div className="absolute top-0 left-0 right-0 bottom-0 p-3 pt-1 flex flex-col">
                     {/* Title (visible near top of panel) */}
-                    <div className="mt-5 group-hover:mt-24 transition-all duration-500">
+                    <div className="mt-2 group-hover:mt-24 transition-all duration-500">
                         <span className={cn(
                             "block text-md font-black font-mono uppercase tracking-widest transition-colors",
-                            isUnlocked ? "text-white" : "text-zinc-500"
+                            isUnlocked ? "text-white" : "text-zinc-300"
                         )}>
                             {achievement.title}
                         </span>
                     </div>
 
                     {/* Description (About Me - fades in) */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-200 mt-3">
-                        <p className={cn("text-sm leading-relaxed font-mono text-white font-medium line-clamp-4", isUnlocked ? "text-white" : "text-zinc-500")}>
+                    <div className="">
+                        <p className={cn("text-xs font-mono text-white font-medium line-clamp-3", isUnlocked ? "text-white" : "text-zinc-300")}>
                             {achievement.description}
                         </p>
                     </div>
@@ -335,7 +235,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
 
             {/* Collect Button Overlay (for newly unlocked achievements) */}
             {showCollectButton && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-transparent/10 backdrop-blur-sm">
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-transparent/80 backdrop-blur">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -444,7 +344,7 @@ const AchievementLayout = () => {
 
                 <motion.div
                     layout
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5"
+                    className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-5"
                 >
                     <AnimatePresence mode="popLayout">
                         {filteredAchievements.map((ach) => (

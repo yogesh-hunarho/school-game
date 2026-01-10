@@ -7,6 +7,7 @@ const SOUNDS = {
     close: "/audio/close.wav",
     disabled: "/audio/disabled.mp3",
     success: "/audio/success.mp3",
+    zoom: "/audio/zoom.mp3"
 };
 
 /**
