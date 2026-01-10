@@ -456,7 +456,7 @@ const PuzzleGame: React.FC = () => {
                     </div>
 
                     {/* Help Section */}
-                    <div className="bg-linear-to-br from-slate-900/80 to-slate-800/80 rounded-2xl p-4 border-2 border-slate-700/50">
+                    <div className="font-mono bg-linear-to-br from-slate-900/80 to-slate-800/80 rounded-2xl p-4 border-2 border-slate-700/50">
                         <div className="flex items-center gap-2 mb-3">
                             <HelpCircle className="w-5 h-5 text-cyan-400" />
                             <span className="text-white font-bold text-sm">How to Play</span>
@@ -569,7 +569,7 @@ const PuzzleGame: React.FC = () => {
                                                     <h2 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg">
                                                         {allUnlocked ? "Ready to Play?" : "Mission Progress"}
                                                     </h2>
-                                                    <p className="text-cyan-300/80 text-base">
+                                                    <p className="text-cyan-300/80 text-base font-mono">
                                                         {allUnlocked
                                                             ? "You've collected all pieces! Remember this picture! 📸"
                                                             : `Complete missions to unlock all 9 pieces! (${unlockedCount}/9)`}
@@ -586,7 +586,7 @@ const PuzzleGame: React.FC = () => {
                                                                 className="h-full bg-linear-to-r from-cyan-500 to-purple-500 rounded-full"
                                                             />
                                                         </div>
-                                                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+                                                        <p className="text-xs font-mono text-slate-400 font-bold uppercase tracking-widest">
                                                             {9 - unlockedCount} MORE PIECES TO GO
                                                         </p>
                                                     </div>
@@ -608,8 +608,8 @@ const PuzzleGame: React.FC = () => {
                                                 </motion.button>
 
                                                 {!allUnlocked && (
-                                                    <p className="text-slate-500 text-sm italic">
-                                                        Finish all lessons to unlock the puzzle game!
+                                                    <p className="text-white/60 text-sm italic font-mono">
+                                                        Finish all missions to unlock the puzzle game!
                                                     </p>
                                                 )}
 

@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import AnimatedBackground from "./animated-background";
-import { calculateLevel, getXPToNextLevel } from "./Header";
+import { calculateLevel } from "./Header";
 import HeaderCoin from "./HeaderCoin";
 import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
 
@@ -112,7 +112,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
 const MissionMap = ({ }) => {
     const location = useLocation()
     const { player, soundEnabled, toggleSound } = useLMSStore();
-    const level = calculateLevel(player.totalXP);
+    const level = calculateLevel(player);
     const [isLevelModalOpen, setIsLevelModalOpen] = useState(false);
     const { playSound, playClose, playClick } = useSound()
     const navigate = useNavigate()

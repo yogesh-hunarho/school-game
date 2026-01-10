@@ -1,7 +1,19 @@
 import { motion } from "framer-motion"
+import { useState } from "react"
 import PuzzleGame from "@/components/PuzzleGame"
+import PuzzleUnlockPreview from "@/components/PuzzleUnlockPreview"
 
 const PuzzlePage = () => {
+    const [showGame, setShowGame] = useState(false)
+
+    const handleStartGame = () => {
+        setShowGame(true)
+    }
+
+    const handleBackToPreview = () => {
+        setShowGame(false)
+    }
+
     return (
         <div className="relative overflow-hidden mt-12">
             {/* Radial gradient background */}
@@ -60,6 +72,7 @@ const PuzzlePage = () => {
                 transition={{ duration: 0.5 }}
             >
                 <PuzzleGame />
+                {/* {showGame ? <PuzzleGame /> : <PuzzleUnlockPreview onStartGame={handleStartGame} />} */}
             </motion.div>
 
             {/* CSS for grid animation */}

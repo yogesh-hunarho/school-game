@@ -3,14 +3,12 @@ import CyberpunkButton from "@/components/ui/cyber-button"
 import { Terminal, Shield, Zap, Target, Sparkles, Rocket, Star, Trophy, Gamepad2, Mail } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useState, useEffect } from "react"
-import FloatingLines from "@/components/floating-lines"
 import TypeWriter from "@/components/typewritter"
 import RotatingText from "@/components/RotatingText"
 import HeaderCoin from "@/components/HeaderCoin"
 import Counter from "@/components/counter"
 import { useIsMobile } from "@/hook/use-mobile"
 import { BorderBeam } from "@/components/BorderBeam"
-import CharacterVideo from "@/components/CharacterVideo"
 
 // Animated counter component
 const AnimatedCounter = ({ value, suffix = "" }) => {
