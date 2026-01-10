@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, animate } from 'framer-motion';
 
-const CyberpunkProgressBar = ({ progress = 0, label = "LOADING", color = "cyan", hideLabel = false }) => {
+const CyberpunkProgressBar = ({ progress = 0, label = "LOADING", height = "5", color = "cyan", hideLabel = false }) => {
     const [displayValue, setDisplayValue] = useState(0);
 
     useEffect(() => {
@@ -65,7 +65,7 @@ const CyberpunkProgressBar = ({ progress = 0, label = "LOADING", color = "cyan",
                 </div>}
             </div>
 
-            <div className="relative h-5 w-full bg-slate-900/80 border border-white/20 -skew-x-12 group">
+            <div className={`relative h-${height} w-full bg-slate-900/80 border border-white/20 -skew-x-12 group`}>
                 {/* Background Pattern */}
                 <div className="absolute inset-0 bg-[linear-gradient(90deg,transparent_50%,rgba(0,0,0,0.4)_50%)] bg-size-[4px_100%] opacity-40 z-10 pointer-events-none" />
 

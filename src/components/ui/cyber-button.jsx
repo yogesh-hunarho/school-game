@@ -15,7 +15,8 @@ const CyberpunkButton = ({
         primary: "bg-cyan-600 text-black hover:bg-cyan-400 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.5)]",
         secondary: "bg-emerald-900/50 text-emerald-200 border-emerald-500 hover:bg-emerald-800/80 hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]",
         danger: "bg-red-900/50 text-red-200 border-red-500 hover:bg-red-800/80 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]",
-        outline: "bg-emerald-300/0.5 text-emerald-200 border-emerald-500 hover:bg-emerald-900/20 hover:text-emerald-200"
+        outline: "bg-emerald-300/0.5 text-emerald-200 border-emerald-500 hover:bg-emerald-900/20 hover:text-emerald-200",
+        puzzle: "bg-yellow-300 text-black px-3! py-1.5! text-xs"
     };
 
     return (

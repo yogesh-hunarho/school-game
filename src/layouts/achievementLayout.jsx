@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 import AchievementCollectionModal from "@/components/modals/AchievementCollectionModal";
 import useSound from "@/hook/useSound";
+import { useIsMobile } from "@/hook/use-mobile";
 
 const ACHIEVEMENT_DEFINITIONS = [
     {
@@ -137,6 +138,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
     const isCollected = collectedAchievements.includes(achievement.id);
     const showCollectButton = isUnlocked && !isCollected;
     const { playSound } = useSound();
+    const isMobile = useIsMobile()
 
     return (
         <motion.div
@@ -170,7 +172,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
 
             {/* Icons (Top Right) */}
             <div className="absolute top-4 right-6 z-20 transition-all duration-500 group-hover:opacity-0 group-hover:scale-50">
-                <div className={cn(
+                {/* <div className={cn(
                     "w-7 h-7 flex items-center justify-center rounded-full backdrop-blur-md border shadow-lg",
                     isUnlocked
                         ? "bg-yellow-500/20 border-yellow-500/50 text-yellow-500"
@@ -181,7 +183,20 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                     ) : (
                         <Lock className="w-3.5 h-3.5" />
                     )}
-                </div>
+                </div> */}
+                {isUnlocked && isMobile && (
+                    <CyberpunkButton
+                        variant="puzzle"
+                        className={"py-0 px-1"}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setProfileImage(achievement.image);
+                        }}
+                        disabled={isCurrentAvatar}
+                    >
+                        {isCurrentAvatar ? "Active" : "Set Avatar"}
+                    </CyberpunkButton>
+                )}
             </div>
 
             {/* Expanding Bottom Panel */}
@@ -213,18 +228,15 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
 
                     {/* Bottom Action Area */}
                     <div className="mt-auto flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-300">
-
                         {isUnlocked && (
                             <CyberpunkButton
-                                variant={"secondary"}
+                                variant="puzzle"
+                                className={"py-0 px-1"}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setProfileImage(achievement.image);
                                 }}
                                 disabled={isCurrentAvatar}
-                                className={cn(
-                                    "px-1 py-1 text-[12px] bg-lime-500 hover:bg-lime-600 text-black!")}
-
                             >
                                 {isCurrentAvatar ? "Active" : "Set Avatar"}
                             </CyberpunkButton>
@@ -244,7 +256,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                         style={{
                             clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'
                         }}
-                        className="relative border border-yellow-500 px-8 py-3 bg-linear-to-r from-yellow-400 to-orange-400 font-black text-base uppercase tracking-wider text-black shadow-[0_0_30px_rgba(250,204,21,0.6)] hover:scale-110 active:scale-95 transition-transform overflow-hidden group"
+                        className="relative border border-yellow-500 px-5 py-2 bg-linear-to-r from-yellow-400 to-orange-400 font-black text-xs uppercase tracking-wider text-black shadow-[0_0_30px_rgba(250,204,21,0.6)] hover:scale-110 active:scale-95 transition-transform overflow-hidden group"
                     >
                         <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
                         <span className="relative z-10 text-white">Collect</span>
@@ -276,6 +288,10 @@ const AchievementLayout = () => {
         setShowModal(true);
     };
 
+    const playPuzzle = () => {
+        navigate('/puzzle');
+    }
+
     const handleCollect = () => {
         if (selectedAchievement) {
             collectAchievement(selectedAchievement.id);
@@ -305,67 +321,65 @@ const AchievementLayout = () => {
             </div>
 
             <div className="relative xl:max-w-7xl lg:max-w-6xl md:max-w-5xl max-w-4xl mx-auto flex flex-col pt-20">
-                {/* Custom Header matching Reference Image */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-6 bg-black/40 backdrop-blur-xl p-4 md:p-6 rounded-2xl border border-white/5 shadow-2xl">
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={handleBack}
-                            className="p-2 hover:bg-white/10 rounded-xl transition-colors text-zinc-400 hover:text-white"
-                        >
-                            <ArrowLeft className="w-6 h-6" />
-                        </button>
-                        <h1 className="text-2xl md:text-3xl font-black tracking-tighter italic uppercase text-white">
-                            ACHIEVEMENTS
-                        </h1>
-                    </div>
+                <main className="p-4">
+                    <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 bg-black/40 backdrop-blur-xl p-2 md:p-3 border border-white/5 shadow-2xl">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={handleBack}
+                                className="p-2 hover:bg-white/10 rounded-xl transition-colors text-zinc-400 hover:text-white"
+                            >
+                                <ArrowLeft className="w-6 h-6" />
+                            </button>
+                            <h1 className="text-md md:text-lg font-black tracking-wider italic uppercase text-white">
+                                ACHIEVEMENTS
+                            </h1>
+                        </div>
 
-                    <div className="flex flex-wrap items-center gap-4 md:gap-8">
-
-
-                        {/* Progress Bar Display */}
-                        <div className="flex flex-col gap-1.5 min-w-[200px]">
-                            <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest text-zinc-400">
-                                <span>Missions Completed</span>
-                                <span className="text-white">{completedMissions}/{totalMissions}</span>
+                        <div className="flex flex-wrap items-end justify-between gap-4 md:gap-8">
+                            <div className="flex flex-col gap-1.5 min-w-[200px]">
+                                <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest text-zinc-400">
+                                    <span>Missions Completed</span>
+                                    <span className="text-white">{completedMissions}/{totalMissions}</span>
+                                </div>
+                                <div className="h-4 flex items-center">
+                                    <CyberpunkProgressBar height="4" progress={(completedMissions / totalMissions || 0) * 100} hideLabel />
+                                </div>
                             </div>
-                            <div className="h-4 bg-zinc-800 rounded-full border border-white/5 p-1 flex items-center">
-                                <motion.div
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${(completedMissions / totalMissions || 0) * 100}%` }}
-                                    className="h-full bg-linear-to-r from-blue-500 to-cyan-400 rounded-full relative shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                            <div>
+                                <CyberpunkButton
+                                    variant="puzzle"
+                                    className={"py-0 px-1"}
+                                    onClick={playPuzzle}
                                 >
-                                    <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full" />
-                                </motion.div>
+                                    Play Puzzle
+                                </CyberpunkButton>
                             </div>
                         </div>
-                    </div>
-                </header>
+                    </header>
 
-
-                <motion.div
-                    layout
-                    className="grid grid-cols-2 lg:grid-cols-5 gap-3 md:gap-5"
-                >
-                    <AnimatePresence mode="popLayout">
-                        {filteredAchievements.map((ach) => (
-                            <AchievementCard
-                                key={ach.id}
-                                achievement={ach}
-                                isUnlocked={ach.check(player, getModuleProgress)}
-                                progress={ach.getProgress(player, getModuleProgress)}
-                                onCollectClick={handleCollectClick}
-                            />
-                        ))}
-                    </AnimatePresence>
-                </motion.div>
-
-                {/* Single Modal for all achievements */}
-                <AchievementCollectionModal
-                    achievement={selectedAchievement}
-                    isOpen={showModal}
-                    onClose={() => setShowModal(false)}
-                    onCollect={handleCollect}
-                />
+                    <motion.div
+                        layout
+                        className="grid grid-cols-1 lg:grid-cols-5 gap-3 md:gap-5"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {filteredAchievements.map((ach) => (
+                                <AchievementCard
+                                    key={ach.id}
+                                    achievement={ach}
+                                    isUnlocked={ach.check(player, getModuleProgress)}
+                                    progress={ach.getProgress(player, getModuleProgress)}
+                                    onCollectClick={handleCollectClick}
+                                />
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
+                    <AchievementCollectionModal
+                        achievement={selectedAchievement}
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                        onCollect={handleCollect}
+                    />
+                </main>
             </div>
         </div>
     );
