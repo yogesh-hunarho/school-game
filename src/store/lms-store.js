@@ -206,7 +206,7 @@ const initialPlayerState = {
     unlockedPuzzleCount: 0,
     coins: 1000, // Initial coins for testing
     spinHistory: [], // Array of { id, date, reward, type }
-    profileImage: "/src/assets/achievements/badge1.png", // Default avatar
+    profileImage: "/assets/achievements/badge1.png", // Default avatar
     collectedAchievements: [], // Array of achievement IDs that have been collected
 };
 
@@ -249,6 +249,15 @@ export const useLMSStore = create(
             // Settings
             soundEnabled: true,
             toggleSound: () => set((state) => ({ soundEnabled: !state.soundEnabled })),
+
+            // Instructor state
+            instructor: {
+                enabled: true,
+                visitedPages: [],
+                skipList: [],
+                currentDialogue: null,
+                isActive: false
+            },
 
             // Mission Transition Actions
 
@@ -440,6 +449,51 @@ export const useLMSStore = create(
                 }
             })),
 
+            // Instructor Actions
+            toggleInstructor: () => set((state) => ({
+                instructor: {
+                    ...state.instructor,
+                    enabled: !state.instructor.enabled
+                }
+            })),
+
+            markPageVisited: (pageId) => set((state) => ({
+                instructor: {
+                    ...state.instructor,
+                    visitedPages: state.instructor.visitedPages.includes(pageId)
+                        ? state.instructor.visitedPages
+                        : [...state.instructor.visitedPages, pageId]
+                }
+            })),
+
+            skipPageInstructor: (pageId) => set((state) => ({
+                instructor: {
+                    ...state.instructor,
+                    skipList: state.instructor.skipList.includes(pageId)
+                        ? state.instructor.skipList
+                        : [...state.instructor.skipList, pageId],
+                    visitedPages: state.instructor.visitedPages.includes(pageId)
+                        ? state.instructor.visitedPages
+                        : [...state.instructor.visitedPages, pageId]
+                }
+            })),
+
+            showInstructor: (config) => set({
+                instructor: {
+                    ...get().instructor,
+                    currentDialogue: config,
+                    isActive: true
+                }
+            }),
+
+            hideInstructor: () => set((state) => ({
+                instructor: {
+                    ...state.instructor,
+                    currentDialogue: null,
+                    isActive: false
+                }
+            })),
+
             // Reset progress (for testing)
             resetProgress: () => set({ player: initialPlayerState }),
         }),
@@ -482,6 +536,7 @@ export const useLMSStore = create(
             partialize: (state) => ({
                 player: state.player,
                 soundEnabled: state.soundEnabled,
+                instructor: state.instructor,
             }),
         }
     )

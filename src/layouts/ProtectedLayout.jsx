@@ -15,6 +15,8 @@ import VideoQuizConfettiEffect from "@/components/videoquiz-confetti-effect";
 import { cn } from "@/lib/utils";
 import { CoinFlyAnimation } from "@/components/CoinFlyAnimation";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { InstructorProvider } from "@/provider/InstructorProvider";
+import '@/styles/instructor-animations.css';
 
 const navLinks = [
     {
@@ -57,68 +59,70 @@ export default function ProtectedLayout() {
     const dockWidth = isDockHovered ? 320 : 250;
 
     return (
-        <ClickSpark
-            sparkColor='#fff'
-            sparkSize={10}
-            sparkRadius={15}
-            sparkCount={8}
-            duration={400}
-        >
-            <div className="relative w-full max-h-dvh flex flex-col">
-                {/* {location.pathname !== "/" && (
+        <InstructorProvider>
+            <ClickSpark
+                sparkColor='#fff'
+                sparkSize={10}
+                sparkRadius={15}
+                sparkCount={8}
+                duration={400}
+            >
+                <div className="relative w-full max-h-dvh flex flex-col">
+                    {/* {location.pathname !== "/" && (
                     <>
                         <ShootingStars starCount={20} className="pointer-events-none z-0" />
                         <StarsBackground className="pointer-events-none z-0" />
                         <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
                     </>
                 )} */}
-                <CoinFlyAnimation />
+                    <CoinFlyAnimation />
 
-                <Header />
+                    <Header />
 
-                <main className={cn("relative flex-1 z-10 mb-16")}>
-                    <div className="absolute inset-0 ">
-                        <img
-                            src="/assets/images/bg-2.png"
-                            alt="Background"
-                            className="w-full h-full object-cover opacity-40"
-                        />
-                    </div>
-                    <div className="relative z-10">
-                        {/* <>
+                    <main className={cn("relative flex-1 z-10 mb-16")}>
+                        <div className="absolute inset-0 ">
+                            <img
+                                src="/assets/images/bg-2.png"
+                                alt="Background"
+                                className="w-full h-full object-cover opacity-40"
+                            />
+                        </div>
+                        <div className="relative z-10">
+                            {/* <>
                             <ShootingStars starCount={20} className="pointer-events-none z-0" />
                             <StarsBackground className="pointer-events-none z-0" />
                             <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
                         </> */}
-                        <Outlet />
-                    </div>
-                </main>
+                            <Outlet />
+                        </div>
+                    </main>
 
-                {location.pathname !== "/" && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-                    <GlassSurface
-                        width={dockWidth}
-                        borderRadius={20}
-                        height={64}
-                        backgroundOpacity={0.48}
-                        displace={5.0}
-                        borderWidth={1}
-                        style={{
-                            transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                    >
-                        <FloatingDock
-                            items={navLinks}
-                            onHoverChange={setIsDockHovered}
-                        />
-                    </GlassSurface>
-                </div>}
+                    {location.pathname !== "/" && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+                        <GlassSurface
+                            width={dockWidth}
+                            borderRadius={20}
+                            height={64}
+                            backgroundOpacity={0.48}
+                            displace={5.0}
+                            borderWidth={1}
+                            style={{
+                                transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                        >
+                            <FloatingDock
+                                items={navLinks}
+                                onHoverChange={setIsDockHovered}
+                            />
+                        </GlassSurface>
+                    </div>}
 
-                <ConfettiEffect />
-                <VideoQuizConfettiEffect />
-                <ModuleUnlockAnimation />
-                <ScrollRestoration />
-                <TailwindIndicator />
-            </div>
-        </ClickSpark>
+                    <ConfettiEffect />
+                    <VideoQuizConfettiEffect />
+                    <ModuleUnlockAnimation />
+                    <ScrollRestoration />
+                    <TailwindIndicator />
+                </div>
+            </ClickSpark>
+        </InstructorProvider>
     );
 }

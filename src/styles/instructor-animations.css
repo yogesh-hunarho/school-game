@@ -1,0 +1,184 @@
+/* Instructor Animation Styles */
+
+/* Shake animation - subtle left-right wobble for UI hints */
+@keyframes instructorShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+/* Neon pulse glow effect */
+@keyframes neonPulse {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--color-cyan-500, #00ffff), 
+                0 0 20px var(--color-cyan-500, #00ffff); 
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--color-cyan-500, #00ffff), 
+                0 0 40px var(--color-cyan-500, #00ffff), 
+                0 0 60px var(--color-cyan-500, #00ffff); 
+  }
+}
+
+/* Slide in from bottom animation */
+@keyframes slideInBottom {
+  from { 
+    transform: translateY(100%) scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* Slide in from bottom-right corner */
+@keyframes slideInBottomRight {
+  from { 
+    transform: translate(50%, 100%) scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translate(0, 0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* Slide in from bottom-left corner */
+@keyframes slideInBottomLeft {
+  from { 
+    transform: translate(-50%, 100%) scale(0.8); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translate(0, 0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Scanning line effect */
+@keyframes scanningLine {
+  0% { 
+    transform: translateY(-100%); 
+    opacity: 0; 
+  }
+  10% { 
+    opacity: 1; 
+  }
+  90% { 
+    opacity: 1; 
+  }
+  100% { 
+    transform: translateY(100%); 
+    opacity: 0; 
+  }
+}
+
+/* Highlight outline animation */
+@keyframes highlightOutline {
+  0%, 100% { 
+    outline-offset: 0px;
+    outline-color: rgba(0, 255, 255, 1);
+  }
+  50% { 
+    outline-offset: 8px;
+    outline-color: rgba(0, 255, 255, 0.5);
+  }
+}
+
+/* Utility classes for instructor animations */
+.instructor-shake {
+  animation: instructorShake 0.6s ease-in-out;
+}
+
+.instructor-pulse {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.instructor-slide-in-bottom {
+  animation: slideInBottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.instructor-slide-in-right {
+  animation: slideInBottomRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.instructor-slide-in-left {
+  animation: slideInBottomLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.instructor-fade-out {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* UI Highlight overlay styles */
+.ui-highlight-overlay {
+  pointer-events: none;
+  z-index: 9998;
+  position: fixed;
+  outline: 3px solid var(--color-cyan-500, #00ffff);
+  border-radius: 8px;
+  box-shadow: 0 0 20px var(--color-cyan-500, #00ffff),
+              0 0 40px var(--color-cyan-500, #00ffff),
+              inset 0 0 20px rgba(0, 255, 255, 0.2);
+  animation: highlightOutline 1.5s ease-in-out infinite;
+}
+
+.ui-highlight-overlay.shake {
+  animation: instructorShake 0.6s ease-in-out, 
+             highlightOutline 1.5s ease-in-out infinite;
+}
+
+.ui-highlight-overlay.glow {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+.ui-highlight-overlay.scan::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--color-cyan-500, #00ffff), 
+    transparent
+  );
+  animation: scanningLine 2s ease-in-out infinite;
+}
+
+/* Typewriter cursor blink */
+@keyframes cursorBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  animation: cursorBlink 1s step-end infinite;
+}
+
+/* Holographic shimmer effect */
+@keyframes holographicShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.holographic-effect {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.3) 25%,
+    rgba(255, 0, 255, 0.3) 50%,
+    rgba(0, 255, 255, 0.3) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: holographicShimmer 3s linear infinite;
+}
