@@ -24,6 +24,7 @@ import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-prog
 import AchievementCollectionModal from "@/components/modals/AchievementCollectionModal";
 import useSound from "@/hook/useSound";
 import { useIsMobile } from "@/hook/use-mobile";
+import PuzzleUnlockPreview from "@/components/PuzzleUnlockPreview";
 
 const ACHIEVEMENT_DEFINITIONS = [
     {
@@ -379,6 +380,7 @@ const AchievementLayout = () => {
                         onClose={() => setShowModal(false)}
                         onCollect={handleCollect}
                     />
+                    <PuzzleUnlockPreview onStartGame={() => { }} />
                 </main>
             </div>
         </div>
