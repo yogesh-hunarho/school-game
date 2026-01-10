@@ -188,9 +188,9 @@ const PuzzleUnlockPreview = () => {
     }
 
     return (
-        <div className="relative text-white overflow-hidden border-2 border-cyan-400 p-4 mt-5">
+        <div className="relative text-white overflow-hidden border-2 border-emerald-400 p-4 mt-5">
             <div className="w-full flex flex-col items-start text-start mb-3">
-                <h2 className="text-lg font-mono md:text-xl font-bold tracking-wide text-cyan-400">
+                <h2 className="text-lg font-mono md:text-xl font-bold tracking-wide text-emerald-400">
                     Puzzle Unlock Grid
                 </h2>
                 <p className="text-xs font-mono md:text-sm text-zinc-400 leading-relaxed">
@@ -209,8 +209,8 @@ const PuzzleUnlockPreview = () => {
                                 initial={{ scale: 0.85, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: index * 0.05 }}
-                                className={`relative shrink-0 w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 overflow-hidden transition-all duration-500
-                                ${isUnlocked ? "ring-2 ring-cyan-500/40" : "ring-1 ring-white/10 grayscale"}
+                                className={`relative shrink-0 w-[140px] h-[140px] overflow-hidden transition-all duration-500
+                                ${isUnlocked ? "ring-2 ring-emerald-500/40" : "ring-1 ring-white/10 grayscale"}
                             `}
                             >
                                 {/* IMAGE SLICE */}

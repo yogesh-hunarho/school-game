@@ -32,15 +32,24 @@ const mockQuestions = [
     },
 ];
 
-export const QuizModal = ({ open, onOpenChange }) => {
+export const QuizModal = ({ open, onOpenChange, type = "quiz" }) => {
     const {
         selectedQuiz,
+        selectedAssessment,
         closeQuizModal,
+        closeAssessmentModal,
         completeQuiz,
+        completeAssessment,
         player,
         isQuizCompleted,
+        isAssessmentCompleted,
         toggleVideoQuizConfetti
     } = useLMSStore();
+
+    const selectedItem = type === "quiz" ? selectedQuiz : selectedAssessment;
+    const closeCenterModal = type === "quiz" ? closeQuizModal : closeAssessmentModal;
+    const completeActivity = type === "quiz" ? completeQuiz : completeAssessment;
+    const isActivityCompleted = type === "quiz" ? isQuizCompleted : isAssessmentCompleted;
     const triggerStarAnimation = useLMSStore((s) => s.triggerStarAnimation);
 
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -48,6 +57,13 @@ export const QuizModal = ({ open, onOpenChange }) => {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [score, setScore] = useState(0);
     const { playClick, playClose, playSound } = useSound();
+
+    const questions = mockQuestions;
+    const totalQuestions = questions.length;
+    const currentQuestion = questions[currentQuestionIdx];
+
+    // Check if already completed
+    const alreadyCompleted = isActivityCompleted(player.currentModuleId, selectedItem?.id);
 
     // Reset state when modal opens
     useEffect(() => {
@@ -58,15 +74,6 @@ export const QuizModal = ({ open, onOpenChange }) => {
             setScore(0);
         }
     }, [open]);
-
-    if (!selectedQuiz) return null;
-
-    const questions = mockQuestions;
-    const currentQuestion = questions[currentQuestionIdx];
-    const totalQuestions = questions.length;
-
-    // Check if already completed
-    const alreadyCompleted = isQuizCompleted(player.currentModuleId, selectedQuiz.id);
 
     const handleOptionSelect = (optionIdx) => {
         if (isSubmitted || alreadyCompleted) return;
@@ -88,8 +95,59 @@ export const QuizModal = ({ open, onOpenChange }) => {
         }
     };
 
+    // Keyboard shortcuts
+    useEffect(() => {
+        if (!open) return;
+
+        const handleKeyDown = (e) => {
+            // Options 1-4
+            if (e.key >= '1' && e.key <= '4') {
+                const optIdx = parseInt(e.key) - 1;
+                if (currentQuestion.options[optIdx]) {
+                    handleOptionSelect(optIdx);
+                }
+            }
+
+            // Navigation
+            if (e.key === 'ArrowRight') {
+                if (!isSubmitted && !alreadyCompleted && currentQuestionIdx < totalQuestions - 1) {
+                    handleNext();
+                }
+            }
+            if (e.key === 'ArrowLeft') {
+                if (!isSubmitted && !alreadyCompleted && currentQuestionIdx > 0) {
+                    handlePrev();
+                }
+            }
+
+            // Submit / Close / Next
+            if (e.key === 'Enter') {
+                if (isSubmitted || alreadyCompleted) {
+                    closeCenterModal();
+                } else if (currentQuestionIdx === totalQuestions - 1) {
+                    if (Object.keys(answers).length === totalQuestions) {
+                        const submitBtn = document.getElementById('quiz-submit-btn');
+                        if (submitBtn) submitBtn.click();
+                    }
+                } else if (answers[currentQuestionIdx] !== undefined) {
+                    handleNext();
+                }
+            }
+
+            // Escape to close
+            if (e.key === 'Escape') {
+                onOpenChange(false);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [open, currentQuestionIdx, answers, isSubmitted, alreadyCompleted, totalQuestions, closeCenterModal, onOpenChange]);
+
+    if (!selectedItem) return null;
+
     const handleSubmit = (e) => {
-        const rect = e.currentTarget.getBoundingClientRect();
+        const rect = e?.currentTarget?.getBoundingClientRect() || { left: window.innerWidth / 2, top: window.innerHeight / 2, width: 0, height: 0 };
         let correctCount = 0;
         questions.forEach((q, idx) => {
             if (answers[idx] === q.correct) correctCount++;
@@ -103,9 +161,9 @@ export const QuizModal = ({ open, onOpenChange }) => {
                 x: rect.left + rect.width / 2,
                 y: (rect.top - 30) + rect.height / 2,
             },
-            selectedQuiz.xp
+            selectedItem.xp
         );
-        completeQuiz(player.currentModuleId, selectedQuiz.id);
+        completeActivity(player.currentModuleId, selectedItem.id);
     };
 
     const handleCloseModal = (open) => {
@@ -117,7 +175,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
 
     return (
         <Dialog open={open} onOpenChange={handleCloseModal}>
-            <DialogContent className="w-full md:min-w-6xl p-0 overflow-hidden shadow-none ring-0 border-none bg-transparent">
+            <DialogContent className="w-full md:min-w-6xl p-0 overflow-hidden shadow-none ring-0 border-none bg-transparent font-mono">
                 <div className="relative bg-slate-950/98">
                     {/* Scanline overlay */}
                     <div className="pointer-events-none absolute inset-0 z-30 opacity-[0.02] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
@@ -147,7 +205,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
                         <DialogHeader className="flex flex-row items-center justify-between mb-6 space-y-0">
                             <div>
                                 <DialogTitle className="text-lg font-bold text-yellow-400 mb-1 uppercase tracking-wide">
-                                    {selectedQuiz.title}
+                                    {selectedItem.title}
                                 </DialogTitle>
                                 {!isSubmitted && !alreadyCompleted && (
                                     <p className="text-[11px] text-slate-500 font-mono uppercase tracking-widest">
@@ -241,6 +299,11 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                                             {String.fromCharCode(64 + (idx + 1))}
                                                         </span>
                                                         <span className="text-xs md:text-sm uppercase tracking-wide">{option}</span>
+
+                                                        {/* Shortcut Hint */}
+                                                        <span className="ml-auto text-[10px] font-mono text-slate-500 border border-slate-700 px-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            KEY {idx + 1}
+                                                        </span>
                                                     </div>
                                                 </button>
                                             ))}
@@ -248,9 +311,9 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                     </div>
 
                                     {/* Desktop: Right Column - Question Grid Navigation */}
-                                    <div className="md:col-span-1 border-l border-cyan-400/10 pl-6 hidden md:block">
+                                    <div className="md:col-span-1 border-l border-cyan-400/10 pl-6 hidden md:flex flex-col">
                                         <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Question Matrix</h3>
-                                        <div className="grid grid-cols-4 gap-2">
+                                        <div className="grid grid-cols-4 gap-2 mb-8">
                                             {questions.map((_, i) => (
                                                 <button
                                                     key={i}
@@ -276,10 +339,20 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                             ))}
                                         </div>
 
+                                        {/* Keyboard Navigation Info */}
+                                        <div className="mt-auto space-y-4 border-t border-cyan-400/10 pt-6">
+                                            <h3 className="text-[10px] font-bold text-yellow-400 uppercase tracking-[0.2em] mb-3">Keyboard Shortcuts</h3>
+                                            <div className="space-y-2">
+                                                <ShortcutItem keys={["1", "2", "3", "4"]} label="Select Option" />
+                                                <ShortcutItem keys={["←", "→"]} label="Navigate Questions" />
+                                                <ShortcutItem keys={["Enter"]} label="Submit / Next" />
+                                                <ShortcutItem keys={["Esc"]} label="Abort Mission" />
+                                            </div>
+                                        </div>
+
                                         {/* Status Messages */}
                                         <div className="mt-8 space-y-4">
                                             <div className="text-[10px] text-slate-500 font-mono space-y-1">
-
                                                 <div className="flex justify-between">
                                                     <span>PROGRESS:</span>
                                                     <span className="text-cyan-400">{Math.round((Object.keys(answers).length / totalQuestions) * 100)}%</span>
@@ -317,7 +390,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                             <span className="text-[10px] text-slate-500 uppercase tracking-widest">Coin ACQUIRED</span>
                                             <span className="text-yellow-400 font-bold flex items-center gap-1">
                                                 <Zap className="w-3.5 h-3.5" />
-                                                +{selectedQuiz.xp} Coin
+                                                +{selectedItem.xp} Coin
                                             </span>
                                         </div>
                                         <div className="relative h-1.5 bg-slate-800 overflow-hidden">
@@ -328,6 +401,10 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                                 transition={{ duration: 1, ease: "easeOut" }}
                                             />
                                         </div>
+                                    </div>
+
+                                    <div className="text-[10px] text-slate-500 font-mono flex items-center gap-2">
+                                        <kbd className="px-1.5 py-0.5 border border-slate-700 rounded bg-slate-900">Enter</kbd> to close
                                     </div>
                                 </div>
                             )}
@@ -347,20 +424,23 @@ export const QuizModal = ({ open, onOpenChange }) => {
                             >
                                 <ArrowLeft className="w-3.5 h-3.5" />
                                 PREV
+                                <span className="ml-2 text-[9px] text-slate-600 font-mono hidden md:inline">[←]</span>
                             </button>
 
                             {isSubmitted || alreadyCompleted ? (
                                 <button
-                                    onClick={closeQuizModal}
+                                    onClick={closeCenterModal}
                                     className="relative px-6 py-2.5 bg-cyan-400 text-slate-900 font-bold text-xs uppercase tracking-widest hover:bg-cyan-300 transition-colors shadow-[0_0_15px_rgba(34,211,238,0.3)]"
                                 >
                                     <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-slate-900" />
                                     <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-slate-900" />
                                     CLOSE
+                                    <span className="ml-2 text-[9px] opacity-70 font-mono hidden md:inline">[ENT]</span>
                                 </button>
                             ) : (
                                 currentQuestionIdx === totalQuestions - 1 ? (
                                     <button
+                                        id="quiz-submit-btn"
                                         onClick={handleSubmit}
                                         disabled={Object.keys(answers).length < totalQuestions}
                                         className={cn(
@@ -373,6 +453,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                         <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-slate-900" />
                                         <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-slate-900" />
                                         SUBMIT <CheckCircle2 className="w-3.5 h-3.5" />
+                                        <span className="ml-2 text-[9px] opacity-70 font-mono hidden md:inline">[ENT]</span>
                                     </button>
                                 ) : (
                                     <button
@@ -386,6 +467,7 @@ export const QuizModal = ({ open, onOpenChange }) => {
                                         )}
                                     >
                                         NEXT <ArrowRight className="w-3.5 h-3.5" />
+                                        <span className="ml-2 text-[9px] text-cyan-400/60 font-mono hidden md:inline">[→]</span>
                                     </button>
                                 )
                             )}
@@ -399,3 +481,16 @@ export const QuizModal = ({ open, onOpenChange }) => {
         </Dialog>
     );
 };
+
+const ShortcutItem = ({ keys, label }) => (
+    <div className="flex items-center justify-between group/item">
+        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{label}</span>
+        <div className="flex gap-1">
+            {keys.map(key => (
+                <kbd key={key} className="min-w-[1.25rem] h-5 flex items-center justify-center px-1 text-[9px] font-mono font-bold text-cyan-400 bg-cyan-400/5 border border-cyan-400/20 rounded">
+                    {key}
+                </kbd>
+            ))}
+        </div>
+    </div>
+);

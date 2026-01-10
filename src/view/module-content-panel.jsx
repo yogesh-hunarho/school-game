@@ -66,6 +66,7 @@ export const ModuleContentPanel = () => {
         isQuizCompleted,
         openVideoModal,
         openQuizModal,
+        openAssessmentModal,
         getModuleProgress,
     } = useLMSStore();
     const { playSound, playClick } = useSound();
@@ -345,7 +346,7 @@ export const ModuleContentPanel = () => {
                                         whileHover={!isVideoLocked ? { y: -6 } : {}}
                                         whileTap={!isVideoLocked ? { scale: 0.98 } : {}}
                                         onClick={(e) => handleItemClick(e, video.id, isVideoLocked, () => openVideoModal(video))}
-                                        disabled={isVideoLocked}
+                                        // disabled={isVideoLocked}
                                         className={cn(
                                             "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 overflow-hidden",
                                             "transition-all duration-500",
@@ -567,11 +568,6 @@ export const ModuleContentPanel = () => {
                         </h3>
 
                         <motion.div
-                            variants={{
-                                visible: { transition: { staggerChildren: 0.1 } }
-                            }}
-                            initial="hidden"
-                            animate="visible"
                             className={cn("grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6", glitch && "animate-glitch")}
                         >
                             {content.quizzes.map((quiz, index) => {
@@ -652,15 +648,15 @@ export const ModuleContentPanel = () => {
 
                                         {/* Action Button Section */}
                                         <div className="mt-auto p-4 pt-0">
-                                            <motion.button
-                                                onClick={(e) => handleItemClick(e, quiz.id, isQuizLocked, () => openQuizModal(quiz))}
-                                                disabled={isQuizLocked}
-                                                whileHover={!isQuizLocked ? { scale: 1.02 } : {}}
-                                                whileTap={!isQuizLocked ? { scale: 0.98 } : {}}
+                                            <motion.div
                                                 className={cn(
-                                                    "w-full relative group/btn h-12 overflow-hidden transition-all duration-300",
-                                                    isQuizLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                                    "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 overflow-hidden",
+                                                    "transition-all duration-500",
+                                                    isClicked && "scale-95",
+                                                    isQuizLocked && "cursor-not-allowed animate-shake opacity-80"
                                                 )}
+
+                                                onClick={(e) => handleItemClick(e, quiz.id, isQuizLocked, () => openQuizModal(quiz))}
                                             >
                                                 <CyberpunkButton
                                                     variant={isQuizLocked ? "danger" : "secondary"}
@@ -685,7 +681,7 @@ export const ModuleContentPanel = () => {
                                                 {!isQuizLocked && (
                                                     <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer" />
                                                 )}
-                                            </motion.button>
+                                            </motion.div>
                                         </div>
 
                                         {/* Corner Accents */}
@@ -708,16 +704,18 @@ export const ModuleContentPanel = () => {
                 {/* Assessments Section */}
                 {content.assessments?.length > 0 && (
                     <motion.section
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.4 }}
-                        className="mb-12"
+                        className={"mb-12"}
                     >
-                        <h3 className="mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-emerald-300">
+                        <h3 className={cn("mb-6 flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-emerald-300")}>
                             <div className="p-3 bg-emerald-400/10 border border-emerald-400/30 ">
                                 <Trophy className="h-5 w-5" />
                             </div>
-                            <span>Final Assessments ({content.assessments.length})</span>
+                            <div className="italic text-emerald-300">
+                                <TypeWriter
+                                    text={`Final Assessments, Claim Your Certification (${content.assessments.length})`}
+                                    delay={30}
+                                />
+                            </div>
                         </h3>
 
                         <motion.div
@@ -726,147 +724,138 @@ export const ModuleContentPanel = () => {
                             }}
                             initial="hidden"
                             animate="visible"
-                            className="flex flex-col gap-8"
+                            className={cn("grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6", glitch && "animate-glitch")}
                         >
                             {content.assessments.map((assessment, index) => {
-                                // For assessments, they are typically unlocked only after all other content (videos & quizzes) is done
+                                const isCompleted = player.progress[moduleId]?.completedAssessments?.includes(assessment.id) || false;
+                                const isClicked = clickedId === assessment.id;
+
+                                // Sequential logic for assessments:
+                                // 1. All quizzes in module must be completed
                                 const allQuizzesCompleted = content.quizzes.every(q => isQuizCompleted(moduleId, q.id));
-                                const previousAssessmentsCompleted = index === 0 || false; // Currently no store method for assessment completion shown in viewed items, but usually there's only one.
                                 const isAssessmentLocked = moduleStatus === "locked" || !allQuizzesCompleted;
 
                                 return (
                                     <motion.div
                                         key={assessment.id}
                                         variants={cardVariants}
+                                        onMouseEnter={() => setGlitch(true)}
+                                        onMouseLeave={() => setGlitch(false)}
                                         className={cn(
-                                            "relative flex flex-col w-full group overflow-hidden border border-emerald-500/30 bg-slate-900/60 transition-all duration-500",
+                                            "relative flex flex-col w-full group overflow-hidden border border-emerald-500/20 bg-slate-900/40 backdrop-blur-md transition-all duration-500",
                                             shakingId === assessment.id && "animate-shake",
-                                            isAssessmentLocked && "opacity-60 grayscale-[0.5]"
+                                            isClicked && "scale-[0.98]",
+                                            isAssessmentLocked && "opacity-60 grayscale-[0.8]",
+                                            !isAssessmentLocked && "hover:border-emerald-400/50 hover:shadow-[0_0_30px_rgba(52,211,153,0.1)]"
                                         )}
                                     >
-                                        {/* Top Header Bar */}
-                                        <div className="flex items-center gap-3 bg-slate-950/80 px-4 py-1.5 border-b border-emerald-500/20">
-                                            <div className="flex items-center gap-2">
-                                                <div className="p-0.5 bg-emerald-400/20 border border-emerald-400/40 rounded">
-                                                    <Trophy className="h-3 w-3 text-emerald-400" />
-                                                </div>
-                                                <span className="text-[10px] font-bold text-emerald-400/90 uppercase tracking-widest font-mono">
-                                                    Final Certification
-                                                </span>
-                                            </div>
-                                        </div>
+                                        {/* Image Header Area */}
+                                        <div className="relative aspect-video w-full overflow-hidden bg-slate-950/50">
+                                            {/* Top Gradient Overlay */}
+                                            <div className="absolute inset-0 bg-linear-to-b from-slate-950/60 via-transparent to-transparent z-10" />
 
-                                        <div className="flex flex-col sm:flex-row p-4 gap-6">
-                                            {/* Left Icon Panel */}
-                                            <div className="flex items-center justify-center bg-teal-900/40 border border-teal-400/30 p-4 sm:w-40 relative overflow-hidden group/icon shrink-0">
-                                                <div className="absolute inset-0 bg-linear-to-br from-emerald-500/10 to-transparent group-hover/icon:opacity-100 transition-opacity" />
-                                                <Trophy className="h-20 w-20 text-emerald-200/80 relative z-10 transition-transform duration-500 group-hover/icon:scale-110 drop-shadow-[0_0_15px_rgba(52,211,153,0.5)]" />
+                                            {/* Assessment Icon/Character */}
+                                            <div className="absolute inset-0 w-full">
+                                                <motion.img
+                                                    src={`/assets/icon/question-${(index % 3) + 1}.png`}
+                                                    alt=""
+                                                    className="z-10 h-72 w-full transition-all duration-700 animate-pulse"
+                                                />
                                             </div>
 
-                                            {/* Info Section */}
-                                            <div className="flex-1 flex flex-col justify-center gap-2">
-                                                <div className="flex flex-col">
-                                                    <h4 className="text-2xl font-black text-emerald-400 uppercase tracking-tighter leading-none italic">
-                                                        {assessment.title}
-                                                    </h4>
-                                                    <p className="text-[10px] text-teal-300/60 font-medium uppercase tracking-[0.2em] mt-1">
-                                                        {moduleId.replace(/-/g, ' ')} Final Mastery Exam
-                                                    </p>
-                                                </div>
+                                            {/* Grid Background Effect */}
+                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.05)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
 
-                                                {/* Progress Line */}
-                                                <div className="relative h-1.5 w-48 bg-slate-800 rounded-full mt-2 overflow-hidden border border-slate-700">
-                                                    <motion.div
-                                                        initial={{ width: 0 }}
-                                                        animate={{ width: "10%" }}
-                                                        className="absolute h-full left-0 top-0 bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)] rounded-full transition-all duration-1000"
-                                                    />
+                                            {/* Status Badge */}
+                                            <div className="absolute top-3 left-3 z-20">
+                                                <div className={cn(
+                                                    "px-3 py-1 text-[10px] font-bold uppercase tracking-widest border backdrop-blur-md",
+                                                    isCompleted
+                                                        ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                                                        : isAssessmentLocked
+                                                            ? "border-slate-500/50 bg-slate-500/10 text-slate-400"
+                                                            : "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
+                                                )}>
+                                                    {isCompleted ? "Completed" : isAssessmentLocked ? "Locked" : "Available"}
                                                 </div>
+                                            </div>
 
-                                                <div className="mt-4 flex flex-col gap-1">
-                                                    <span className="text-3xl font-black text-white tracking-tighter flex items-center gap-2">
-                                                        {assessment.questions} QUESTIONS
-                                                    </span>
-                                                    <div className="flex gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                                                        <span className="flex items-center gap-1.5">
-                                                            <div className="w-1 h-1 bg-emerald-400 rotate-45" />
-                                                            Module: {moduleId.replace(/-/g, ' ')}
-                                                        </span>
-                                                        <span className="flex items-center gap-1.5">
-                                                            <div className="w-1 h-1 bg-emerald-400 rotate-45" />
-                                                            Difficulty: Expert
-                                                        </span>
-                                                    </div>
+                                            {/* XP Badge */}
+                                            <div className="absolute bottom-3 right-3 z-20">
+                                                <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border rounded-md border-emerald-500/50 text-[10px] font-mono text-emerald-400">
+                                                    <HeaderCoin />
+                                                    <span className="text-xl font-black leading-none">{assessment.xp}</span>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Bottom Action Bar */}
-                                        <div className="mt-auto flex flex-col sm:flex-row items-stretch border-t border-emerald-500/20">
-                                            <button
-                                                onClick={(e) => handleItemClick(e, assessment.id, isAssessmentLocked, () => openAssessmentModal?.(assessment))}
-                                                disabled={isAssessmentLocked}
+                                        {/* Info Row (Title) */}
+                                        <div className="p-5 flex items-center justify-between border-t border-emerald-500/10">
+                                            <div className="flex-1 pr-4">
+                                                <h4 className="text-lg font-black text-white uppercase tracking-wider leading-tight italic truncate">
+                                                    {assessment.title}
+                                                </h4>
+                                            </div>
+                                        </div>
+
+                                        {/* Action Button Section */}
+                                        <div className="mt-auto p-4 pt-0">
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                                whileHover={!isAssessmentLocked ? { y: -6 } : {}}
+                                                whileTap={!isAssessmentLocked ? { scale: 0.98 } : {}}
                                                 className={cn(
-                                                    "relative flex items-center justify-between group/btn min-w-[220px] transition-all duration-300",
-                                                    isAssessmentLocked ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                                    "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 overflow-hidden",
+                                                    "transition-all duration-500",
+                                                    isClicked && "scale-95",
+                                                    isAssessmentLocked && "cursor-not-allowed animate-shake opacity-80"
                                                 )}
+                                                onClick={(e) => handleItemClick(e, assessment.id, isAssessmentLocked, () => openAssessmentModal(assessment))}
                                             >
-                                                <div
-                                                    className={cn(
-                                                        "flex-1 flex items-center justify-center gap-4 px-8 py-4 font-black text-sm uppercase italic transition-all duration-300",
-                                                        isAssessmentLocked
-                                                            ? "bg-slate-800 text-slate-500"
-                                                            : "bg-emerald-600 text-white hover:bg-emerald-500"
-                                                    )}
-                                                    style={{
-                                                        clipPath: 'polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%)'
-                                                    }}
+                                                <CyberpunkButton
+                                                    variant={isAssessmentLocked ? "danger" : "secondary"}
+                                                    className="w-full text-center relative group/btn overflow-hidden"
                                                 >
-                                                    {isAssessmentLocked ? "ENCRYPTED" : "START ASSESSMENT"}
-                                                    {isAssessmentLocked && <Lock className="h-4 w-4" />}
-                                                </div>
-
-                                                {!isAssessmentLocked && (
-                                                    <div
-                                                        className="w-12 h-full bg-emerald-400 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-emerald-300"
-                                                        style={{
-                                                            clipPath: 'polygon(0 0, 100% 50%, 0 100%, 30% 50%)',
-                                                            marginLeft: '-12px'
-                                                        }}
-                                                    >
-                                                        <ChevronRight className="h-5 w-5 text-slate-900 ml-[-4px]" />
-                                                    </div>
-                                                )}
-                                            </button>
-
-                                            <div className="flex-1 flex items-center justify-between px-6 py-2 w-full">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                                                        Certification Credits
+                                                    <span className={cn(
+                                                        "text-xs font-black font-mono",
+                                                        isAssessmentLocked ? "text-slate-500" : "text-white"
+                                                    )}>
+                                                        {isCompleted ? "RETAKE ASSESSMENT" : isAssessmentLocked ? "ACCESS DENIED" : "START ASSESSMENT"}
                                                     </span>
-                                                </div>
+                                                    {!isAssessmentLocked && (
+                                                        <ChevronRight className={cn(
+                                                            "h-4 w-4 transition-transform group-hover/btn:translate-x-1",
+                                                            isCompleted ? "text-indigo-400" : "text-emerald-400"
+                                                        )} />
+                                                    )}
+                                                    {isAssessmentLocked && <Lock className="h-3.5 w-3.5 text-slate-600" />}
+                                                </CyberpunkButton>
 
-                                                <div className="flex items-center gap-2 text-amber-400 group">
-                                                    <Zap className="h-5 w-5 fill-current drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />
-                                                    <div className="flex flex-col items-end">
-                                                        <span className="text-lg font-black leading-none">{assessment.xp} XP</span>
-                                                        <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Mastery Reward</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                                {/* Hover Glow */}
+                                                {!isAssessmentLocked && (
+                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer" />
+                                                )}
+                                            </motion.div>
                                         </div>
 
-                                        {/* Corners */}
-                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-emerald-400/40" />
-                                        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-emerald-400/40" />
-                                        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-emerald-400/40" />
-                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-emerald-400/40" />
+                                        {/* Corner Accents */}
+                                        {!isAssessmentLocked && (
+                                            <>
+                                                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-emerald-400/40" />
+                                                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-emerald-400/40" />
+                                                <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-emerald-400/40" />
+                                                <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-emerald-400/40" />
+                                            </>
+                                        )}
                                     </motion.div>
                                 );
                             })}
                         </motion.div>
                     </motion.section>
-                )}
+                )
+                }
 
                 {/* Locked Empty State - Enhanced */}
                 {isLocked && content.videos.length === 0 && content.quizzes.length === 0 && !content.assessments?.length && (
