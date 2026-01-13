@@ -46,6 +46,7 @@ const router = createBrowserRouter([
                 path: '/spin-and-win',
                 element: <SpinAndWin />
             },
+
         ]
     },
     {

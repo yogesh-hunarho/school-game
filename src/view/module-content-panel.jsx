@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck, Clock, Sparkles, ShieldQuestionMark, Trophy } from "lucide-react";
+import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck, Clock, Sparkles, Trophy, ShieldQuestionMark } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
 import useSound from "@/hook/useSound";

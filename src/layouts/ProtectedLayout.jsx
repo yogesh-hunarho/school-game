@@ -95,7 +95,7 @@ export default function ProtectedLayout() {
                 </main>
 
                 {location.pathname !== "/" && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-                    <GlassSurface
+                    {/* <GlassSurface
                         width={dockWidth}
                         borderRadius={20}
                         height={64}
@@ -106,11 +106,11 @@ export default function ProtectedLayout() {
                             transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)'
                         }}
                     >
-                        <FloatingDock
-                            items={navLinks}
-                            onHoverChange={setIsDockHovered}
-                        />
-                    </GlassSurface>
+                    </GlassSurface> */}
+                    <FloatingDock
+                        items={navLinks}
+                        onHoverChange={setIsDockHovered}
+                    />
                 </div>}
 
                 <ConfettiEffect />

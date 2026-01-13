@@ -104,49 +104,55 @@ export function CyberpunkLock({
                 </div>
 
             </div>
-            <div className="grid grid-cols-3 gap-2 mb-5 mt-5">
+            <div className="grid grid-cols-3 gap-2 mb-4 mt-4">
                 {/* COINS */}
-                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
-                    <div className="p-1 bg-yellow-500/10">
-                        <HeaderCoin />
-                    </div>
-                    <div className="font-mono">
-                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
-                            COIN EARN
-                        </p>
-                        <p className="font-black text-sm text-white">
-                            {module.totalStars * 100}
-                        </p>
+                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300">
+                    {/* Tech Corners */}
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-yellow-500/40 group-hover:border-yellow-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-yellow-500/40 group-hover:border-yellow-400 transition-colors" />
+
+                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-yellow-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-yellow-950/30 border border-yellow-500/20 shadow-[0_0_10px_-3px_rgba(234,179,8,0.3)] group-hover:shadow-yellow-500/40 transition-all">
+                            <HeaderCoin className="w-3 h-3 text-yellow-500" size={14} />
+                        </div>
+                        <div className="flex flex-col items-start">
+                            <span className="text-[8px] font-mono font-bold text-yellow-500/60 uppercase tracking-widest group-hover:text-yellow-400 transition-colors">XP_NET</span>
+                            <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.totalStars * 100}</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* VIDEOS */}
-                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
-                    <div className="p-1.5 bg-yellow-500/10">
-                        <Video className="w-4 h-4 text-cyan-400 animate-pulse" />
-                    </div>
-                    <div className="font-mono text-cyan-400">
-                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
-                            VIDEO
-                        </p>
-                        <p className="font-black text-sm text-white">
-                            {module.videos}
-                        </p>
+                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-cyan-500/20 hover:border-cyan-500/60 transition-all duration-300">
+                    {/* Tech Corners */}
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-500/40 group-hover:border-cyan-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-500/40 group-hover:border-cyan-400 transition-colors" />
+
+                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-cyan-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-cyan-950/30 border border-cyan-500/20 shadow-[0_0_10px_-3px_rgba(6,182,212,0.3)] group-hover:shadow-cyan-500/40 transition-all">
+                            <Video className="w-3.5 h-3.5 text-cyan-400" />
+                        </div>
+                        <div className="flex flex-col items-start">
+                            <span className="text-[8px] font-mono font-bold text-cyan-500/60 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">DATA</span>
+                            <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.videos}</span>
+                        </div>
                     </div>
                 </div>
 
                 {/* QUIZZES */}
-                <div className="flex items-center gap-3 border border-cyan-500/30 bg-slate-900/60 p-2 hover:border-cyan-400/60 transition">
-                    <div className="p-1.5 bg-yellow-500/10">
-                        <FileQuestionMark className="w-4 h-4 text-cyan-400 animate-pulse" />
-                    </div>
-                    <div className="font-mono">
-                        <p className="font-bold text-[10px] text-slate-500 uppercase tracking-wide">
-                            QUIZZES
-                        </p>
-                        <p className="font-black text-sm text-white">
-                            {module.quizzes}
-                        </p>
+                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-purple-500/20 hover:border-purple-500/60 transition-all duration-300">
+                    {/* Tech Corners */}
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-purple-500/40 group-hover:border-purple-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-purple-500/40 group-hover:border-purple-400 transition-colors" />
+
+                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-purple-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-purple-950/30 border border-purple-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] group-hover:shadow-purple-500/40 transition-all">
+                            <FileQuestionMark className="w-3.5 h-3.5 text-purple-400" />
+                        </div>
+                        <div className="flex flex-col items-start">
+                            <span className="text-[8px] font-mono font-bold text-purple-500/60 uppercase tracking-widest group-hover:text-purple-400 transition-colors">QUIZ</span>
+                            <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.quizzes}</span>
+                        </div>
                     </div>
                 </div>
             </div>
