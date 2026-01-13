@@ -29,6 +29,7 @@ import { useLMSStore } from '@/store/lms-store';
 import HeaderCoin from '@/components/HeaderCoin';
 import CyberpunkProgressBar from '@/components/ui/cyber-component/cyberpunk-progress-bar';
 import DecryptedText from '@/components/DecryptedText';
+import { calculateLevel, getLevelProgress } from '@/components/Header';
 
 // Mock data - replace with your actual store data
 const mockPlayer = {
@@ -43,20 +44,6 @@ const mockPlayer = {
     totalMissions: 12
 };
 
-const calculateLevel = (xp) => Math.floor(xp / 200) + 1;
-
-const getXPToNextLevel = (xp) => {
-    const level = calculateLevel(xp);
-    const xpForCurrentLevel = (level - 1) * 200;
-    const xpForNextLevel = level * 200;
-    const current = xp - xpForCurrentLevel;
-    const required = xpForNextLevel - xpForCurrentLevel;
-    return {
-        current,
-        required,
-        percentage: (current / required) * 100
-    };
-};
 
 const rankTitles = [
     { title: "Netrunner Rookie", desc: "Just getting started", color: "from-gray-400 to-gray-600" },
@@ -97,8 +84,9 @@ export default function ProfilePage() {
         missionsCompleted: Object.keys(storePlayer.progress).filter(id => getModuleProgress(id) === 100).length,
     };
 
-    const level = calculateLevel(player.totalXP);
-    const xpProgress = getXPToNextLevel(player.totalXP);
+    const level = calculateLevel(storePlayer);
+    const totalMissions = Object.keys(storePlayer.moduleStatus).length;
+    const xpProgress = getLevelProgress(storePlayer, getModuleProgress);
     const rankInfo = getRankInfo(level);
 
     const earnedBadges = badgeDefinitions.filter(b => b.earned);
@@ -134,10 +122,10 @@ export default function ProfilePage() {
                     className="relative mb-8"
                 >
                     {/* <div className="absolute inset-0 bg-linear-to-r from-cyan-500/20 to-purple-500/20 blur-xl" /> */}
-                    <div className="relative bg-linear-to-br bg-transparent backdrop-blur-sm border-2 border-cyan-400/30 p-6 sm:p-8 overflow-hidden">
+                    <div className="relative bg-linear-to-br bg-transparent backdrop-blur-sm border-2 border-emerald-400/30 p-6 sm:p-8 overflow-hidden">
                         {/* Corner Accents */}
-                        <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-cyan-400/50 rounded-tl" />
-                        <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-purple-400/50 rounded-br" />
+                        <div className="absolute top-0 left-0 w-20 h-20 border-t-4 border-l-4 border-emerald-400/50 rounded-tl" />
+                        <div className="absolute bottom-0 right-0 w-20 h-20 border-b-4 border-r-4 border-emerald-400/50 rounded-br" />
 
                         <div className="flex flex-col lg:flex-row items-center gap-8">
                             {/* Avatar Section */}
@@ -175,7 +163,7 @@ export default function ProfilePage() {
                             {/* Player Info */}
                             <div className="flex-1 w-full text-center lg:text-left space-y-6">
                                 <div>
-                                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black  mb-2">
                                         <DecryptedText
                                             text={player.name}
                                             animateOn="view"
@@ -188,10 +176,10 @@ export default function ProfilePage() {
                                         transition={{ delay: 0.1 }}
                                         className="flex items-center gap-3 mt-4 justify-center lg:justify-start flex-wrap"
                                     >
-                                        <div className={`px-4 py-2 bg-linear-to-r ${rankInfo.color} font-bold text-sm text-white shadow-lg`}>
+                                        <div className={`px-4 py-2 bg-linear-to-r ${rankInfo.color} font-bold text-sm font-mono text-white shadow-lg`}>
                                             {rankInfo.title}
                                         </div>
-                                        <span className="text-gray-400 text-sm">{rankInfo.desc}</span>
+                                        <span className="text-gray-400 text-sm font-mono">{rankInfo.desc}</span>
                                     </motion.div>
                                 </div>
 
@@ -219,7 +207,7 @@ export default function ProfilePage() {
                                         <MapPin className="w-8 h-8 text-cyan-400" />
                                         <div>
                                             <div className="text-2xl font-black text-cyan-400">
-                                                {player.missionsCompleted}/{player.totalMissions}
+                                                {level}/{totalMissions}
                                             </div>
                                             <div className="text-xs text-cyan-300/70 uppercase font-bold">Missions</div>
                                         </div>
@@ -233,7 +221,7 @@ export default function ProfilePage() {
                                         <Puzzle className="w-8 h-8 text-purple-400" />
                                         <div>
                                             <div className="text-2xl font-black text-purple-400">
-                                                {puzzlePiecesCollected}/{totalPuzzlePieces}
+                                                {puzzlePiecesCollected || 0}/{totalPuzzlePieces}
                                             </div>
                                             <div className="text-xs text-purple-300/70 uppercase font-bold">Pieces</div>
                                         </div>
@@ -244,10 +232,10 @@ export default function ProfilePage() {
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between text-sm mb-0">
                                         <span className="text-gray-400 font-medium">
-                                            Progress to Level {level + 1}
+                                            {level < totalMissions ? `Progress to Level ${level + 1}` : 'Maximum Level Reached'}
                                         </span>
                                         <div className="text-xs text-right text-mono">
-                                            {Math.round(xpProgress.required - xpProgress.current)} coins to next level
+                                            {level < totalMissions ? `${Math.round(xpProgress.percentage)}% mission progress` : '100% complete'}
                                         </div>
                                     </div>
                                     <CyberpunkProgressBar hideLabel progress={xpProgress.percentage} />

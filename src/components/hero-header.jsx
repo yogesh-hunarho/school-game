@@ -8,7 +8,7 @@ import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Z
 import { cn } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
-import { calculateLevel, getXPToNextLevel } from "./Header";
+import { calculateLevel } from "./Header";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -35,8 +35,7 @@ export const HeroHeader = () => {
     const { logout } = useAuthStore();
     const setCoinTarget = useLMSStore((s) => s.setCoinTarget);
     const { playClick } = useSound();
-    const level = calculateLevel(player.totalXP);
-    const xpProgress = getXPToNextLevel(player.totalXP);
+    const level = calculateLevel(player);
     const { playSound, playClose } = useSound()
     const navigate = useNavigate()
     const scrollContainerRef = useRef(null)
@@ -95,7 +94,7 @@ export const HeroHeader = () => {
                                     <div ref={mobileCoinRef} className="flex items-center gap-1.5">
                                         <HeaderCoin size={24} className="group-hover:animate-pulse" />
                                         <Counter
-                                            value={player.totalXP.toLocaleString()}
+                                            value={player.totalXP}
                                             fontSize={16}
                                             gap={0}
                                         />
@@ -135,7 +134,7 @@ export const HeroHeader = () => {
                                                     <div ref={coinRef} className="flex items-center gap-1.5">
                                                         <HeaderCoin size={24} className="group-hover:animate-pulse" />
                                                         <Counter
-                                                            value={player.totalXP.toLocaleString()}
+                                                            value={player.totalXP}
                                                             fontSize={16}
                                                             gap={0}
                                                         />

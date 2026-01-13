@@ -40,7 +40,7 @@ const ModuleDetailsPage = () => {
     }, [moduleId, openContentPanel]);
 
     const handleBack = () => {
-        navigate(-1);
+        navigate("/missions");
     };
 
     const moduleStatus = player.moduleStatus[moduleId || ""] || "locked";
@@ -82,6 +82,12 @@ const ModuleDetailsPage = () => {
             <QuizModal
                 open={useLMSStore((state) => state.isQuizModalOpen)}
                 onOpenChange={(open) => !open && useLMSStore.getState().closeQuizModal()}
+                type="quiz"
+            />
+            <QuizModal
+                open={useLMSStore((state) => state.isAssessmentModalOpen)}
+                onOpenChange={(open) => !open && useLMSStore.getState().closeAssessmentModal()}
+                type="assessment"
             />
 
             <ConfettiEffect />

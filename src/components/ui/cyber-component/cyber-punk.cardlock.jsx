@@ -98,7 +98,7 @@ export function CyberpunkLock({
                     >
                         {module.name}
                     </motion.h3>
-                    <p className="text-slate-400 text-mono text-xs line-clamp-2 italic font-wider mb-2">
+                    <p className="text-white font-mono text-xs line-clamp-2 italic font-wider mb-2">
                         {module.description || "Initializing module protocols for advanced neural development and engineering training."}
                     </p>
                 </div>

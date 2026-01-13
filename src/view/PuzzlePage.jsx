@@ -71,7 +71,8 @@ const PuzzlePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                {showGame ? <PuzzleGame /> : <PuzzleUnlockPreview onStartGame={handleStartGame} />}
+                <PuzzleGame />
+                {/* {showGame ? <PuzzleGame /> : <PuzzleUnlockPreview onStartGame={handleStartGame} />} */}
             </motion.div>
 
             {/* CSS for grid animation */}

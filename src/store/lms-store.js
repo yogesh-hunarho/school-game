@@ -235,7 +235,9 @@ export const useLMSStore = create(
             selectedVideo: null,
             isVideoModalOpen: false,
             isQuizModalOpen: false,
+            isAssessmentModalOpen: false,
             selectedQuiz: null,
+            selectedAssessment: null,
             showContentPanel: false,
 
             showVideoQuizConfetti: false,
@@ -304,6 +306,12 @@ export const useLMSStore = create(
                 return player.progress[moduleId]?.completedQuizzes.includes(quizId) || false;
             },
 
+            // Check if assessment is completed
+            isAssessmentCompleted: (moduleId, assessmentId) => {
+                const { player } = get();
+                return player.progress[moduleId]?.completedAssessments.includes(assessmentId) || false;
+            },
+
             // Mark video as watched
             markVideoWatched: (moduleId, videoId) => {
                 const { player } = get();
@@ -359,6 +367,33 @@ export const useLMSStore = create(
                 get().checkModuleCompletion(moduleId);
             },
 
+            // Complete assessment
+            completeAssessment: (moduleId, assessmentId) => {
+                const { player } = get();
+                const content = moduleContent[moduleId];
+                const assessment = content?.assessments?.find((a) => a.id === assessmentId);
+
+                if (!assessment || player.progress[moduleId].completedAssessments.includes(assessmentId)) {
+                    return;
+                }
+
+                set((state) => ({
+                    player: {
+                        ...state.player,
+                        totalXP: state.player.totalXP + assessment.xp,
+                        progress: {
+                            ...state.player.progress,
+                            [moduleId]: {
+                                ...state.player.progress[moduleId],
+                                completedAssessments: [...state.player.progress[moduleId].completedAssessments, assessmentId],
+                            },
+                        },
+                    },
+                }));
+
+                get().checkModuleCompletion(moduleId);
+            },
+
             // Check if module is complete and unlock next
             checkModuleCompletion: (moduleId) => {
                 const { player } = get();
@@ -397,6 +432,9 @@ export const useLMSStore = create(
 
             openQuizModal: (quiz) => set({ selectedQuiz: quiz, isQuizModalOpen: true }),
             closeQuizModal: () => set({ selectedQuiz: null, isQuizModalOpen: false }),
+
+            openAssessmentModal: (assessment) => set({ selectedAssessment: assessment, isAssessmentModalOpen: true }),
+            closeAssessmentModal: () => set({ selectedAssessment: null, isAssessmentModalOpen: false }),
 
             toggleContentPanel: () => set((state) => ({ showContentPanel: !state.showContentPanel })),
             openContentPanel: () => set({ showContentPanel: true }),
