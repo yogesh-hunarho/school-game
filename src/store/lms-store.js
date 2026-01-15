@@ -203,8 +203,10 @@ const initialPlayerState = {
         "final-assessment": "locked",
     },
     badges: [],
+    spinHistory: [], // Track spin results
     unlockedPuzzleCount: 0,
     coins: 1000, // Initial coins for testing
+
     spinHistory: [], // Array of { id, date, reward, type }
     profileImage: "/assets/achievements/badge1.png", // Default avatar
     collectedAchievements: [], // Array of achievement IDs that have been collected
@@ -483,7 +485,8 @@ export const useLMSStore = create(
             addSpinResult: (result) => set((state) => ({
                 player: {
                     ...state.player,
-                    spinHistory: [result, ...state.player.spinHistory].slice(0, 50) // Keep last 50
+                    spinHistory: [result, ...state.player.spinHistory].slice(0, 50), // Keep last 50
+                    totalXP: state.player.totalXP - (result.cost || 0)
                 }
             })),
 
@@ -559,15 +562,7 @@ export const useLMSStore = create(
                     };
                 }
 
-                if (version < 4) {
-                    state = {
-                        ...state,
-                        player: {
-                            ...state.player,
-                            spinHistory: []
-                        }
-                    };
-                }
+
 
                 return state;
             },
