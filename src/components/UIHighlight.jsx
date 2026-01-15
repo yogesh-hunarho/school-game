@@ -15,34 +15,30 @@ export const UIHighlight = ({ targetSelector, effect = 'glow', duration = 2500, 
         if (!targetSelector) return;
 
         const showHighlight = () => {
-            const element = document.querySelector(targetSelector);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const element = document.querySelector(targetSelector);
+                    if (!element) return;
 
-            if (!element) {
-                console.warn(`UIHighlight: Element not found for selector: ${targetSelector}`);
-                return;
-            }
+                    const rect = element.getBoundingClientRect();
 
-            // Get element position and dimensions
-            const rect = element.getBoundingClientRect();
+                    setHighlightStyle({
+                        top: rect.top,
+                        left: rect.left,
+                        width: rect.width,
+                        height: rect.height
+                    });
 
-            setHighlightStyle({
-                top: rect.top + window.scrollY,
-                left: rect.left + window.scrollX,
-                width: rect.width,
-                height: rect.height
+                    console.log('Instructor highlight:', {
+                        selector: targetSelector,
+                        rect,
+                    });
+                    setIsActive(true);
+
+                    setTimeout(() => setIsActive(false), duration);
+                });
             });
-
-            setIsActive(true);
-
-            // Auto-hide after duration
-            const hideTimer = setTimeout(() => {
-                setIsActive(false);
-            }, duration);
-
-            return () => clearTimeout(hideTimer);
         };
-
-        // Delay showing the highlight
         const delayTimer = setTimeout(showHighlight, delay);
 
         return () => clearTimeout(delayTimer);
@@ -57,9 +53,9 @@ export const UIHighlight = ({ targetSelector, effect = 'glow', duration = 2500, 
             <motion.div
                 className={effectClass}
                 style={{
-                    position: 'absolute',
-                    top: highlightStyle.top,
-                    left: highlightStyle.left,
+                    position: 'fixed',
+                    top: highlightStyle.top - window.scrollY,
+                    left: highlightStyle.left - window.scrollX,
                     width: highlightStyle.width,
                     height: highlightStyle.height,
                     borderColor: color === 'cyan' ? '#00ffff' : color === 'magenta' ? '#ff00ff' : color,

@@ -88,32 +88,20 @@ export default function ProtectedLayout() {
                             />
                         </div>
                         <div className="relative z-10">
-                            {/* <>
-                            <ShootingStars starCount={20} className="pointer-events-none z-0" />
-                            <StarsBackground className="pointer-events-none z-0" />
-                            <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
-                        </> */}
+                            <>
+                                <ShootingStars starCount={20} className="pointer-events-none z-0" />
+                                <StarsBackground className="pointer-events-none z-0" />
+                                <div className="fixed inset-0 pointer-events-none z-0 opacity-[0.02] bg-[linear-gradient(rgba(0,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.1)_1px,transparent_1px)] bg-size-[50px_50px]" />
+                            </>
                             <Outlet />
                         </div>
                     </main>
 
                     {location.pathname !== "/" && <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
-                        <GlassSurface
-                            width={dockWidth}
-                            borderRadius={20}
-                            height={64}
-                            backgroundOpacity={0.48}
-                            displace={5.0}
-                            borderWidth={1}
-                            style={{
-                                transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)'
-                            }}
-                        >
-                            <FloatingDock
-                                items={navLinks}
-                                onHoverChange={setIsDockHovered}
-                            />
-                        </GlassSurface>
+                        <FloatingDock
+                            items={navLinks}
+                            onHoverChange={setIsDockHovered}
+                        />
                     </div>}
 
                     <ConfettiEffect />

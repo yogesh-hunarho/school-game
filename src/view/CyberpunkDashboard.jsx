@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { CyberpunkLock } from "@/components/ui/cyber-component/cyber-punk.cardlock";
 import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-progress-bar";
 import DecryptedText from "@/components/DecryptedText";
+import { useInstructor } from "@/provider/InstructorProvider";
 
 export const CyberpunkDashboard = () => {
     const { player, getModuleProgress } = useLMSStore();
@@ -16,10 +17,13 @@ export const CyberpunkDashboard = () => {
     // Calculate completed count
     const completedCount = Object.values(player.moduleStatus).filter((s) => s === "completed").length;
 
+    const { triggerCustomDialogue } = useInstructor();
     const handleModuleSelect = (moduleId) => {
-
         const status = player.moduleStatus[moduleId] || "locked";
-        if (status === "locked") return;
+        if (status === "locked") {
+            triggerCustomDialogue('locked-mission');
+            return;
+        }
 
         navigate(`/mission/${moduleId}`);
     };

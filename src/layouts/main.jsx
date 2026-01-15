@@ -148,41 +148,12 @@ export default function MainLayout() {
                         </div>
 
                         {/* Mission description */}
-                        <div className="text-sm md:text-lg text-white font-mono leading-relaxed">
+                        <div className="text-sm md:text-lg text-white font-mono leading-relaxed h-40">
                             <TypeWriter
                                 text="Hey Innovator! 🚀 Dive into exciting projects like Robots, Tetris, and Aqua Bridges! Complete missions, earn coins, and become a tech superhero! 🦸‍♂️ Unlock new challenges and show off your skills to the world! 🌟"
                                 delay={30}
                             />
 
-                        </div>
-
-                        {/* Stats grid */}
-                        <div className="grid grid-cols-3 gap-3 mb-0">
-                            {/* <motion.div
-                                className="text-center p-2 bg-green-400/20 backdrop-blur-xl rounded-lg border border-green-500/30"
-                                whileHover={{ scale: 1.05, backgroundColor: 'rgba(6,182,212,0.2)' }}
-                            >
-                                <div className="flex items-center justify-center gap-1 text-yellow-400">
-                                    <HeaderCoin size={24} className="group-hover:animate-pulse" />
-                                    <span className="font-bold text-base sm:text-lg">
-                                        <AnimatedCounter value={1000} />
-                                    </span>
-                                </div>
-                            </motion.div> */}
-
-
-                            {/* <Link to="/spin-and-win">
-                                <motion.div
-                                    className="text-center p-2 bg-pink-400/20 backdrop-blur-xl rounded-lg border border-pink-500/30 cursor-pointer h-full flex flex-col justify-center"
-                                    whileHover={{ scale: 1.05, }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <div className="flex items-center justify-center gap-1 text-pink-400 group">
-                                        <Sparkles className="w-4 h-4 animate-spin-slow hover:rotate-360" />
-                                        <span className="font-bold text-base sm:text-lg">SPIN</span>
-                                    </div>
-                                </motion.div>
-                            </Link> */}
                         </div>
                         <BorderBeam duration={8} size={100} />
                     </motion.div>
@@ -197,6 +168,7 @@ export default function MainLayout() {
                         <CyberpunkButton
                             variant="secondary"
                             className="w-full max-w-sm relative text-base sm:text-lg"
+                            data-instructor-target="mission-button"
                         >
                             <Link to="/missions" className="flex items-center justify-center gap-2">
                                 <motion.span

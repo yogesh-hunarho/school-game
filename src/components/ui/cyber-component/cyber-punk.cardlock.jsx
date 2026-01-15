@@ -1,10 +1,13 @@
 import { cn } from "@/lib/utils"
-import { Lock, ShieldAlert, Wifi, Cpu, Zap, Star, Info, FileQuestionMark, Video } from "lucide-react"
+import { Lock, ShieldAlert, Wifi, Cpu, Zap, Star, Info, FileQuestionMark, Video, Image } from "lucide-react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import useSound from "@/hook/useSound"
 import CyberpunkButton from "../cyber-button"
 import HeaderCoin from "@/components/HeaderCoin"
+import { useInstructor } from "@/provider/InstructorProvider"
+import { walkthroughDialogues } from "@/config/instructor-config"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../hover-card"
 
 export function CyberpunkLock({
     module,
@@ -17,6 +20,7 @@ export function CyberpunkLock({
 }) {
     const { playSound } = useSound()
     const [glitch, setGlitch] = useState(false)
+    const { showWalkthrough } = useInstructor();
 
     const getColors = () => {
         if (isCompleted) return {
@@ -47,9 +51,16 @@ export function CyberpunkLock({
 
     const colors = getColors();
 
+    const handleLockedMission = () => {
+        playSound("disabled")
+        showWalkthrough(walkthroughDialogues['locked-mission'])
+    }
+
 
     return (
-        <div className={`relative group h-full p-4 transition-transform duration-500 backdrop-blur-xl bg-background/10`}>
+        <div
+            data-instructor-target={"inactive-mission"}
+            className={`relative group h-full p-4 transition-transform duration-500 backdrop-blur-xl bg-background/10`}>
             <div className="pointer-events-none absolute inset-0 z-20 opacity-[0.03] bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,255,255,0.1)_2px,rgba(0,255,255,0.1)_4px)]" />
 
             {/* Corner Decoration Brackets */}
@@ -98,13 +109,13 @@ export function CyberpunkLock({
                     >
                         {module.name}
                     </motion.h3>
-                    <p className="text-white font-mono text-xs line-clamp-2 italic font-wider mb-2">
+                    <p className="text-white font-mono text-sm line-clamp-2 font-wider mb-2">
                         {module.description || "Initializing module protocols for advanced neural development and engineering training."}
                     </p>
                 </div>
 
             </div>
-            <div className="grid grid-cols-3 gap-2 mb-4 mt-4">
+            <div className="grid grid-cols-4 gap-2 mb-4 mt-4">
                 {/* COINS */}
                 <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300">
                     {/* Tech Corners */}
@@ -155,6 +166,30 @@ export function CyberpunkLock({
                         </div>
                     </div>
                 </div>
+
+                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-emerald-500/20 hover:border-emerald-500/60 transition-all duration-300">
+                    {/* Tech Corners */}
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
+
+                    <HoverCard>
+                        <HoverCardTrigger asChild>
+                            <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-emerald-500/5 transition-colors">
+                                <div className="flex items-center justify-center p-1.5 rounded bg-emerald-950/30 border border-emerald-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] group-hover:shadow-emerald-500/40 transition-all">
+                                    <Image className="w-3.5 h-3.5 text-emerald-400" />
+                                </div>
+                                <div className="flex flex-col items-start">
+                                    <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Badge</span>
+                                    <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">1 </span>
+                                </div>
+                            </div>
+                        </HoverCardTrigger>
+
+                        <HoverCardContent className="w-40 h-40 p-0 border border-emerald-500/20 rounded-none" align="end">
+                            <img src={"/assets/achievements/1.jpeg"} className="w-full h-full object-cover" />
+                        </HoverCardContent>
+                    </HoverCard>
+                </div>
             </div>
 
 
@@ -162,7 +197,7 @@ export function CyberpunkLock({
                 variant="danger"
                 onMouseEnter={() => setGlitch(true)}
                 onMouseLeave={() => setGlitch(false)}
-                onClick={() => playSound("disabled")}
+                onClick={handleLockedMission}
                 className={cn("w-full", glitch ? "animate-shake" : "")}
             >
                 <div className="flex items-center gap-2">

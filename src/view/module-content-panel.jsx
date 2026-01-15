@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Play, CheckCircle2, ChevronRight, Zap, Lock, AlertCircle, BookCheck, Clock, Sparkles, Trophy, ShieldQuestionMark } from "lucide-react";
 import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
+import { instructorConfig, walkthroughDialogues } from "@/config/instructor-config";
 import useSound from "@/hook/useSound";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -12,6 +13,7 @@ import HeaderCoin from "@/components/HeaderCoin";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import CyberpunkButton from "@/components/ui/cyber-button";
+import { useInstructor } from "@/provider/InstructorProvider";
 
 const cardVariants = {
     hidden: {
@@ -70,6 +72,7 @@ export const ModuleContentPanel = () => {
         getModuleProgress,
     } = useLMSStore();
     const { playSound, playClick } = useSound();
+    const { showWalkthrough } = useInstructor();
 
     const content = getCurrentModuleContent();
     const moduleId = player.currentModuleId;
@@ -97,11 +100,18 @@ export const ModuleContentPanel = () => {
 
     const currentModule = moduleNames[moduleId] || { name: "Module", icon: "📚", description: "Learn something new" };
 
-    const handleItemClick = (e, id, locked, action) => {
+    const handleItemClick = (e, type, id, locked, action) => {
         e.stopPropagation();
         if (locked) {
             setShakingId(id);
             playSound("disabled");
+            if (type === "video") {
+                showWalkthrough(walkthroughDialogues['locked-video']);
+            } else if (type === "quiz") {
+                showWalkthrough(walkthroughDialogues['locked-quiz'](id === 'q1'));
+            } else if (type === "assessment") {
+                showWalkthrough(walkthroughDialogues['locked-assessment']);
+            }
             setTimeout(() => setShakingId(null), 500);
             return;
         }
@@ -345,8 +355,9 @@ export const ModuleContentPanel = () => {
                                         transition={{ duration: 0.4, ease: "easeOut" }}
                                         whileHover={!isVideoLocked ? { y: -6 } : {}}
                                         whileTap={!isVideoLocked ? { scale: 0.98 } : {}}
-                                        onClick={(e) => handleItemClick(e, video.id, isVideoLocked, () => openVideoModal(video))}
+                                        onClick={(e) => handleItemClick(e, "video", video.id, isVideoLocked, () => openVideoModal(video))}
                                         // disabled={isVideoLocked}
+                                        data-instructor-target="mission-progress"
                                         className={cn(
                                             "relative w-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/50 overflow-hidden",
                                             "transition-all duration-500",
@@ -656,7 +667,7 @@ export const ModuleContentPanel = () => {
                                                     isQuizLocked && "cursor-not-allowed animate-shake opacity-80"
                                                 )}
 
-                                                onClick={(e) => handleItemClick(e, quiz.id, isQuizLocked, () => openQuizModal(quiz))}
+                                                onClick={(e) => handleItemClick(e, "quiz", quiz.id, isQuizLocked, () => openQuizModal(quiz))}
                                             >
                                                 <CyberpunkButton
                                                     variant={isQuizLocked ? "danger" : "secondary"}
@@ -812,7 +823,7 @@ export const ModuleContentPanel = () => {
                                                     isClicked && "scale-95",
                                                     isAssessmentLocked && "cursor-not-allowed animate-shake opacity-80"
                                                 )}
-                                                onClick={(e) => handleItemClick(e, assessment.id, isAssessmentLocked, () => openAssessmentModal(assessment))}
+                                                onClick={(e) => handleItemClick(e, "assessment", assessment.id, isAssessmentLocked, () => openAssessmentModal(assessment))}
                                             >
                                                 <CyberpunkButton
                                                     variant={isAssessmentLocked ? "danger" : "secondary"}

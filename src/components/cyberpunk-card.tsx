@@ -1,4 +1,4 @@
-import { Lock, CheckCircle2, Video, FileQuestionMark } from "lucide-react"
+import { Lock, CheckCircle2, Video, FileQuestionMark, Image } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import useSound from "@/hook/useSound";
@@ -19,6 +19,7 @@ interface Module {
     totalStars: number;
     videos: number;
     quizzes: number;
+    badges: string;
 }
 
 interface CyberpunkCardProps {
@@ -96,6 +97,7 @@ export function CyberpunkCard({
                 "relative cursor-pointer transition-all duration-300 group",
                 isLocked && "opacity-80"
             )}
+            data-instructor-target={isActive ? "active-mission" : undefined}
         >
             {/* Main Card Container */}
             <div className={cn(
@@ -182,7 +184,7 @@ export function CyberpunkCard({
                         </HoverCardContent>
                     </HoverCard>
 
-                    <div className="grid grid-cols-3 gap-2 mb-4 mt-4">
+                    <div className="grid grid-cols-4 gap-2 mb-4 mt-4">
                         {/* COINS */}
                         <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300">
                             {/* Tech Corners */}
@@ -233,6 +235,31 @@ export function CyberpunkCard({
                                 </div>
                             </div>
                         </div>
+                        {/* Badges */}
+                        <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-emerald-500/20 hover:border-emerald-500/60 transition-all duration-300">
+                            {/* Tech Corners */}
+                            <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
+                            <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
+
+                            <HoverCard>
+                                <HoverCardTrigger asChild>
+                                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-emerald-500/5 transition-colors">
+                                        <div className="flex items-center justify-center p-1.5 rounded bg-emerald-950/30 border border-emerald-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] group-hover:shadow-emerald-500/40 transition-all">
+                                            <Image className="w-3.5 h-3.5 text-emerald-400" />
+                                        </div>
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Badge</span>
+                                            <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">1 </span>
+                                        </div>
+                                    </div>
+                                </HoverCardTrigger>
+
+                                <HoverCardContent className="w-40 h-40 p-0 border border-emerald-500/20 rounded-none" align="end">
+                                    <img src={"/assets/achievements/1.jpeg"} className="w-full h-full object-cover" />
+                                </HoverCardContent>
+                            </HoverCard>
+
+                        </div>
                     </div>
 
                     <div className="mb-6">
@@ -259,7 +286,7 @@ export function CyberpunkCard({
                                 >
                                     <div className="flex items-center gap-2">
                                         {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : null}
-                                        <span>{isCompleted ? "REVIEW_MISSION" : isActive ? "RESUME_MISSION" : "START_MISSION"}</span>
+                                        <span>{isCompleted ? "REVIEW_MISSION" : isActive ? "START_MISSION" : "START_MISSION"}</span>
                                     </div>
                                 </CyberpunkButton>
                             </motion.div>

@@ -12,6 +12,8 @@ import AnimatedBackground from "./animated-background";
 import { calculateLevel } from "./Header";
 import HeaderCoin from "./HeaderCoin";
 import CyberpunkProgressBar from "./ui/cyber-component/cyberpunk-progress-bar";
+import { useInstructor } from "@/provider/InstructorProvider";
+import { walkthroughDialogues } from "@/config/instructor-config";
 
 // Helper Components for Popover
 const LevelNode = ({ node, Icon, onClick }) => (
@@ -117,6 +119,7 @@ const MissionMap = ({ }) => {
     const { playSound, playClose, playClick } = useSound()
     const navigate = useNavigate()
     const scrollContainerRef = useRef(null)
+    const { showWalkthrough } = useInstructor();
 
     const nodes = useMemo(
         () =>
@@ -184,12 +187,15 @@ const MissionMap = ({ }) => {
 
     const progress = (nodes.filter(n => n.isCompleted).length / nodes.length) * 100
 
+    const handleWalkthrough = () => {
+        showWalkthrough(walkthroughDialogues['mission-map']);
+    }
 
     return (
         <Popover open={isLevelModalOpen} onOpenChange={setIsLevelModalOpen}>
             <PopoverTrigger asChild>
                 <div className="flex items-center">
-                    <p className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors text-white font-bold">
+                    <p onClick={handleWalkthrough} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-linear-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 cursor-pointer hover:border-purple-500/60 transition-colors text-white font-bold">
                         <MapPin className="md:w-5 md:h-5 animate-pulse" />
                         MISSION {level}
                     </p>

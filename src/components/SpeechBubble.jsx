@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Volume2, VolumeX, X } from 'lucide-react';
 
@@ -10,64 +10,110 @@ export const SpeechBubble = ({
     text,
     onClose,
     onComplete,
-    showControls = true,
+    showControls = false,
     isSpeaking = false,
-    onToggleSound
+    speechRate = 1.0,
+    onToggleSound,
+    position = 'right',
 }) => {
     const [displayedText, setDisplayedText] = useState('');
-    const [currentIndex, setCurrentIndex] = useState(0);
     const [isTypingComplete, setIsTypingComplete] = useState(false);
+    const animationFrameRef = useRef(null);
+    const startTimeRef = useRef(null);
+    const previousTextRef = useRef('');
 
-    // Typewriter effect
+    const estimateSpeechDuration = (textLength, rate) => {
+        const charsPerSecond = 12.5 * rate;
+        return (textLength / charsPerSecond) * 1000; // in milliseconds
+    };
+
     useEffect(() => {
-        if (currentIndex < text.length) {
-            const timer = setTimeout(() => {
-                setDisplayedText(prev => prev + text[currentIndex]);
-                setCurrentIndex(prev => prev + 1);
-            }, 30); // Typing speed
+        if (text !== previousTextRef.current) {
+            setDisplayedText('');
+            setIsTypingComplete(false);
+            startTimeRef.current = null;
+            previousTextRef.current = text;
+        }
+    }, [text]);
 
-            return () => clearTimeout(timer);
-        } else {
+    // Synced typewriter effect - matches typing to speech duration
+    useEffect(() => {
+        if (!text || isTypingComplete) return;
+
+        // If not speaking (voice disabled), show text immediately
+        if (!isSpeaking) {
+            setDisplayedText(text);
             setIsTypingComplete(true);
             onComplete?.();
+            return;
         }
-    }, [currentIndex, text, onComplete]);
 
-    // Skip typing animation
+        // Calculate timing to sync with speech
+        const speechDuration = estimateSpeechDuration(text.length, speechRate);
+        const charDelay = speechDuration / text.length;
+
+        let currentIndex = 0;
+        startTimeRef.current = performance.now();
+
+        const animate = (currentTime) => {
+            const elapsed = currentTime - startTimeRef.current;
+            const targetIndex = Math.min(
+                Math.floor(elapsed / charDelay),
+                text.length
+            );
+
+            if (targetIndex > currentIndex) {
+                currentIndex = targetIndex;
+                setDisplayedText(text.substring(0, currentIndex));
+            }
+
+            if (currentIndex < text.length) {
+                animationFrameRef.current = requestAnimationFrame(animate);
+            } else {
+                setIsTypingComplete(true);
+                onComplete?.();
+            }
+        };
+
+        animationFrameRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            if (animationFrameRef.current) {
+                cancelAnimationFrame(animationFrameRef.current);
+            }
+        };
+    }, [text, isSpeaking, speechRate, isTypingComplete, onComplete]);
+
+    // Skip typing animation - show full text immediately
     const handleSkipTyping = () => {
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+        }
         setDisplayedText(text);
-        setCurrentIndex(text.length);
         setIsTypingComplete(true);
         onComplete?.();
     };
 
     return (
         <motion.div
-            className="relative bg-black/90 border-2 border-cyan-500 rounded-lg p-4 shadow-2xl"
-            style={{
-                boxShadow: '0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.1)',
-                backdropFilter: 'blur(10px)'
-            }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            className={`relative bg-black/95 border-2 border-cyan-500 rounded-xl p-4 shadow-[0_0_30px_rgba(0,255,255,0.15)] -mb-2 ${position === 'right' ? 'mr-2' : 'ml-2'
+                }`}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
         >
-            {/* Corner brackets - cyberpunk aesthetic */}
-            <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-cyan-400"></div>
-            <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-cyan-400"></div>
-            <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-cyan-400"></div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-cyan-400"></div>
-
-            {/* Scanline effect */}
+            {/* Triangle Tail */}
             <div
-                className="absolute inset-0 pointer-events-none opacity-10"
+                className={`absolute -bottom-[9px] w-4 h-4 bg-black border-r-2 border-b-2 border-cyan-500 z-0 ${position === 'right' ? 'right-12' : 'left-12'
+                    }`}
                 style={{
-                    background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 255, 0.5) 2px, rgba(0, 255, 255, 0.5) 4px)'
+                    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                    transform: 'rotate(45deg)',
                 }}
-            ></div>
+            />
 
             {/* Text content */}
-            <div className="relative z-10 text-cyan-100 font-mono text-sm leading-relaxed">
+            <div className="relative z-10 text-cyan-50 font-mono text-sm leading-relaxed antialiased">
                 {displayedText}
                 {!isTypingComplete && (
                     <span className="typewriter-cursor text-cyan-400 ml-1">▌</span>

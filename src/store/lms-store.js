@@ -17,6 +17,7 @@ const moduleContent = {
             description: "Master the physics of medieval siege engines.",
             xp: 55,
         },
+        details: []
     },
     "trebuchet": {
         videos: [

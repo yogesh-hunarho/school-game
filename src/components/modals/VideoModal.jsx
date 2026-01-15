@@ -23,7 +23,9 @@ export const VideoModal = ({ open, onOpenChange }) => {
         isVideoWatched,
         getCurrentModuleContent,
         openVideoModal,
-        toggleVideoQuizConfetti
+        openQuizModal,
+        toggleVideoQuizConfetti,
+        closeVideoModal
     } = useLMSStore();
     const triggerStarAnimation = useLMSStore((s) => s.triggerStarAnimation);
     const isMobile = useIsMobile()
@@ -43,6 +45,11 @@ export const VideoModal = ({ open, onOpenChange }) => {
 
     const hasPrev = currentIndex > 0;
     const hasNext = currentIndex < videos.length - 1;
+
+    // Get quizzes to see if we can transition
+    const quizzes = moduleContent.quizzes || [];
+    const hasQuiz = quizzes.length > 0;
+    const firstQuiz = quizzes[0];
 
     if (!selectedVideo) return null;
 
@@ -84,6 +91,16 @@ export const VideoModal = ({ open, onOpenChange }) => {
         if (hasNext) {
             playClick();
             openVideoModal(videos[currentIndex + 1]);
+        }
+    };
+
+    const handleStartQuiz = () => {
+        if (hasQuiz && firstQuiz) {
+            playClick();
+            closeVideoModal();
+            setTimeout(() => {
+                openQuizModal(firstQuiz);
+            }, 300); // Small delay to allow VideoModal to close smoothly
         }
     };
 
@@ -148,16 +165,16 @@ export const VideoModal = ({ open, onOpenChange }) => {
                                     PREV
                                 </button>
                                 <button
-                                    onClick={handleNext}
-                                    disabled={!hasNext}
+                                    onClick={hasNext ? handleNext : handleStartQuiz}
+                                    disabled={!hasNext && !hasQuiz}
                                     className={cn(
                                         "relative flex items-center gap-1 px-3 py-2 text-[10px] font-bold uppercase tracking-widest transition-all",
-                                        hasNext
-                                            ? "bg-cyan-400/10 border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20"
+                                        hasNext || hasQuiz
+                                            ? "bg-cyan-400/10 border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400/20 shadow-[0_0_10px_rgba(34,213,238,0.2)]"
                                             : "bg-slate-800/50 border border-slate-700 text-slate-600 cursor-not-allowed"
                                     )}
                                 >
-                                    NEXT
+                                    {hasNext ? "NEXT" : "START QUIZ"}
                                     <ChevronRight className="w-3.5 h-3.5" />
                                 </button>
                                 {!isMobile &&

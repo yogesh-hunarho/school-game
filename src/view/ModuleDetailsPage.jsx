@@ -18,10 +18,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useInstructor } from "@/provider/InstructorProvider";
+import { walkthroughDialogues } from "@/config/instructor-config";
 
 const ModuleDetailsPage = () => {
     const { moduleId } = useParams();
     const navigate = useNavigate();
+    const { showWalkthrough } = useInstructor()
 
     // Access store directly since it's a hook
     const { player, openContentPanel } = useLMSStore();
@@ -40,6 +43,7 @@ const ModuleDetailsPage = () => {
     }, [moduleId, openContentPanel]);
 
     const handleBack = () => {
+        showWalkthrough(walkthroughDialogues['back-to-mission-map'])
         navigate("/missions");
     };
 
