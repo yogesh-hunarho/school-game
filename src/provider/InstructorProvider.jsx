@@ -175,7 +175,7 @@ export const InstructorProvider = ({ children }) => {
                     key={location.pathname}
                     dialogue={configToShow?.dialogue}
                     uiActions={configToShow?.uiActions}
-                    position={configToShow?.position || 'right'}
+                    position={'right'}
                     voiceConfig={configToShow?.voice}
                     onComplete={handleComplete}
                     autoPlay={true}

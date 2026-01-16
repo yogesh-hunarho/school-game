@@ -30,6 +30,12 @@ import HeaderCoin from '@/components/HeaderCoin';
 import CyberpunkProgressBar from '@/components/ui/cyber-component/cyberpunk-progress-bar';
 import DecryptedText from '@/components/DecryptedText';
 import { calculateLevel, getLevelProgress } from '@/components/Header';
+import {
+    Avatar,
+    AvatarFallback,
+    AvatarImage,
+} from "@/components/ui/avatar"
+import { getInitials } from '@/lib/utils';
 
 // Mock data - replace with your actual store data
 const mockPlayer = {
@@ -140,11 +146,15 @@ export default function ProfilePage() {
 
                                     {/* Avatar */}
                                     <div className="absolute inset-2 rounded-full bg-linear-to-br from-cyan-500/30 to-purple-500/30 border-4 border-gray-800 shadow-2xl shadow-cyan-400/30 flex items-center justify-center overflow-hidden">
-                                        {player.profileImage ? (
+                                        {/* {player.profileImage ? (
                                             <img src={player.profileImage} alt="Avatar" className="h-full w-full object-cover" />
                                         ) : (
                                             <User className="w-16 h-16 text-cyan-300" />
-                                        )}
+                                        )} */}
+                                        <Avatar className="h-full w-full object-cover">
+                                            <AvatarImage src={player.profileImage} alt={player.name} />
+                                            <AvatarFallback className='text-2xl font-extrabold'>{getInitials(player.name)}</AvatarFallback>
+                                        </Avatar>
                                         <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
                                     </div>
 

@@ -5,7 +5,7 @@ import { motion, useScroll } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { PopoverTrigger, Popover, PopoverContent, PopoverAnchor } from "./ui/popover";
 import { X, Lock, Check, Brain, Box, Bot, Gamepad2, Droplets, PenTool, Sprout, Zap, ClipboardCheck, User, ChevronRight, Menu, Volume2, VolumeX, LogOut } from "lucide-react"
-import { cn } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 import { useNavigate } from "react-router-dom"
 import { useIsMobile } from "@/hook/use-mobile"
 import { calculateLevel } from "./Header";
@@ -24,6 +24,7 @@ import { useAuthStore } from "@/store/auth.store";
 import HeaderCoin from "./HeaderCoin";
 import Counter from "./counter";
 import MissionMap from "./mission-map";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export const HeroHeader = () => {
     const [menuState, setMenuState] = useState(false)
@@ -148,11 +149,10 @@ export const HeroHeader = () => {
                                                     <div className="absolute -inset-1 rounded-full bg-cyan-500/20 blur-sm opacity-0 transition group-hover:opacity-100" />
 
                                                     <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-500/50 bg-slate-900 transition group-hover:border-cyan-400">
-                                                        {player.profileImage ? (
-                                                            <img src={player.profileImage} alt="Avatar" className="h-full w-full object-cover" />
-                                                        ) : (
-                                                            <User className="h-5 w-5 text-cyan-400" />
-                                                        )}
+                                                        <Avatar className="h-full w-full object-cover">
+                                                            <AvatarImage src={player.profileImage} alt={player.name} />
+                                                            <AvatarFallback className='text-sm font-bold'>{getInitials(player.name)}</AvatarFallback>
+                                                        </Avatar>
                                                     </div>
 
                                                     <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-slate-950 bg-green-500" />
