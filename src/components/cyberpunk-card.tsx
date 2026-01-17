@@ -196,7 +196,7 @@ export function CyberpunkCard({
                                     <HeaderCoin className="w-3 h-3 text-yellow-500" size={14} />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    <span className="text-[8px] font-mono font-bold text-yellow-500/60 uppercase tracking-widest group-hover:text-yellow-400 transition-colors">XP_NET</span>
+                                    <span className="text-[8px] font-mono font-bold text-yellow-500/60 uppercase tracking-widest group-hover:text-yellow-400 transition-colors">COINS</span>
                                     <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.totalStars * 100}</span>
                                 </div>
                             </div>
@@ -213,7 +213,7 @@ export function CyberpunkCard({
                                     <Video className="w-3.5 h-3.5 text-cyan-400" />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    <span className="text-[8px] font-mono font-bold text-cyan-500/60 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">DATA</span>
+                                    <span className="text-[8px] font-mono font-bold text-cyan-500/60 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">VIDEOS</span>
                                     <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.videos}</span>
                                 </div>
                             </div>
@@ -248,7 +248,7 @@ export function CyberpunkCard({
                                             <Image className="w-3.5 h-3.5 text-emerald-400" />
                                         </div>
                                         <div className="flex flex-col items-start">
-                                            <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Badge</span>
+                                            <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">PUZZLE</span>
                                             <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">1 </span>
                                         </div>
                                     </div>

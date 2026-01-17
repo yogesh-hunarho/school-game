@@ -121,6 +121,11 @@ export const InstructorProvider = ({ children }) => {
         }
     };
 
+    const isWalkthroughCompleted = (id, mode = 'auto') => {
+        if (!id) return false;
+        return WalkthroughStorage.has(id, mode);
+    };
+
     // Shorthand for showing a quick walkthrough with UI highlights
     const showWalkthrough = ({
         id,
@@ -161,6 +166,7 @@ export const InstructorProvider = ({ children }) => {
         triggerInstructor,
         triggerCustomDialogue,
         showWalkthrough,
+        isWalkthroughCompleted,
         isInstructorActive: shouldShowInstructor,
         currentConfig: configToShow
     };

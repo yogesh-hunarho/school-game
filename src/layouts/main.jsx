@@ -57,7 +57,7 @@ export default function MainLayout() {
                     className="w-full h-full object-cover"
                 />
             </div>
-            <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
+            <div className="relative z-10 w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-12 items-center">
                 {/* Content Section */}
                 <div className="hidden md:block" />
                 <motion.div
@@ -148,7 +148,7 @@ export default function MainLayout() {
                         </div>
 
                         {/* Mission description */}
-                        <div className="text-sm md:text-lg text-white font-mono leading-relaxed h-40">
+                        <div className="text-sm md:text-lg text-white font-mono leading-relaxed md:h-40">
                             <TypeWriter
                                 text="Hey Innovator! 🚀 Dive into exciting projects like Robots, Tetris, and Aqua Bridges! Complete missions, earn coins, and become a tech superhero! 🦸‍♂️ Unlock new challenges and show off your skills to the world! 🌟"
                                 delay={30}

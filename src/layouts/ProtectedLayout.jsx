@@ -21,22 +21,22 @@ import '@/styles/instructor-animations.css';
 const navLinks = [
     {
         title: "Home",
-        icon: <Home className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+        icon: <Home className="h-full w-full " />,
         href: "/",
     },
     {
         title: "Missions",
-        icon: <BookOpen className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+        icon: <BookOpen className="h-full w-full " />,
         href: "/missions",
     },
     {
         title: "Achievements",
-        icon: <Trophy className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+        icon: <Trophy className="h-full w-full " />,
         href: "/achievements",
     },
     {
         title: "Profile",
-        icon: <User className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+        icon: <User className="h-full w-full " />,
         href: "/profile",
     },
 ];

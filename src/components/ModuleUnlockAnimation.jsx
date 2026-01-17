@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useLMSStore } from "@/store/lms-store";
 import { modules } from "@/store/level-canvas-config";
 import { CheckCircle2, Unlock, ChevronRight } from "lucide-react";
+import DecryptedText from "./DecryptedText";
 
 export const ModuleUnlockAnimation = () => {
     const { lastCompletedModuleId, showConfetti, hideConfetti } = useLMSStore();
@@ -152,16 +153,24 @@ export const ModuleUnlockAnimation = () => {
                                             initial={{ opacity: 0, y: 40, scale: 0.9 }}
                                             animate={{ opacity: 1, y: 0, scale: 1 }}
                                             transition={{ delay: 2.2, type: "spring", stiffness: 180 }}
-                                            className="relative mt-6 p-6 border border-yellow-400/40 bg-yellow-400/10"
+                                            className="relative p-6 w-full border border-yellow-400/40 bg-yellow-400/10"
                                         >
                                             <div className="flex items-center gap-4">
                                                 <Unlock className="text-yellow-400 w-8 h-8" />
                                                 <div>
                                                     <p className="text-yellow-400 text-xs uppercase tracking-widest">
-                                                        New Mission Unlocked
+                                                        <DecryptedText
+                                                            text={"New Mission Unlocked"}
+                                                            animateOn="view"
+                                                            revealDirection="center"
+                                                        />
                                                     </p>
                                                     <h2 className="text-xl text-white font-bold">
-                                                        {nextModule.name}
+                                                        <DecryptedText
+                                                            text={nextModule.name}
+                                                            animateOn="view"
+                                                            revealDirection="center"
+                                                        />
                                                     </h2>
                                                 </div>
                                             </div>

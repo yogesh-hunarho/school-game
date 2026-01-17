@@ -124,7 +124,7 @@ export function CyberpunkLock({
 
                     <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-yellow-500/5 transition-colors">
                         <div className="flex items-center justify-center p-1.5 rounded bg-yellow-950/30 border border-yellow-500/20 shadow-[0_0_10px_-3px_rgba(234,179,8,0.3)] group-hover:shadow-yellow-500/40 transition-all">
-                            <HeaderCoin className="w-3 h-3 text-yellow-500" size={14} />
+                            <HeaderCoin className="w-3 h-3 text-yellow-500" size={14} isAnimate={false} />
                         </div>
                         <div className="flex flex-col items-start">
                             <span className="text-[8px] font-mono font-bold text-yellow-500/60 uppercase tracking-widest group-hover:text-yellow-400 transition-colors">XP_NET</span>
@@ -179,7 +179,7 @@ export function CyberpunkLock({
                                     <Image className="w-3.5 h-3.5 text-emerald-400" />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Badge</span>
+                                    <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">PUZZLE</span>
                                     <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">1 </span>
                                 </div>
                             </div>

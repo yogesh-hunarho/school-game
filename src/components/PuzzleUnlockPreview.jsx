@@ -171,6 +171,8 @@ import { Lock, Sparkles, Zap } from "lucide-react"
 import { useLMSStore } from "../store/lms-store"
 import CyberpunkButton from "./ui/cyber-button";
 import { useNavigate } from "react-router-dom";
+import { useInstructor } from "@/provider/InstructorProvider";
+import { walkthroughDialogues } from "@/config/instructor-config";
 
 const TOTAL_TILES = 9
 const IMAGE_URL = "/assets/puzzle/cyberpunk-student.png"
@@ -182,9 +184,18 @@ const PuzzleUnlockPreview = () => {
     const unlockedCount = player?.unlockedPuzzleCount || 0
     const allUnlocked = unlockedCount >= 9
     const navigate = useNavigate();
+    const { showWalkthrough } = useInstructor();
 
     const onStartGame = () => {
+        if (!allUnlocked) {
+            showWalkthrough(walkthroughDialogues['puzzle-play'])
+            return
+        }
         navigate("/puzzle")
+    }
+
+    const handleLockClick = () => {
+        showWalkthrough(walkthroughDialogues['puzzle-lock'])
     }
 
     return (
@@ -226,7 +237,7 @@ const PuzzleUnlockPreview = () => {
 
                                 {/* LOCK OVERLAY */}
                                 {!isUnlocked && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md">
+                                    <div onClick={handleLockClick} className="cursor-pointer absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md">
                                         <Lock className="w-6 h-6 text-white" />
                                     </div>
                                 )}
@@ -247,8 +258,8 @@ const PuzzleUnlockPreview = () => {
                 </div>
 
                 <CyberpunkButton
-                    disabled={!allUnlocked}
-                    className={"text-white"}
+                    // disabled={!allUnlocked}
+                    className={`${allUnlocked ? "" : "disabled opacity-30 cursor-not-allowed"} text-white`}
                     variant="primary"
                     onClick={onStartGame}
                 >

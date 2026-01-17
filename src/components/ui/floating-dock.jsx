@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/provider/theme-provider";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export const FloatingDock = ({
   items,
@@ -42,7 +43,7 @@ const FloatingDockDesktop = ({
         animate={{ rotateX: 0, y: 0, opacity: 1 }}
         transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
         className={cn(
-          "mx-auto h-20 gap-4 px-4 pb-2.5 flex items-end justify-center relative",
+          "mx-auto h-20 gap-4 px-4 md:py-2.5 py-1.5 flex items-end justify-center relative",
           className
         )}>
 
@@ -70,6 +71,7 @@ function IconContainer({
   let ref = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [hovered, setHovered] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -93,11 +95,15 @@ function IconContainer({
   // 3D Lift effect
   let yTransform = useTransform(distance, [-150, 0, 150], [0, -20, 0]);
 
-  let widthSpring = useSpring(widthTransform, { mass: 0.1, stiffness: 200, damping: 15 });
-  let heightSpring = useSpring(heightTransform, { mass: 0.1, stiffness: 200, damping: 15 });
-  let widthIconSpring = useSpring(widthTransformIcon, { mass: 0.1, stiffness: 200, damping: 15 });
-  let heightIconSpring = useSpring(heightTransformIcon, { mass: 0.1, stiffness: 200, damping: 15 });
-  let ySpring = useSpring(yTransform, { mass: 0.1, stiffness: 200, damping: 15 });
+  // Smoother spring physics for buttery animations
+  const springConfig = { mass: 0.2, stiffness: 150, damping: 12 };
+  const iconSpringConfig = { mass: 0.15, stiffness: 180, damping: 14 };
+
+  let widthSpring = useSpring(widthTransform, springConfig);
+  let heightSpring = useSpring(heightTransform, springConfig);
+  let widthIconSpring = useSpring(widthTransformIcon, iconSpringConfig);
+  let heightIconSpring = useSpring(heightTransformIcon, iconSpringConfig);
+  let ySpring = useSpring(yTransform, { mass: 0.2, stiffness: 120, damping: 10 });
 
   // Mobile static values
   let width = isMobile ? (hovered ? 55 : 50) : widthSpring;
@@ -106,6 +112,14 @@ function IconContainer({
   let heightIcon = isMobile ? (hovered ? 30 : 26) : heightIconSpring;
   let y = isMobile ? 0 : ySpring;
 
+  const reflectionOpacity = useTransform(
+    distance,
+    [-150, 0, 150],
+    [0, 0.4, 0]
+  );
+
+  const isActive = location.pathname === href;
+
   return (
     <a href={href} className={cn("relative flex items-end justify-center group preserve-3d")}>
       <motion.div
@@ -113,28 +127,62 @@ function IconContainer({
         style={{ width, height, y }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="relative flex aspect-square items-center justify-center bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-lg cursor-pointer preserve-3d hover:shadow-cyan-400/50 hover:border-cyan-400/50 transition-shadow duration-300">
+        whileHover={{
+          boxShadow: "0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2)",
+        }}
+        transition={{
+          boxShadow: { type: "spring", stiffness: 200, damping: 20 }
+        }}
+        className={cn(
+          "relative flex aspect-square items-center justify-center rounded-2xl border shadow-lg cursor-pointer preserve-3d",
+          isActive
+            ? "bg-cyan-500/30 backdrop-blur-xl shadow-cyan-500/50 border-cyan-400/50"
+            : "bg-linear-to-br from-slate-800 to-slate-900 border-white/10 hover:border-cyan-400/50"
+        )}>
 
         {/* Glow Effect */}
-        <div className="absolute inset-0 rounded-2xl bg-cyan-500/0 group-hover:bg-cyan-500/20 blur-xl transition-all duration-300" />
+        <motion.div
+          className="absolute inset-0 rounded-2xl blur-xl"
+          animate={{
+            backgroundColor: isActive
+              ? "rgba(6, 182, 212, 0.4)"
+              : hovered
+                ? "rgba(6, 182, 212, 0.25)"
+                : "rgba(6, 182, 212, 0)"
+          }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        />
 
         {/* Reflection Gradient */}
-        <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/50 to-transparent opacity-50" />
+        {!isActive && <div className="absolute inset-0 rounded-2xl bg-linear-to-t from-black/50 to-transparent opacity-50" />}
 
         {/* Inner Highlight */}
         <div className="absolute inset-px rounded-[15px] bg-linear-to-br from-white/10 to-transparent opacity-50" />
 
         <motion.div
           style={{ width: widthIcon, height: heightIcon }}
-          className="relative z-10 text-white group-hover:text-cyan-400 group-hover:scale-110 transition-colors duration-300"
-          animate={{ z: hovered ? 20 : 0 }}>
+          className={cn(
+            "relative z-10",
+            isActive ? "text-white" : "text-slate-400"
+          )}
+          animate={{
+            z: hovered ? 20 : 0,
+            scale: hovered ? 1.1 : 1,
+            rotate: hovered ? [0, -5, 5, 0] : 0,
+            color: hovered && !isActive ? "rgb(34, 211, 238)" : undefined
+          }}
+          transition={{
+            scale: { type: "spring", stiffness: 300, damping: 15 },
+            rotate: { duration: 0.4, ease: "easeInOut" },
+            color: { duration: 0.2 }
+          }}>
           {icon}
         </motion.div>
 
         {/* Reflection below the icon (mirror effect) */}
         {!isMobile && (
           <motion.div
-            style={{ width, height, opacity: useTransform(distance, [-150, 0, 150], [0, 0.4, 0]) }}
+            style={{ width, height, opacity: reflectionOpacity }}
             className="absolute -bottom-[90%] left-0 w-full h-full scale-y-[-1] bg-linear-to-t from-transparent via-slate-500/20 to-transparent blur-[2px] pointer-events-none"
           >
             <motion.div

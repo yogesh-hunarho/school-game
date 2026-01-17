@@ -133,6 +133,15 @@ export const walkthroughDialogues = {
         focus: true,
         position: 'right'
     },
+    'video': {
+        id: "video",
+        mode: 'manual',
+        dialogue: ["Watch the video to earn coins. when you watch the video 80% then its automatically marked as completed and you will get coins and unlock the next video. Also you can see the description of the video and resources file."],
+        uiActions: [],
+        dontTrack: false,
+        focus: true,
+        position: 'right'
+    },
     'locked-quiz': (isFirst) => ({
         id: "locked-quiz",
         mode: 'manual',
@@ -147,6 +156,51 @@ export const walkthroughDialogues = {
         mode: 'manual',
         dontTrack: true,
         dialogue: ["This assessment is locked. Complete the previous assessment to unlock this assessment."],
+        uiActions: [],
+        focus: true,
+        position: 'right'
+    },
+    'achievement-info': {
+        id: "achievement-info",
+        mode: 'manual',
+        dontTrack: true,
+        dialogue: ["You can use this achievement as you profile image"],
+        uiActions: [],
+        focus: true,
+        position: 'right'
+    },
+    'achievement-collect': {
+        id: "achievement-collect",
+        mode: 'manual',
+        dontTrack: false,
+        dialogue: ["You can collect this achievement and use it as your profile image."],
+        uiActions: [],
+        focus: true,
+        position: 'right'
+    },
+    'achievement-lock-info': {
+        id: "achievement-lock-info",
+        mode: 'manual',
+        dontTrack: true,
+        dialogue: ["This achievement is locked. Complete the mission to unlock this achievement."],
+        uiActions: [],
+        focus: true,
+        position: 'right'
+    },
+    'puzzle-lock': {
+        id: "puzzle-lock",
+        mode: 'manual',
+        dontTrack: true,
+        dialogue: ["This puzzle piece is locked. Complete the mission to unlock puzzle."],
+        uiActions: [],
+        focus: true,
+        position: 'right'
+    },
+    'puzzle-play': {
+        id: "puzzle-play",
+        mode: 'manual',
+        dontTrack: true,
+        dialogue: ["This puzzle is locked. Unlock it by completing the mission."],
         uiActions: [],
         focus: true,
         position: 'right'

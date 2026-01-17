@@ -114,13 +114,17 @@ export const ModuleContentPanel = () => {
             }
             setTimeout(() => setShakingId(null), 500);
             return;
+        } else {
+            if (type === "video") {
+                showWalkthrough(walkthroughDialogues['video']);
+            }
+            setClickedId(id);
+            playClick();
+            setTimeout(() => {
+                setClickedId(null);
+                action();
+            }, 150);
         }
-        setClickedId(id);
-        playClick();
-        setTimeout(() => {
-            setClickedId(null);
-            action();
-        }, 150);
     };
 
     return (
@@ -348,7 +352,7 @@ export const ModuleContentPanel = () => {
 
 
                                 return (
-                                    <motion.button
+                                    <motion.div
                                         key={video.id}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -555,7 +559,7 @@ export const ModuleContentPanel = () => {
                                                 />
                                             </>
                                         )}
-                                    </motion.button>
+                                    </motion.div>
                                 );
                             })}
                         </motion.div>

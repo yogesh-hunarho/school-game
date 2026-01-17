@@ -156,7 +156,7 @@ export const GameInstructor = ({
 
     return (
         <AnimatePresence>
-            <div className={`fixed bottom-4 ${positionClass} z-9999 flex flex-col ${position === 'left' ? 'items-start' : 'items-end'} gap-2 max-w-md`}>
+            <div className={`fixed -bottom-3 ${positionClass} z-9999 flex flex-col ${position === 'left' ? 'items-start' : 'items-end'} gap-2 max-w-md`}>
 
                 {/* Speech Engine Controller - Keyed by current dialogue to force hook reset */}
                 {isVisible && voiceEnabled && voicesReady && currentDialogue && (

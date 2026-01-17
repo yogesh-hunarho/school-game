@@ -14,8 +14,8 @@ import {
     CheckCircle2,
     Trophy,
     Gamepad,
-    Info,
-    ArrowLeft
+    ArrowLeft,
+    CircleQuestionMark
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CyberpunkButton from "@/components/ui/cyber-button";
@@ -24,6 +24,8 @@ import CyberpunkProgressBar from "@/components/ui/cyber-component/cyberpunk-prog
 import AchievementCollectionModal from "@/components/modals/AchievementCollectionModal";
 import useSound from "@/hook/useSound";
 import { useIsMobile } from "@/hook/use-mobile";
+import { useInstructor } from "@/provider/InstructorProvider";
+import { walkthroughDialogues } from "@/config/instructor-config";
 import PuzzleUnlockPreview from "@/components/PuzzleUnlockPreview";
 
 const ACHIEVEMENT_DEFINITIONS = [
@@ -289,7 +291,19 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
     const showCollectButton = isUnlocked && !isCollected;
     const { playSound } = useSound();
     const isMobile = useIsMobile()
+    const { showWalkthrough, isWalkthroughCompleted } = useInstructor()
 
+    const handleInfo = () => {
+        if (isUnlocked) {
+            showWalkthrough(walkthroughDialogues['achievement-info'])
+        } else {
+            showWalkthrough(walkthroughDialogues['achievement-lock-info'])
+        }
+    }
+
+    const handleCollectInfo = () => {
+        showWalkthrough(walkthroughDialogues['achievement-collect'])
+    }
     return (
         <motion.div
             layout
@@ -307,8 +321,8 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
             <div
                 className={cn(
                     "absolute z-20 transition-all duration-500 ease-in-out",
-                    "top-3 left-3 right-3 group-hover:h-[140px] group-hover:w-[140px] bottom-3",
-                    "group-hover:top-1/4 group-hover:left-1/2 mt-2 ml-1",
+                    "top-0 left-0 right-1 group-hover:h-[140px] group-hover:w-[140px] bottom-0",
+                    "group-hover:top-1/4 group-hover:left-1/2 group-hover:mt-3 mt-1 ml-1",
                     "group-hover:right-auto group-hover:bottom-auto",
                     "group-hover:-translate-x-1/2 group-hover:-translate-y-1/2",
                     "group-hover:rounded-full",
@@ -380,7 +394,8 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                     </div>
 
                     {/* Bottom Action Area */}
-                    <div className="mt-auto flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-300">
+                    <div className="mt-auto flex gap-2 items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-300">
+                        <CircleQuestionMark onClick={handleInfo} className="cursor-pointer w-5 h-5 text-white" />
                         {isUnlocked && (
                             <CyberpunkButton
                                 variant="puzzle"
@@ -401,7 +416,8 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
             {/* Collect Button Overlay (for newly unlocked achievements) */}
             {
                 showCollectButton && (
-                    <div className="absolute inset-0 z-50 flex items-center justify-center bg-transparent/80 backdrop-blur">
+                    <div className="absolute inset-0 z-50 flex gap-2 items-center justify-center bg-transparent/80 backdrop-blur">
+                        {isWalkthroughCompleted('achievement-collect') && <CircleQuestionMark onClick={handleCollectInfo} />}
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
@@ -478,8 +494,8 @@ const AchievementLayout = () => {
             </div>
 
             <div className="relative xl:max-w-7xl lg:max-w-6xl md:max-w-5xl max-w-4xl mx-auto flex flex-col pt-20">
-                <main className="p-4">
-                    <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 bg-black/40 backdrop-blur-xl p-2 md:p-3 border border-white/5 shadow-2xl">
+                <main className="p-4 md:p-0">
+                    <header className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 bg-transparent backdrop-blur-xl  p-2 md:p-3 border border-white/5 shadow-2xl">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={handleBack}
@@ -502,7 +518,7 @@ const AchievementLayout = () => {
                                     <CyberpunkProgressBar height="4" progress={(completedMissions / totalMissions || 0) * 100} hideLabel />
                                 </div>
                             </div>
-                            <div>
+                            {/* <div>
                                 <CyberpunkButton
                                     variant="puzzle"
                                     className={"py-0 px-1"}
@@ -510,7 +526,7 @@ const AchievementLayout = () => {
                                 >
                                     Play Puzzle
                                 </CyberpunkButton>
-                            </div>
+                            </div> */}
                         </div>
                     </header>
 
