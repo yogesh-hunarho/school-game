@@ -13,11 +13,24 @@ import { normalizeSpeech } from '@/config/normalizeSpeech';
 const SpeechEngine = ({ text, voiceConfig, onStatusChange }) => {
     const { start, stop, speechStatus } = useSpeech({
         text: normalizeSpeech(text),
-        pitch: voiceConfig.pitch || 1.1,
-        rate: voiceConfig.rate || 1.0,
-        volume: voiceConfig.volume || 1.0,
-        voiceURI: voiceConfig.voiceURI,
+        pitch: 1,
+        rate: 0.9,
+        volume: 0.65,
+        voiceURI: "Microsoft Mark - English (United States)"
     });
+
+    // const { start, stop, speechStatus } = useSpeech({ 
+    //     text: normalizeSpeech(text),
+    //     pitch: 1, 
+    //     rate: 0.9, 
+    //     volume: 0.65,
+    //     voiceURI: "Microsoft Mark - English (United States)", 
+    //     autoPlay: false, highlightText: false, 
+    //     showOnlyHighlightedText: false, 
+    //     highlightMode: "word", 
+    //     enableDirectives: false
+    // });
+
 
     useEffect(() => {
         onStatusChange(speechStatus);
@@ -57,7 +70,19 @@ export const GameInstructor = ({
     const hasStartedRef = useRef(false);
     const prevSpeechStatusRef = useRef('none');
     const [voicesReady, setVoicesReady] = useState(false);
+    const [assetsLoaded, setAssetsLoaded] = useState(false);
     const [bubbleVisible, setBubbleVisible] = useState(false);
+
+    // Pre-load assets
+    useEffect(() => {
+        const characterImg = new Image();
+        characterImg.src = "/assets/character/character.png";
+        characterImg.onload = () => setAssetsLoaded(true);
+        characterImg.onerror = () => {
+            console.error("Failed to load instructor image");
+            setAssetsLoaded(true); // Proceed anyway to avoid total block
+        };
+    }, []);
 
     // Convert single dialogue to array
     const dialogueArray = Array.isArray(dialogue) ? dialogue : [dialogue];
@@ -66,25 +91,30 @@ export const GameInstructor = ({
     useEffect(() => {
         const loadVoices = () => {
             const voices = window.speechSynthesis.getVoices()
-            if (voices.length) setVoicesReady(true)
+            if (voices.length > 0) setVoicesReady(true)
         }
-        loadVoices()
+        
+        // Browsers might already have voices loaded
+        if (window.speechSynthesis.getVoices().length > 0) {
+            setVoicesReady(true);
+        }
+
         window.speechSynthesis.onvoiceschanged = loadVoices
         return () => window.speechSynthesis.onvoiceschanged = null;
     }, []);
 
     useEffect(() => {
-        if (!voiceEnabled && currentDialogue) {
+        if (!voiceEnabled && currentDialogue && assetsLoaded) {
             setBubbleVisible(true);
 
             const timer = setTimeout(() => {
                 setBubbleVisible(false);
                 handleDialogueComplete();
-            }, 2000);
+            }, 3000); // Give enough time to read
 
             return () => clearTimeout(timer);
         }
-    }, [voiceEnabled, currentDialogue]);
+    }, [voiceEnabled, currentDialogue, assetsLoaded]);
 
     const isSpeaking = speechStatus === 'started';
 
@@ -105,36 +135,35 @@ export const GameInstructor = ({
         prevSpeechStatusRef.current = status;
 
         setSpeechStatus(status);
+        
         if (status === 'started') {
             setIsActuallySpeaking(true);
             setBubbleVisible(true);
             return;
         }
-        if (prev === 'started' && status === 'stopped') {
+
+        // Only move forward if we were previously speaking and now stopped/finished
+        if ((prev === 'started' || prev === 'playing') && (status === 'stopped' || status === 'finished')) {
             setIsActuallySpeaking(false);
 
             setTimeout(() => {
                 setBubbleVisible(false);
                 handleDialogueComplete();
-            }, 600);
+            }, 800);
         }
-        // else if (status === 'finished') {
-        //     const timer = setTimeout(() => {
-        //         setIsActuallySpeaking(false);
-        //         handleDialogueComplete();
-        //     }, 800);
-        //     return () => clearTimeout(timer);
-        // }
     };
 
-    // Show instructor on mount
+    // Show instructor only when assets are ready
     useEffect(() => {
-        if (autoPlay && !hasStartedRef.current) {
-            hasStartedRef.current = true;
-            setIsVisible(true);
+        if (autoPlay && assetsLoaded && !hasStartedRef.current) {
+            // Small extra delay for smoothness
+            const timer = setTimeout(() => {
+                hasStartedRef.current = true;
+                setIsVisible(true);
+            }, 500);
+            return () => clearTimeout(timer);
         }
-    }, [autoPlay]);
-
+    }, [autoPlay, assetsLoaded]);
 
     const handleClose = () => {
         window.speechSynthesis.cancel();
@@ -154,87 +183,76 @@ export const GameInstructor = ({
     const positionClass = position === 'left' ? 'left-4' : 'right-4';
     const animationClass = position === 'left' ? 'instructor-slide-in-left' : 'instructor-slide-in-right';
 
+    // Show a minimal loader if assets aren't ready but instructor SHOULD be active
+    const isReady = assetsLoaded && voicesReady;
+
     return (
         <AnimatePresence>
-            <div className={`fixed -bottom-3 ${positionClass} z-9999 flex flex-col ${position === 'left' ? 'items-start' : 'items-end'} gap-2 max-w-md`}>
+            {isVisible && isReady && (
+                <div className={`fixed -bottom-3 ${positionClass} z-9999 flex flex-col ${position === 'left' ? 'items-start' : 'items-end'} gap-2 max-w-md`}>
 
-                {/* Speech Engine Controller - Keyed by current dialogue to force hook reset */}
-                {isVisible && voiceEnabled && voicesReady && currentDialogue && (
-                    <SpeechEngine
-                        key={`${currentDialogueIndex}-${currentDialogue.substring(0, 10)}`}
-                        text={currentDialogue}
-                        voiceConfig={voiceConfig}
-                        onStatusChange={handleSpeechStatusUpdate}
-                    />
-                )}
-
-                {/* Speech Bubble */}
-                <AnimatePresence>
-                    {isActive && currentDialogue && bubbleVisible && (
-                        <SpeechBubble
+                    {/* Speech Engine Controller - Keyed by current dialogue to force hook reset */}
+                    {voiceEnabled && currentDialogue && (
+                        <SpeechEngine
+                            key={`${currentDialogueIndex}-${currentDialogue.substring(0, 10)}`}
                             text={currentDialogue}
-                            onClose={handleClose}
-                            isSpeaking={speechStatus === 'started'}
-                            // isSpeaking={isSpeaking || isActuallySpeaking}
-                            showControls={false}
-                            onToggleSound={handleToggleVoice}
-                            speechRate={voiceConfig.rate || 1.0}
-                            position={position}
+                            voiceConfig={voiceConfig}
+                            onStatusChange={handleSpeechStatusUpdate}
                         />
                     )}
-                </AnimatePresence>
 
-                {/* Character */}
-                <motion.div
-                    className={`relative ${animationClass}`}
-                    initial={{ opacity: 0, y: 100, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 100, scale: 0.8 }}
-                    transition={{
-                        duration: 0.6,
-                        type: "spring",
-                        stiffness: 120,
-                        damping: 15
-                    }}
-                >
-                    <div className="relative w-32 h-48 md:w-32 md:h-48 rounded-lg overflow-hidden flex items-end justify-center">
-                        <div className="relative z-10 w-full h-full flex items-end justify-center">
-                            {/* {voiceEnabled && (isActuallySpeaking || isSpeaking) ? (
-                                <video
-                                    src="/assets/character/speech.mp4"
-                                    autoPlay
-                                    loop
-                                    muted
-                                    className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]"
-                                />
-                            ) : (
+                    {/* Speech Bubble */}
+                    <AnimatePresence>
+                        {isActive && currentDialogue && bubbleVisible && (
+                            <SpeechBubble
+                                text={currentDialogue}
+                                onClose={handleClose}
+                                isSpeaking={speechStatus === 'started'}
+                                showControls={false}
+                                onToggleSound={handleToggleVoice}
+                                speechRate={voiceConfig.rate || 1.0}
+                                position={position}
+                            />
+                        )}
+                    </AnimatePresence>
+
+                    {/* Character */}
+                    <motion.div
+                        className={`relative ${animationClass}`}
+                        initial={{ opacity: 0, y: 100, scale: 0.8 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 100, scale: 0.8 }}
+                        transition={{
+                            duration: 0.6,
+                            type: "spring",
+                            stiffness: 120,
+                            damping: 15
+                        }}
+                    >
+                        <div className="relative w-32 h-48 md:w-32 md:h-48 rounded-lg overflow-hidden flex items-end justify-center">
+                            <div className="relative z-10 w-full h-full flex items-end justify-center">
                                 <img
                                     src="/assets/character/character.png"
                                     alt="AI Instructor"
                                     className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]"
                                 />
-                            )} */}
-                            <img
-                                src="/assets/character/character.png"
-                                alt="AI Instructor"
-                                className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(0,255,255,0.5)]"
-                            />
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
 
-                {/* UI Highlights */}
-                {isActive && uiActions.map((action, index) => (
-                    <UIHighlight
-                        key={index}
-                        targetSelector={action.selector}
-                        effect={action.effect}
-                        duration={action.duration || 2500}
-                        delay={action.delay || 0}
-                        color={action.color || 'cyan'}
-                    />
-                ))}
-            </div>
+                    {/* UI Highlights */}
+                    {isActive && uiActions.map((action, index) => (
+                        <UIHighlight
+                            key={index}
+                            targetSelector={action.selector}
+                            effect={action.effect}
+                            duration={action.duration || 2500}
+                            delay={action.delay || 0}
+                            color={action.color || 'cyan'}
+                        />
+                    ))}
+                </div>
+            )}
         </AnimatePresence>
     );
 };

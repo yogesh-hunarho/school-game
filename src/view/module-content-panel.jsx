@@ -105,19 +105,19 @@ export const ModuleContentPanel = () => {
         if (locked) {
             setShakingId(id);
             playSound("disabled");
-            if (type === "video") {
-                showWalkthrough(walkthroughDialogues['locked-video']);
-            } else if (type === "quiz") {
-                showWalkthrough(walkthroughDialogues['locked-quiz'](id === 'q1'));
-            } else if (type === "assessment") {
-                showWalkthrough(walkthroughDialogues['locked-assessment']);
-            }
+            // if (type === "video") {
+            //     showWalkthrough(walkthroughDialogues['locked-video']);
+            // } else if (type === "quiz") {
+            //     showWalkthrough(walkthroughDialogues['locked-quiz'](id === 'q1'));
+            // } else if (type === "assessment") {
+            //     showWalkthrough(walkthroughDialogues['locked-assessment']);
+            // }
             setTimeout(() => setShakingId(null), 500);
             return;
         } else {
-            if (type === "video") {
-                showWalkthrough(walkthroughDialogues['video']);
-            }
+            // if (type === "video") {
+            //     showWalkthrough(walkthroughDialogues['video']);
+            // }
             setClickedId(id);
             playClick();
             setTimeout(() => {
@@ -627,7 +627,7 @@ export const ModuleContentPanel = () => {
                                             </div>
 
                                             {/* Grid Background Effect */}
-                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.05)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.05)_1px,transparent_1px)] bg-size-[20px_20px] mask-[radial-gradient(ellipse_at_center,black,transparent_70%)]" />
 
                                             {/* Status Badge */}
                                             <div className="absolute top-3 left-3 z-20">
@@ -694,7 +694,7 @@ export const ModuleContentPanel = () => {
 
                                                 {/* Hover Glow */}
                                                 {!isQuizLocked && (
-                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer" />
+                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full animate-shimmer" />
                                                 )}
                                             </motion.div>
                                         </div>
@@ -779,7 +779,7 @@ export const ModuleContentPanel = () => {
                                             </div>
 
                                             {/* Grid Background Effect */}
-                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.05)_1px,transparent_1px)] bg-[size:20px_20px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
+                                            <div className="absolute inset-0 bg-[linear-gradient(rgba(52,211,153,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(52,211,153,0.05)_1px,transparent_1px)] bg-size-[20px_20px] mask-[radial-gradient(ellipse_at_center,black,transparent_70%)]" />
 
                                             {/* Status Badge */}
                                             <div className="absolute top-3 left-3 z-20">
@@ -850,7 +850,7 @@ export const ModuleContentPanel = () => {
 
                                                 {/* Hover Glow */}
                                                 {!isAssessmentLocked && (
-                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-x-[-100%] animate-shimmer" />
+                                                    <div className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-linear-to-r from-transparent via-white/10 to-transparent skew-x-12 -translate-x-full animate-shimmer" />
                                                 )}
                                             </motion.div>
                                         </div>

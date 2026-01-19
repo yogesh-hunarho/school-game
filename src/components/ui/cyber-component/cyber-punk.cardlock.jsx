@@ -53,7 +53,7 @@ export function CyberpunkLock({
 
     const handleLockedMission = () => {
         playSound("disabled")
-        showWalkthrough(walkthroughDialogues['locked-mission'])
+        // showWalkthrough(walkthroughDialogues['locked-mission'])
     }
 
 
@@ -115,19 +115,19 @@ export function CyberpunkLock({
                 </div>
 
             </div>
-            <div className="grid grid-cols-4 gap-2 mb-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4 mt-4">
                 {/* COINS */}
-                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-yellow-500/20 hover:border-yellow-500/60 transition-all duration-300">
+                <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-yellow-500/60 transition-all duration-300">
                     {/* Tech Corners */}
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-yellow-500/40 group-hover:border-yellow-400 transition-colors" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-yellow-500/40 group-hover:border-yellow-400 transition-colors" />
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-yellow-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-yellow-400 transition-colors" />
 
-                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-yellow-500/5 transition-colors">
-                        <div className="flex items-center justify-center p-1.5 rounded bg-yellow-950/30 border border-yellow-500/20 shadow-[0_0_10px_-3px_rgba(234,179,8,0.3)] group-hover:shadow-yellow-500/40 transition-all">
+                    <div className="relative p-2 flex flex-row items-center justify-start gap-3 bg-yellow-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-yellow-950/30 border border-yellow-500/20 shadow-[0_0_10px_-3px_rgba(234,179,8,0.3)] shadow-yellow-500/40 transition-all">
                             <HeaderCoin className="w-3 h-3 text-yellow-500" size={14} isAnimate={false} />
                         </div>
                         <div className="flex flex-col items-start">
-                            <span className="text-[8px] font-mono font-bold text-yellow-500/60 uppercase tracking-widest group-hover:text-yellow-400 transition-colors">XP_NET</span>
+                            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-yellow-400 transition-colors">COINS EARN</span>
                             <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.totalStars * 100}</span>
                         </div>
                     </div>
@@ -136,15 +136,15 @@ export function CyberpunkLock({
                 {/* VIDEOS */}
                 <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-cyan-500/20 hover:border-cyan-500/60 transition-all duration-300">
                     {/* Tech Corners */}
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-500/40 group-hover:border-cyan-400 transition-colors" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-500/40 group-hover:border-cyan-400 transition-colors" />
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-cyan-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-cyan-400 transition-colors" />
 
-                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-cyan-500/5 transition-colors">
-                        <div className="flex items-center justify-center p-1.5 rounded bg-cyan-950/30 border border-cyan-500/20 shadow-[0_0_10px_-3px_rgba(6,182,212,0.3)] group-hover:shadow-cyan-500/40 transition-all">
+                    <div className="relative p-2 flex flex-row items-center justify-start gap-3 bg-cyan-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-cyan-950/30 border border-cyan-500/20 shadow-[0_0_10px_-3px_rgba(6,182,212,0.3)] shadow-cyan-500/40 transition-all">
                             <Video className="w-3.5 h-3.5 text-cyan-400" />
                         </div>
                         <div className="flex flex-col items-start">
-                            <span className="text-[8px] font-mono font-bold text-cyan-500/60 uppercase tracking-widest group-hover:text-cyan-400 transition-colors">DATA</span>
+                            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-cyan-400 transition-colors">TOTAL VIDEOS</span>
                             <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.videos}</span>
                         </div>
                     </div>
@@ -153,15 +153,15 @@ export function CyberpunkLock({
                 {/* QUIZZES */}
                 <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-purple-500/20 hover:border-purple-500/60 transition-all duration-300">
                     {/* Tech Corners */}
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-purple-500/40 group-hover:border-purple-400 transition-colors" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-purple-500/40 group-hover:border-purple-400 transition-colors" />
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-purple-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-purple-400 transition-colors" />
 
-                    <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-purple-500/5 transition-colors">
-                        <div className="flex items-center justify-center p-1.5 rounded bg-purple-950/30 border border-purple-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] group-hover:shadow-purple-500/40 transition-all">
+                    <div className="relative p-2 flex flex-row items-center justify-start gap-3 bg-purple-500/5 transition-colors">
+                        <div className="flex items-center justify-center p-1.5 rounded bg-purple-950/30 border border-purple-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] shadow-purple-500/40 transition-all">
                             <FileQuestionMark className="w-3.5 h-3.5 text-purple-400" />
                         </div>
                         <div className="flex flex-col items-start">
-                            <span className="text-[8px] font-mono font-bold text-purple-500/60 uppercase tracking-widest group-hover:text-purple-400 transition-colors">QUIZ</span>
+                            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-purple-400 transition-colors">TOTAL QUIZ</span>
                             <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">{module.quizzes}</span>
                         </div>
                     </div>
@@ -169,17 +169,17 @@ export function CyberpunkLock({
 
                 <div className="group relative bg-slate-950/20 backdrop-blur-md border-l border-r border-emerald-500/20 hover:border-emerald-500/60 transition-all duration-300">
                     {/* Tech Corners */}
-                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
-                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-emerald-500/40 group-hover:border-emerald-400 transition-colors" />
+                    <div className="absolute top-0 left-0 w-1.5 h-1.5 border-t border-l border-emerald-400 transition-colors" />
+                    <div className="absolute bottom-0 right-0 w-1.5 h-1.5 border-b border-r border-emerald-400 transition-colors" />
 
                     <HoverCard>
                         <HoverCardTrigger asChild>
-                            <div className="relative p-2 flex flex-row items-center justify-center gap-3 group-hover:bg-emerald-500/5 transition-colors">
-                                <div className="flex items-center justify-center p-1.5 rounded bg-emerald-950/30 border border-emerald-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] group-hover:shadow-emerald-500/40 transition-all">
+                            <div className="relative p-2 flex flex-row items-center justify-start gap-3 bg-emerald-500/5 transition-colors">
+                                <div className="flex items-center justify-center p-1.5 rounded bg-emerald-950/30 border border-emerald-500/20 shadow-[0_0_10px_-3px_rgba(168,85,247,0.3)] shadow-emerald-500/40 transition-all">
                                     <Image className="w-3.5 h-3.5 text-emerald-400" />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    <span className="text-[8px] font-mono font-bold text-emerald-500/60 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">PUZZLE</span>
+                                    <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400 transition-colors">PUZZLE PIECES</span>
                                     <span className="text-sm font-mono font-black text-white leading-none shadow-[0_0_10px_-5px_rgba(255,255,255,0.5)]">1 </span>
                                 </div>
                             </div>

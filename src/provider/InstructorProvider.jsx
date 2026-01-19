@@ -176,7 +176,7 @@ export const InstructorProvider = ({ children }) => {
             {children}
 
             {/* Instructor Component */}
-            {shouldShowInstructor && configToShow && (
+            {/* {shouldShowInstructor && configToShow && (
                 <GameInstructor
                     key={location.pathname}
                     dialogue={configToShow?.dialogue}
@@ -187,7 +187,7 @@ export const InstructorProvider = ({ children }) => {
                     autoPlay={true}
                     isActive={instructor.isActive || showManual}
                 />
-            )}
+            )} */}
 
             {/* Toggle Button - Restored and shifted to avoid overlap if needed */}
             {/* {instructor.enabled && !value.isInstructorActive && (

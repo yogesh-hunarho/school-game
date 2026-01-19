@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/avatar"
 import { getInitials } from '@/lib/utils';
 import { BorderBeam } from '@/components/BorderBeam';
+import { Link, useNavigate, useRoutes } from 'react-router-dom';
+import CyberpunkButton from '@/components/ui/cyber-button';
 
 // Mock data - replace with your actual store data
 const mockPlayer = {
@@ -96,6 +98,7 @@ export default function ProfilePage() {
     const [hoveredBadge, setHoveredBadge] = useState(null);
     const storePlayer = useLMSStore((state) => state.player);
     const getModuleProgress = useLMSStore((state) => state.getModuleProgress);
+    const navigate = useNavigate()
 
     // Merge mock statistics with real player data
     const player = {
@@ -137,7 +140,7 @@ export default function ProfilePage() {
                 {/* Glowing orbs */}
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 blur-[150px] rounded-full" />
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 blur-[150px] rounded-full" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 blur-[200px] rounded-full" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-150 h-150 bg-emerald-500/5 blur-[200px] rounded-full" />
 
                 {/* Floating particles */}
                 {[...Array(8)].map((_, i) => (
@@ -162,12 +165,13 @@ export default function ProfilePage() {
                             <ArrowLeft className="w-5 h-5 text-cyan-400 group-hover:text-cyan-300" />
                         </motion.button>
 
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-xl md:text-2xl font-black  uppercase ">
+                        <div className="flex items-center gap-3 justify-between">
+                            <h1 className="text-xl md:text-2xl font-black uppercase ">
                                 PROFILE
                             </h1>
                         </div>
                     </div>
+                    <CyberpunkButton variant='puzzle' onClick={()=>navigate('/spin-and-win')}>Spin And Win</CyberpunkButton>
                 </motion.header>
 
                 {/* Hero Profile Card */}
@@ -284,7 +288,7 @@ export default function ProfilePage() {
                                             <div className="text-3xl font-black bg-linear-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">
                                                 {player.totalXP.toLocaleString()}
                                             </div>
-                                            <div className="text-[10px] text-yellow-300/70 uppercase font-bold tracking-wider">Coins</div>
+                                            <div className="text-[10px] text-yellow-300 uppercase font-bold tracking-wider">Coins</div>
                                         </div>
                                     </motion.div>
 
@@ -299,9 +303,9 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="relative">
                                             <div className="text-2xl font-black text-cyan-400">
-                                                {level}<span className="text-cyan-600">/{totalMissions}</span>
+                                                {level}<span >/{totalMissions}</span>
                                             </div>
-                                            <div className="text-[10px] text-cyan-300/70 uppercase font-bold tracking-wider">Missions</div>
+                                            <div className="text-[10px] text-cyan-300 uppercase font-bold tracking-wider">Missions</div>
                                         </div>
                                     </motion.div>
 
@@ -316,9 +320,9 @@ export default function ProfilePage() {
                                         </div>
                                         <div className="relative">
                                             <div className="text-2xl font-black text-purple-400">
-                                                {puzzlePiecesCollected || 0}<span className="text-purple-600">/{totalPuzzlePieces}</span>
+                                                {puzzlePiecesCollected || 0}<span >/{totalPuzzlePieces}</span>
                                             </div>
-                                            <div className="text-[10px] text-purple-300/70 uppercase font-bold tracking-wider">Pieces</div>
+                                            <div className="text-[10px] text-purple-300 uppercase font-bold tracking-wider">Pieces</div>
                                         </div>
                                     </motion.div>
                                 </div>

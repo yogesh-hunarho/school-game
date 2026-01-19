@@ -69,7 +69,7 @@ const MissionCard = ({ node, content, onClick, side }) => (
         whileHover={!node.isLocked ? { scale: 1.02, x: side === "left" ? 5 : -5 } : {}}
         onClick={onClick}
         className={`
-            group relative p-4 md:p-5 rounded-2xl border transition-all duration-300 cursor-pointer w-full max-w-[240px] overflow-hidden
+            group relative p-4 md:p-5 rounded-2xl border transition-all duration-300 cursor-pointer w-full max-w-60 overflow-hidden
             ${node.isLocked
                 ? "bg-slate-600/30 border-white/5 text-black backdrop-blur-sm"
                 : node.isCurrent
@@ -188,7 +188,7 @@ const MissionMap = ({ }) => {
     const progress = (nodes.filter(n => n.isCompleted).length / nodes.length) * 100
 
     const handleWalkthrough = () => {
-        showWalkthrough(walkthroughDialogues['mission-map']);
+        // showWalkthrough(walkthroughDialogues['mission-map']);
     }
 
     return (
@@ -206,7 +206,7 @@ const MissionMap = ({ }) => {
                 side="bottom"
                 align="center"
                 sideOffset={10}
-                className="relative overflow-hidden w-[99vw] md:w-[600px] h-[90vh] p-0 border border-cyan-500/20 bg-background backdrop-blur-md z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+                className="relative overflow-hidden w-[99vw] md:w-150 h-[90vh] p-0 border border-cyan-500/20 bg-background backdrop-blur-md z-50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
             >
                 <AnimatedBackground
                     variant="warp"
@@ -246,7 +246,7 @@ const MissionMap = ({ }) => {
                     >
                         <div className="max-w-xl mx-auto relative py-12">
                             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-full bg-cyan-500/5 blur-[100px] pointer-events-none" />
-                            <div className="absolute left-1/2 top-0 bottom-0 w-[4px] -translate-x-1/2 overflow-hidden">
+                            <div className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 overflow-hidden">
                                 <div className="h-full w-full bg-slate-800/50 rounded-full" />
                                 <motion.div
                                     className="absolute top-0 left-0 right-0 bg-linear-to-b from-cyan-400 via-purple-500 to-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)]"

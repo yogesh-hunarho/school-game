@@ -55,6 +55,15 @@ export const SpeechBubble = ({
         let currentIndex = 0;
         startTimeRef.current = performance.now();
 
+        // Safety timeout to ensure typing finishes even if RAF fails or duration is wildly off
+        const safetyTimer = setTimeout(() => {
+            if (!isTypingComplete) {
+                setDisplayedText(text);
+                setIsTypingComplete(true);
+                onComplete?.();
+            }
+        }, speechDuration + 2000);
+
         const animate = (currentTime) => {
             const elapsed = currentTime - startTimeRef.current;
             const targetIndex = Math.min(
@@ -72,6 +81,7 @@ export const SpeechBubble = ({
             } else {
                 setIsTypingComplete(true);
                 onComplete?.();
+                clearTimeout(safetyTimer);
             }
         };
 
@@ -81,6 +91,7 @@ export const SpeechBubble = ({
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
             }
+            clearTimeout(safetyTimer);
         };
     }, [text, isSpeaking, speechRate, isTypingComplete, onComplete]);
 

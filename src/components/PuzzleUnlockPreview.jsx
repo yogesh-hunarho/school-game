@@ -187,15 +187,15 @@ const PuzzleUnlockPreview = () => {
     const { showWalkthrough } = useInstructor();
 
     const onStartGame = () => {
-        if (!allUnlocked) {
-            showWalkthrough(walkthroughDialogues['puzzle-play'])
-            return
-        }
+        // if (!allUnlocked) {
+        //     // showWalkthrough(walkthroughDialogues['puzzle-play'])
+        //     return
+        // }
         navigate("/puzzle")
     }
 
     const handleLockClick = () => {
-        showWalkthrough(walkthroughDialogues['puzzle-lock'])
+        // showWalkthrough(walkthroughDialogues['puzzle-lock'])
     }
 
     return (
@@ -220,7 +220,7 @@ const PuzzleUnlockPreview = () => {
                                 initial={{ scale: 0.85, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ delay: index * 0.05 }}
-                                className={`relative shrink-0 w-[140px] h-[140px] overflow-hidden transition-all duration-500
+                                className={`relative shrink-0 w-35 h-35 overflow-hidden transition-all duration-500
                                 ${isUnlocked ? "ring-2 ring-emerald-500/40" : "ring-1 ring-white/10 grayscale"}
                             `}
                             >
@@ -259,12 +259,12 @@ const PuzzleUnlockPreview = () => {
 
                 <CyberpunkButton
                     // disabled={!allUnlocked}
-                    className={`${allUnlocked ? "" : "disabled opacity-30 cursor-not-allowed"} text-white`}
+                    // className={`${allUnlocked ? "" : "disabled opacity-30 cursor-not-allowed"} text-white`}
                     variant="primary"
                     onClick={onStartGame}
                 >
-                    {allUnlocked ? <Zap className="w-6 h-6 fill-current" /> : <Lock className="w-6 h-6" />}
-                    <span className="relative z-10">{allUnlocked ? "Solve Puzzle" : "Puzzle Locked"}</span>
+                    {allUnlocked ? <Zap className="w-6 h-6 text-white" /> : <Lock className="w-6 h-6 text-white" />}
+                    <span className="relative z-10 text-white">{allUnlocked ? "Solve Puzzle" : "Puzzle Locked"}</span>
                     {allUnlocked && <Sparkles className="w-6 h-6 animate-pulse" />}
                 </CyberpunkButton>
             </div>

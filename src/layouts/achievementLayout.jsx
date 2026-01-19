@@ -294,15 +294,15 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
     const { showWalkthrough, isWalkthroughCompleted } = useInstructor()
 
     const handleInfo = () => {
-        if (isUnlocked) {
-            showWalkthrough(walkthroughDialogues['achievement-info'])
-        } else {
-            showWalkthrough(walkthroughDialogues['achievement-lock-info'])
-        }
+        // if (isUnlocked) {
+        //     showWalkthrough(walkthroughDialogues['achievement-info'])
+        // } else {
+        //     showWalkthrough(walkthroughDialogues['achievement-lock-info'])
+        // }
     }
 
     const handleCollectInfo = () => {
-        showWalkthrough(walkthroughDialogues['achievement-collect'])
+        // showWalkthrough(walkthroughDialogues['achievement-collect'])
     }
     return (
         <motion.div
@@ -321,7 +321,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
             <div
                 className={cn(
                     "absolute z-20 transition-all duration-500 ease-in-out",
-                    "top-0 left-0 right-1 group-hover:h-[140px] group-hover:w-[140px] bottom-0",
+                    "top-0 left-0 right-1 group-hover:h-35 group-hover:w-35 bottom-0",
                     "group-hover:top-1/4 group-hover:left-1/2 group-hover:mt-3 mt-1 ml-1",
                     "group-hover:right-auto group-hover:bottom-auto",
                     "group-hover:-translate-x-1/2 group-hover:-translate-y-1/2",
@@ -368,9 +368,8 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
 
             {/* Expanding Bottom Panel */}
             <div
-                onMouseEnter={() => playSound("zoom")}
                 className={cn(
-                    "absolute left-[3px] right-[3px] bottom-[3px] z-20 transition-all duration-500 cubic-bezier(0.645, 0.045, 0.355, 1)",
+                    "absolute left-0.75 right-0.75 bottom-0.75 z-20 transition-all duration-500 cubic-bezier(0.645, 0.045, 0.355, 1)",
                     "top-[80%] group-hover:top-[20%] overflow-hidden shadow-[inset_0_5px_5px_rgba(96,75,74,0.18)]",
                     isUnlocked ? "bg-emerald-500/40 group-hover:bg-emerald-300/40 backdrop-blur-sm group-hover:backdrop-blur-xl" : "bg-slate-800/70"
                 )}>
@@ -396,6 +395,36 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                     {/* Bottom Action Area */}
                     <div className="mt-auto flex gap-2 items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-300">
                         <CircleQuestionMark onClick={handleInfo} className="cursor-pointer w-5 h-5 text-white" />
+                        {
+                            showCollectButton && (
+                                // <div className=" inset-0 z-50 flex gap-2 items-center justify-center bg-transparent/20">
+                                //     {isWalkthroughCompleted('achievement-collect') && <CircleQuestionMark onClick={handleCollectInfo} />}
+                                //     <button
+                                //         onClick={(e) => {
+                                //             e.stopPropagation();
+                                //             onCollectClick(achievement);
+                                //         }}
+                                //         style={{
+                                //             clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'
+                                //         }}
+                                //         // className="relative border border-yellow-500 px-2 py-2 bg-linear-to-r from-yellow-400 to-orange-400 font-black text-xs uppercase tracking-wider text-black shadow-[0_0_30px_rgba(250,204,21,0.6)] hover:scale-110 active:scale-95 transition-transform overflow-hidden group"
+                                //     >
+                                //         <div className="absolute inset-0 bg-white/10 -translate-x-full group-hover:translate-x-full transition-transform duration-500 skew-x-12" />
+                                //         <span className="relative z-10 text-white">Collect</span>
+                                //     </button>
+                                // </div>
+                                <CyberpunkButton
+                                    variant="puzzle"
+                                    className={"py-0 px-1"}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onCollectClick(achievement);
+                                    }}
+                                >
+                                    Collect
+                                </CyberpunkButton>
+                            )
+                        }
                         {isUnlocked && (
                             <CyberpunkButton
                                 variant="puzzle"
@@ -414,9 +443,9 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
             </div>
 
             {/* Collect Button Overlay (for newly unlocked achievements) */}
-            {
+            {/* {
                 showCollectButton && (
-                    <div className="absolute inset-0 z-50 flex gap-2 items-center justify-center bg-transparent/80 backdrop-blur">
+                    <div className="absolute inset-0 z-50 flex gap-2 items-center justify-center bg-transparent/20">
                         {isWalkthroughCompleted('achievement-collect') && <CircleQuestionMark onClick={handleCollectInfo} />}
                         <button
                             onClick={(e) => {
@@ -433,7 +462,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                         </button>
                     </div>
                 )
-            }
+            } */}
 
             {/* Particle Glow Effect */}
             {
@@ -509,7 +538,7 @@ const AchievementLayout = () => {
                         </div>
 
                         <div className="flex flex-wrap items-end justify-between gap-4 md:gap-8">
-                            <div className="flex flex-col gap-1.5 min-w-[200px]">
+                            <div className="flex flex-col gap-1.5 min-w-50">
                                 <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest text-zinc-400">
                                     <span>Missions Completed</span>
                                     <span className="text-white">{completedMissions}/{totalMissions}</span>

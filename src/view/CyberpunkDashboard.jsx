@@ -144,7 +144,7 @@ export const CyberpunkDashboard = () => {
                                         ease: "linear",
                                     }}
                                     viewport={{ once: false }}
-                                    className="absolute left-0 right-0 h-[2px] bg-cyan-500/30 blur-sm pointer-events-none"
+                                    className="absolute left-0 right-0 h-0.5 bg-cyan-500/30 blur-sm pointer-events-none"
                                 />
 
                                 {isLocked ? (

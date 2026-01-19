@@ -43,7 +43,7 @@ const ModuleDetailsPage = () => {
     }, [moduleId, openContentPanel]);
 
     const handleBack = () => {
-        showWalkthrough(walkthroughDialogues['back-to-mission-map'])
+        // showWalkthrough(walkthroughDialogues['back-to-mission-map'])
         navigate("/missions");
     };
 
