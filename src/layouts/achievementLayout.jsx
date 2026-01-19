@@ -415,7 +415,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                                 // </div>
                                 <CyberpunkButton
                                     variant="puzzle"
-                                    className={"py-0 px-1"}
+                                    className={"py-0 px-1 text-[10px]"}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onCollectClick(achievement);
@@ -428,7 +428,7 @@ const AchievementCard = ({ achievement, isUnlocked, progress, onCollectClick }) 
                         {isUnlocked && (
                             <CyberpunkButton
                                 variant="puzzle"
-                                className={"py-0 px-1"}
+                                className={"py-0 px-1 text-[10px]"}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setProfileImage(achievement.image);
